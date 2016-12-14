@@ -20,8 +20,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 0,
-            //'flag'        => 11,
+            'mode'        => 1, // Records are sorted by a fixed field
+            'flag'        => 1, // Sort by initial letter ascending
             'fields'      => ['name'],
             'panelLayout' => 'sort,filter;search,limit',
         ],
@@ -76,7 +76,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
         'name'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['name'],
             'sorting'   => true,
-            'flag'      => 11, // sort ascending
+            'search'    => true,
+            'flag'      => 1, // sort by initial letter ascending
             'inputType' => 'text',
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
