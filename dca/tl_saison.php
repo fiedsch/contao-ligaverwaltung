@@ -76,6 +76,7 @@ $GLOBALS['TL_DCA']  ['tl_saison'] = [
         'name'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_saison']['name'],
             'sorting'   => true,
+            'exclude'   => true,
             'flag'      => 11, // sort ascending
             'inputType' => 'text',
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],

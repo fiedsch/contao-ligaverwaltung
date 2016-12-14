@@ -77,6 +77,7 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['name'],
             'sorting'   => true,
             'search'    => true,
+            'exclude'   => true,
             'flag'      => 1, // sort by initial letter ascending
             'inputType' => 'text',
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],

@@ -109,6 +109,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'sorting'   => true,
             'flag'      => 11, // sort ascending
             'inputType' => 'text',
+            'exclude'   => true,
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
@@ -116,6 +117,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'label'      => &$GLOBALS['TL_LANG']['tl_liga']['saison'],
             'inputType'  => 'select',
             'filter'     => true,
+            'exclude'   => true,
             'foreignKey' => 'tl_saison.name',
             'eval'       => ['tl_class' => 'w50'],
             'relation'   => ['type' => 'belongsTo','load' => 'eager'],
@@ -125,6 +127,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_liga']['aktiv'],
             'inputType' => 'checkbox',
             'filter'    => true,
+            'exclude'   => true,
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
