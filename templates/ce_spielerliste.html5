@@ -1,0 +1,14 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+  <ul>
+    <?php foreach ($this->listitems as $listitem): ?>
+      <li><?= $listitem ?></li>
+    <?php endforeach; ?>
+  </ul>
+
+<?php $this->endblock(); ?>
+
+
+
