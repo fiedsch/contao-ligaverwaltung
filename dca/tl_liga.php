@@ -129,7 +129,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'filter'    => true,
             'exclude'   => true,
             'eval'      => ['tl_class' => 'w50'],
-            'sql'       => "int(10) unsigned NOT NULL default '0'",
+            'sql'       => "char(1) NOT NULL default ''",
         ],
     ],
 ];
