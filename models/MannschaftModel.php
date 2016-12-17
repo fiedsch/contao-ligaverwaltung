@@ -17,24 +17,14 @@ class MannschaftModel extends \Model
     /**
      * Alle Mannschaften, die aktiv sind, d.h. in eine liga (tl_liga) spielen, die aktiv ist
      *
-     * @return \Collection|null
+     * @return \Contao\Model\Collection|null
      */
     public static function findAllActive()
     {
-        $result = \Database::getInstance()
-            ->prepare('SELECT m.* FROM  tl_mannschaft m LEFT JOIN tl_liga l ON (m.pid=l.id) WHERE l.aktiv=?')
+        $result = Database::getInstance()
+            ->prepare('SELECT m.* FROM  tl_mannschaft m LEFT JOIN tl_liga l ON (m.liga=l.id) WHERE l.aktiv=?')
             ->execute(1);
-        return \Model::createCollectionFromDbResult($result, 'tl_mannschaft');
-    }
-
-    /**
-     * Alle Mannschaften, die in einer Liga spielen
-     *
-     * @param int $liga_id
-     */
-    public static function findByLiga($liga_id)
-    {
-        return self::findBy(['pid=?'],[$liga_id]);
+        return Model::createCollectionFromDbResult($result, 'tl_mannschaft');
     }
 
 }

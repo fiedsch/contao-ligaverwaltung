@@ -9,7 +9,7 @@
 $GLOBALS['TL_DCA']  ['tl_liga'] = [
     'config' => [
         'dataContainer'    => 'Table',
-        'ctable'           => ['tl_mannschaft'],
+        'ctable'           => ['tl_begegnung'],
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
@@ -27,14 +27,12 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'panelLayout' => 'sort,filter;search,limit',
         ],
         'label'             => [
-            'fields'         => ['name', 'saison'],
-            'format'         => '%s (%s)',
+            'fields'         => ['name'],
+            'format'         => '%s',
             'label_callback' => function($row, $label) {
-                //return json_encode(['row'=>$row, 'label'=>$label]);
-                $saison = Database::getInstance()
-                    ->prepare("SELECT * FROM tl_saison WHERE id=?")
-                    ->execute($row['saison']);
-                return sprintf("%s %s", $row['name'], $saison->name);
+                $saison = \SaisonModel::findById($row['saison']);
+                $class = $row['aktiv'] ? 'tl_green' : 'tl_red';
+                return sprintf("<span class='%s'>%s %s</span>", $class, $label, $saison->name);
             },
         ],
         'global_operations' => [
@@ -48,7 +46,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
         'operations'        => [
             'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
-                'href'  => 'table=tl_mannschaft',
+                'href'  => 'table=tl_begegnung',
                 'icon'  => 'edit.gif',
             ],
             'editheader' => [
@@ -57,39 +55,39 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
                 'icon'  => 'header.gif',
                 //'button_callback'     => array('tl_article', 'editHeader')
             ],
-            'copy'   => [
+            'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
-            'delete' => [
+            'delete'     => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_liga']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'   => [
+            'show'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
-            'toggle' => [
-                'label'                 => &$GLOBALS['TL_LANG']['tl_liga']['toggle'],
-                'attributes'            => 'onclick="Backend.getScrollOffset();"',
-                'haste_ajax_operation'  => [
-                    'field'     => 'aktiv',
-                    'options'    => [
+            'toggle'     => [
+                'label'                => &$GLOBALS['TL_LANG']['tl_liga']['toggle'],
+                'attributes'           => 'onclick="Backend.getScrollOffset();"',
+                'haste_ajax_operation' => [
+                    'field'   => 'aktiv',
+                    'options' => [
                         [
-                            'value'     => '',
-                            'icon'      => 'invisible.gif'
+                            'value' => '',
+                            'icon'  => 'invisible.gif',
                         ],
                         [
-                            'value'     => '1',
-                            'icon'      => 'visible.gif'
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => '1',
+                            'icon'  => 'visible.gif',
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
 
@@ -117,10 +115,10 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'label'      => &$GLOBALS['TL_LANG']['tl_liga']['saison'],
             'inputType'  => 'select',
             'filter'     => true,
-            'exclude'   => true,
+            'exclude'    => true,
             'foreignKey' => 'tl_saison.name',
-            'eval'       => ['tl_class' => 'w50'],
-            'relation'   => ['type' => 'belongsTo','load' => 'eager'],
+            'eval'       => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
         'aktiv'  => [

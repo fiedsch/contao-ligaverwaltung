@@ -4,22 +4,28 @@
  */
 array_insert($GLOBALS['BE_MOD'], 2, [
     'liga' => [
-        'liga.spielort' => [
+        'liga.spielort'   => [
             'tables' => ['tl_spielort'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/spielort.gif'
         ],
-        'liga.saison'   => [
+        'liga.saison'     => [
             'tables' => ['tl_saison'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/saison.gif'
         ],
-        'liga.liga'     => [
-            'tables' => ['tl_liga', 'tl_mannschaft', 'tl_spieler'],
+        'liga.mannschaft' => [
+            'tables' => ['tl_mannschaft', 'tl_spieler'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/mannschaft.gif'
+        ],
+        'liga.liga'       => [
+            'tables' => ['tl_liga', 'tl_begegnung', 'tl_spiel'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/liga.gif'
         ],
-        'liga.spiel'    => [
-            'tables' => ['tl_spiel'],
-            //'icon' => 'system/modules/ligaverwaltung/assets/img/spiel.gif'
+
+        'liga.begegnung'      => [
+            'tables' => ['tl_begegnung', 'tl_spiel'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
         ],
+
     ],
 ]);
 

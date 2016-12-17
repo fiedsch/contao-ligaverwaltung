@@ -6,12 +6,12 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-$GLOBALS['TL_LANG']['CTE']['mannschaftsliste'] = array(
+$GLOBALS['TL_LANG']['CTE']['mannschaftsliste'] = [
     'Mannschaftsliste',
     'Mannschaftsliste aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
-);
+];
 
-$GLOBALS['TL_LANG']['CTE']['spielerliste'] = array(
+$GLOBALS['TL_LANG']['CTE']['spielerliste'] = [
     'Spielerliste',
     'Spielerliste aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
-);
+];

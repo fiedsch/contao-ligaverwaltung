@@ -15,6 +15,7 @@ class ContentSpielerliste extends \ContentElement
 {
     /**
      * Template
+     *
      * @var string
      */
     protected $strTemplate = 'ce_spielerliste';

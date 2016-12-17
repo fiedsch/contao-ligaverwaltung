@@ -10,50 +10,50 @@ $GLOBALS['TL_LANG']['tl_mannschaft']['title_legend'] = 'Titel';
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['new'] = [
     'Neue Mannschaft erstellen',
-    'Eine neue Mannschaft erstellen'
+    'Eine neue Mannschaft erstellen',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['edit'] = [
     'bearbeiten',
-    'Die Mannschaft bearbeiten'
+    'Die Mannschaft bearbeiten',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['editheader'] = [
     'bearbeiten',
-    'Einstellungen der Mannschaft bearbeiten'
+    'Einstellungen der Mannschaft bearbeiten',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['copy'] = [
     'kopieren',
-    'die Mannschaft kopieren'
+    'die Mannschaft kopieren',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['delete'] = [
     'löschen',
-    'die Mannschaft löschen'
+    'die Mannschaft löschen',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['show'] = [
     'anzeigen',
-    'Details der Mannschaft anzeigen'
+    'Details der Mannschaft anzeigen',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['cut'] = [
     'ausschneiden',
-    'ausschneiden und an anderer Stelle einfügen'
+    'ausschneiden und an anderer Stelle einfügen',
 ];
 
-$GLOBALS['TL_LANG']['tl_mannschaft']['pid'] = [
+$GLOBALS['TL_LANG']['tl_mannschaft']['liga'] = [
     'Liga',
-    'Liga'
+    'Liga',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['name'] = [
     'Mannschaftsname',
-    'Name der Mannschaft'
+    'Name der Mannschaft',
 ];
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['spielort'] = [
     'Spielort',
-    '(Heim-)Spielort der Mannschaft'
+    '(Heim-)Spielort der Mannschaft',
 ];

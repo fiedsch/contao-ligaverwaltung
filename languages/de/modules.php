@@ -10,20 +10,24 @@ $GLOBALS['TL_LANG']['MOD']['liga'] = 'Ligaverwaltung';
 
 $GLOBALS['TL_LANG']['MOD']['liga.spielort'] = [
     'Spielorte',
-    'Verwaltung von Spielorten'
+    'Verwaltung von Spielorten',
 ];
 
 $GLOBALS['TL_LANG']['MOD']['liga.saison'] = [
     'Saison',
-    'Verwaltung von Saisons'
-    ];
+    'Verwaltung von Saisons',
+];
 
 $GLOBALS['TL_LANG']['MOD']['liga.liga'] = [
     'Ligen',
-    'Verwaltung von Ligen'
+    'Verwaltung von Ligen',
 ];
 
-$GLOBALS['TL_LANG']['MOD']['liga.spiel'] = [
+$GLOBALS['TL_LANG']['MOD']['liga.mannschaft'] = [
+    'Mannschaften',
+    'Verwaltung von Mannschaften',
+];
+$GLOBALS['TL_LANG']['MOD']['liga.begegnung'] = [
     'Spiele',
-    'Verwaltung von Spielen'
+    'Verwaltung von Spielen zwischen Mannschaften (Begegnungen)',
 ];

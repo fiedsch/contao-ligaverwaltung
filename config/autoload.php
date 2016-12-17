@@ -17,9 +17,12 @@ ClassLoader::addClasses([
 
     // Models
     'SpielerModel'            => 'system/modules/ligaverwaltung/models/SpielerModel.php',
+    'SpielortModel'           => 'system/modules/ligaverwaltung/models/SpielortModel.php',
     'MannschaftModel'         => 'system/modules/ligaverwaltung/models/MannschaftModel.php',
     'LigaModel'               => 'system/modules/ligaverwaltung/models/LigaModel.php',
     'SaisonModel'             => 'system/modules/ligaverwaltung/models/SaisonModel.php',
+    'BegegnungModel'          => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
+    'SpielModel'              => 'system/modules/ligaverwaltung/models/SpielModel.php',
     // Modules
 
 ]);

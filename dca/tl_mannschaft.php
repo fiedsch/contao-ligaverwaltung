@@ -9,28 +9,28 @@
 $GLOBALS['TL_DCA']['tl_mannschaft'] = [
     'config' => [
         'dataContainer'    => 'Table',
-        'ptable'           => 'tl_liga',
         'ctable'           => ['tl_spieler'],
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
-                'id'       => 'primary',
-                'pid'      => 'index',
-                'pid,name' => 'unique',
+                'id'        => 'primary',
+                'liga'      => 'index',
+                'liga,name' => 'unique',
             ],
         ],
     ],
 
     'list' => [
         'sorting'           => [
-            'mode'        => 1,
-            'fields'      => ['name'],
-            'flag'        => 1,
+            'mode'        => 2,
+            'fields'      => ['name', 'liga'],
+            'flag'        => 1, // Sort by initial letter ascending
             'panelLayout' => 'sort,filter;search,limit',
         ],
         'label'             => [
-            'fields' => ['name'],
-            'format' => '%s',
+            'fields'         => ['name', 'liga'],
+            'format'         => '%s %s',
+            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'mannschaftLabelCallback'],
         ],
         'global_operations' => [
             'all' => [
@@ -77,8 +77,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
     ],
 
     'palettes' => [
-        '__selector__' => ['protected', 'allowComments'],
-        'default'      => '{title_legend},name,spielort',
+        'default' => '{title_legend},name,spielort,liga',
     ],
 
     'fields' => [
@@ -91,10 +90,18 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
 
-        'pid' => [
-            'foreignKey' => 'tl_liga.name',
-            'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
-            'sql'        => "int(10) unsigned NOT NULL default '0'",
+        'liga' => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_mannschaft']['liga'],
+            'inputType'        => 'select',
+            'filter'           => true,
+            'sorting'          => true,
+            'flag'             => 1,
+            'foreignKey'       => 'tl_liga.name',
+            'relation'         => ['type' => 'belongsTo', 'load' => 'eager'],
+            'foreignKey'       => 'tl_liga.name',
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getLigaForSelect'],
+            'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
 
         'name'     => [
@@ -104,6 +111,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'search'    => true,
             'filter'    => false,
             'sorting'   => true,
+            'flag'      => 11, // sort ascending
             'eval'      => ['mandatory' => true, 'maxlength' => 255],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],

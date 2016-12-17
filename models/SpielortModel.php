@@ -5,12 +5,13 @@
  * @link https://github.com/fiedsch/contao-ligaverwaltung/
  * @license https://opensource.org/licenses/MIT
  */
-class LigaModel extends \Model
+class SpielortModel extends \Model
 {
     /**
      * Table name
      *
      * @var string
      */
-    protected static $strTable = "tl_liga";
+    protected static $strTable = "tl_spielort";
+
 }

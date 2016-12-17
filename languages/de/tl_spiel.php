@@ -10,39 +10,39 @@ $GLOBALS['TL_LANG']['tl_spiel']['title_legend'] = 'Titel';
 
 $GLOBALS['TL_LANG']['tl_spiel']['new'] = [
     'Neues Spiel erstellen',
-    'Ein neues Spiel erstellen'
+    'Ein neues Spiel (zwei Spieler gegeneinander) erstellen',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['edit'] = [
     'bearbeiten',
-    'das Spiel bearbeiten'
+    'das Spiel bearbeiten',
 ];
 $GLOBALS['TL_LANG']['tl_spiel']['copy'] = [
     'kopieren',
-    'das Spiel kopieren'
+    'das Spiel kopieren',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['delete'] = [
     'löschen',
-    'das Spiel löschen'
+    'das Spiel löschen',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['show'] = [
     'anzeigen',
-    'das Spiel anzeigen'
+    'das Spiel anzeigen',
 ];
 
-$GLOBALS['TL_LANG']['tl_spiel']['liga'] = [
-    'Liga',
-    'Liga'
+$GLOBALS['TL_LANG']['tl_spiel']['pid'] = [
+    'Begegnung',
+    'Die Begegnung in der das Spiel gespielt wurde',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['home'] = [
-    'Heimmannschaft',
-    'Heimmannschaft'
+    'Spieler Heimmannschaft',
+    'Spieler Heimmannschaft',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['away'] = [
-    'Auswärtsmannschaft',
-    'Auswärtsmannschaft'
+    'Spieler Auswärtsmannschaft',
+    'Spieler Auswärtsmannschaft',
 ];

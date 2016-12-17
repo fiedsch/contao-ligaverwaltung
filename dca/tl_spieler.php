@@ -25,7 +25,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
     'list' => [
         'sorting'           => [
             'mode'                  => 4, // Displays the child records of a parent record
-            'headerFields'          => ['name','spielort','pid'], // pid ~= Liga
+            'headerFields'          => ['name', 'spielort', 'liga'],
             // TODO: wird flag bei mode 4 nicht berücksichtigt?
             // Workarround: DESC als Teil des Feldnamens angeben
             'flag'                  => 1,
@@ -91,19 +91,20 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'member_id'   => [
-            'label'      => &$GLOBALS['TL_LANG']['tl_spieler']['member_id'],
-            'exclude'    => true,
-            'search'     => true,
-            'sorting'    => true,
-            'inputType'  => 'select',
-            'eval'       => [
-                'chosen' => true,
-                'wizard' => true,
-            ],
-            'wizard'     => ['\Fiedsch\Liga\DCAHelpers', 'editMemberWizard'],
-            'foreignKey' => 'tl_member.CONCAT(lastname, ", ", firstname)',
-            'relation'   => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
-            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'label'            => &$GLOBALS['TL_LANG']['tl_spieler']['member_id'],
+            'exclude'          => true,
+            'search'           => true,
+            'sorting'          => true,
+            'inputType'        => 'select',
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForSelect'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'wizard' => true],
+            //'wizard'     => ['\Fiedsch\Liga\DCAHelpers', 'editMemberWizard'],
+            'wizard'           => function() {
+                return 'xxx';
+            },
+            'foreignKey'       => 'tl_member.CONCAT(lastname, ", ", firstname)',
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'teamcaptain' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_spieler']['teamcaptain'],

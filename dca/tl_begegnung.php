@@ -6,11 +6,12 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-$GLOBALS['TL_DCA']  ['tl_spiel'] = [
+$GLOBALS['TL_DCA']  ['tl_begegnung'] = [
     'config' => [
         'dataContainer'    => 'Table',
         'enableVersioning' => true,
-        'ptable'           => 'tl_begegnung',
+        'ptable'           => 'tl_liga',
+        'ctable'           => 'tl_spiel',
         'sql'              => [
             'keys' => [
                 'id'   => 'primary',
@@ -32,7 +33,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
         'label'             => [
             'fields'         => ['home', 'away'],
             'format'         => '%s : %s',
-            //'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'begegnungLabelCallback'],
+            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'begegnungLabelCallback'],
         ],
         'global_operations' => [
             'all' => [
@@ -43,24 +44,29 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             ],
         ],
         'operations'        => [
-            'edit'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spiel']['edit'],
+            'editheader'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['editheader'],
                 'href'  => 'act=edit',
+                'icon'  => 'header.gif',
+            ],
+            'edit'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['edit'],
+                'href'  => 'table=tl_spiel',
                 'icon'  => 'edit.gif',
             ],
             'copy'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spiel']['copy'],
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
             'delete' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_spiel']['delete'],
+                'label'      => &$GLOBALS['TL_LANG']['tl_begegnung']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
             'show'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spiel']['show'],
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
@@ -79,7 +85,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'pid'    => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['pid'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['pid'],
             'filter'           => true,
             'exclude'          => true,
             'inputType'        => 'select',
@@ -89,7 +95,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'home'   => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['home'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['home'],
             'filter'           => true,
             'exclude'          => true,
             'sorting'          => true,
@@ -102,7 +108,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'sql'              => "int(10) NOT NULL default '0'",
         ],
         'away'   => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['away'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['away'],
             'filter'           => true,
             'exclude'          => true,
             'sorting'          => true,
