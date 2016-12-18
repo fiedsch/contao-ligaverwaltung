@@ -11,7 +11,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
         'dataContainer'    => 'Table',
         'enableVersioning' => true,
         'ptable'           => 'tl_liga',
-        'ctable'           => 'tl_spiel',
+        'ctable'           => ['tl_spiel'],
         'sql'              => [
             'keys' => [
                 'id'   => 'primary',
@@ -25,13 +25,13 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 1,
+            'mode'        => 2,
             'flag'        => 11, // sort ascending
             'fields'      => ['pid','home','away'],
             'panelLayout' => 'sort,filter;search,limit',
         ],
         'label'             => [
-            'fields'         => ['home', 'away'],
+            'fields'         => ['home','away'],
             'format'         => '%s : %s',
             'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'begegnungLabelCallback'],
         ],
@@ -88,6 +88,8 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['pid'],
             'filter'           => true,
             'exclude'          => true,
+            'sorting'          => true,
+            //'flag'             => 11, // sort ascending
             'inputType'        => 'select',
             'foreignKey'       => 'tl_liga.name',
             'eval'             => ['submitOnChange' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],

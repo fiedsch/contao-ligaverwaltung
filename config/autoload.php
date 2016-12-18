@@ -14,6 +14,7 @@ ClassLoader::addClasses([
     // Elements
     'ContentMannschaftsliste' => 'system/modules/ligaverwaltung/elements/ContentMannschaftsliste.php',
     'ContentSpielerliste'     => 'system/modules/ligaverwaltung/elements/ContentSpielerliste.php',
+    'ContentSpielplan'        => 'system/modules/ligaverwaltung/elements/ContentSpielplan.php',
 
     // Models
     'SpielerModel'            => 'system/modules/ligaverwaltung/models/SpielerModel.php',
@@ -30,4 +31,5 @@ ClassLoader::addClasses([
 TemplateLoader::addFiles([
     'ce_mannschaftsliste' => 'system/modules/ligaverwaltung/templates',
     'ce_spielerliste'     => 'system/modules/ligaverwaltung/templates',
+    'ce_spielplan'        => 'system/modules/ligaverwaltung/templates',
 ]);

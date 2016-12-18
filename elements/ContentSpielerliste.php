@@ -7,7 +7,7 @@
  */
 
 /**
- * Content element "csvtable".
+ * Content element "Liste aller Spieler einer Mannaschft".
  *
  * @author Andreas Fieger <https://github.com/fiedsch>
  */
@@ -28,11 +28,11 @@ class ContentSpielerliste extends \ContentElement
     public function compile()
     {
         if ($this->liga == '') {
-            return '';
+            return;
         }
         $mannschaftsspieler = \SpielerModel::findByPid($this->mannschaft);
         if ($mannschaftsspieler === null) {
-            return '';
+            return;
         }
 
         $listitems = [];

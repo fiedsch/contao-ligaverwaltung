@@ -13,6 +13,7 @@ $GLOBALS['TL_LANG']['tl_liga']['new'] = [
     'Eine neue Liga erstellen',
 ];
 
+/*
 $GLOBALS['TL_LANG']['tl_liga']['editheader'] = [
     'bearbeiten',
     'Einstellungen der Liga bearbeiten',
@@ -21,6 +22,12 @@ $GLOBALS['TL_LANG']['tl_liga']['editheader'] = [
 $GLOBALS['TL_LANG']['tl_liga']['edit'] = [
     'bearbeiten',
     'die Mannschaften der Liga bearbeiten',
+];
+*/
+
+$GLOBALS['TL_LANG']['tl_liga']['edit'] = [
+    'bearbeiten',
+    'Einstellungen der Liga bearbeiten',
 ];
 $GLOBALS['TL_LANG']['tl_liga']['copy'] = [
     'kopieren',

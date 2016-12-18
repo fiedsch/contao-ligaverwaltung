@@ -12,10 +12,10 @@ $GLOBALS['TL_LANG']['tl_content']['mannschaft_legend'] = 'Mannschaft';
 
 $GLOBALS['TL_LANG']['tl_content']['liga'] = [
     'Liga',
-    'Liga deren Mannschaften dargestellt werden sollen',
+    'Liga deren Daten dargestellt werden sollen',
 ];
 
 $GLOBALS['TL_LANG']['tl_content']['mannschaft'] = [
     'Mannschaft',
-    'Mannschaft deren Spieler dargestellt werden sollen',
+    'Mannschaft deren Daten dargestellt werden sollen',
 ];

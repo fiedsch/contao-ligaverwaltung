@@ -35,6 +35,15 @@ $GLOBALS['TL_LANG']['tl_spieler']['show'] = [
     'Details des Spielers anzeigen',
 ];
 
+$GLOBALS['TL_LANG']['tl_spieler']['edit'] = [
+    'bearbeiten',
+    'den Spieler bearbeiten',
+];
+
+$GLOBALS['TL_LANG']['tl_spieler']['editmember'] = [
+    'bearbeiten',
+    'das zum Spieler gehörige Mitglied bearbeiten',
+];
 $GLOBALS['TL_LANG']['tl_spieler']['member_id'] = [
     'Spieler',
     'Um einen Spieler auswählen zu können muss zuvor ein Mitglied angelegt werden',

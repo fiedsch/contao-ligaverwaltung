@@ -7,7 +7,7 @@
  */
 
 /**
- * Content element "csvtable".
+ * Content element "Liste aller Mannschaften einer Liga".
  *
  * @author Andreas Fieger <https://github.com/fiedsch>
  */
@@ -28,11 +28,11 @@ class ContentMannschaftsliste extends \ContentElement
     public function compile()
     {
         if ($this->liga == '') {
-            return '';
+            return;
         }
         $mannschaften = \MannschaftModel::findByLiga($this->liga);
         if ($mannschaften === null) {
-            return '';
+            return;
         }
 
         $listitems = [];

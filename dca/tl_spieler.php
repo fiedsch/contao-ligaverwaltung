@@ -97,11 +97,10 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
             'sorting'          => true,
             'inputType'        => 'select',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForSelect'],
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'wizard' => true],
-            //'wizard'     => ['\Fiedsch\Liga\DCAHelpers', 'editMemberWizard'],
-            'wizard'           => function() {
-                return 'xxx';
-            },
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'tl_class' => 'w50 wizard'],
+            'wizard'           => [
+                    ['\Fiedsch\Liga\DCAHelper', 'editMemberWizard']
+            ],
             'foreignKey'       => 'tl_member.CONCAT(lastname, ", ", firstname)',
             'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",

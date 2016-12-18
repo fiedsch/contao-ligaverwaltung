@@ -9,7 +9,7 @@
 $GLOBALS['TL_DCA']  ['tl_liga'] = [
     'config' => [
         'dataContainer'    => 'Table',
-        'ctable'           => ['tl_begegnung'],
+        //'ctable'           => ['tl_begegnung'],
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
@@ -44,6 +44,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             ],
         ],
         'operations'        => [
+            /*
             'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
                 'href'  => 'table=tl_begegnung',
@@ -53,6 +54,13 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['editheader'],
                 'href'  => 'act=edit',
                 'icon'  => 'header.gif',
+                //'button_callback'     => array('tl_article', 'editHeader')
+            ],
+            */
+            'edit' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
+                'href'  => 'act=edit',
+                'icon'  => 'edit.gif',
                 //'button_callback'     => array('tl_article', 'editHeader')
             ],
             'copy'       => [

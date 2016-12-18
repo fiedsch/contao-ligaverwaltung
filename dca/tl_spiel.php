@@ -24,14 +24,18 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 1,
-            'flag'        => 11, // sort ascending
-            'fields'      => ['pid','home','away'],
-            'panelLayout' => 'sort,filter;search,limit',
+            'mode'                  => 4, // Displays the child records of a parent record
+            'flag'                  => 11, // sort ascending
+            'fields'                => ['id'],
+            'panelLayout'           => 'sort,filter;search,limit',
+            'headerFields'          => ['home', 'away','pid'],
+            'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listSpielCallback'],
+            'child_record_class'    => 'no_padding',
+            'disableGrouping'       => true,
         ],
         'label'             => [
-            'fields'         => ['home', 'away'],
-            'format'         => '%s : %s',
+            'fields' => ['home', 'away'],
+            'format' => '%s : %s',
             //'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'begegnungLabelCallback'],
         ],
         'global_operations' => [
@@ -79,26 +83,19 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'pid'    => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['pid'],
-            'filter'           => true,
-            'exclude'          => true,
-            'inputType'        => 'select',
-            'foreignKey'       => 'tl_liga.name',
-            'eval'             => ['submitOnChange' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
-            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAktiveLigenForSelect'],
-            'sql'              => "int(10) unsigned NOT NULL default '0'",
+            'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'home'   => [
             'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['home'],
             'filter'           => true,
             'exclude'          => true,
             'sorting'          => true,
-            //'flag'             => 11, // sort ascending
+            'flag'             => 11, // sort ascending
             'inputType'        => 'select',
-            'foreignKey'       => 'tl_mannschaft.name',
-            'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'includeBlankOption' => true],
-            //'relation'         => ['type' => 'hasOne', 'load' => 'eager'],
-            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
+            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
+            'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getHomeSpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
         'away'   => [
@@ -107,11 +104,11 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'exclude'          => true,
             'sorting'          => true,
             'flag'             => 11, // sort ascending
-            'foreignKey'       => 'tl_mannschaft.name',
+            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
             'inputType'        => 'select',
-            'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
-            'relation'         => ['type' => 'hasOne', 'load' => 'eager'],
-            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
+            'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAwaySpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
     ],
