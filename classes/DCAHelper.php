@@ -10,8 +10,74 @@ namespace Fiedsch\Liga;
 
 class DCAHelper
 {
+    /* Helper für tl_mannschft */
 
     /**
+     * Label für eine Mannschaft
+     * ('child_record_callback' in tl_mannschaft)
+     *
+     * @param $arrRow
+     * @return string
+     */
+    public static function mannschaftLabelCallback($arrRow)
+    {
+        $liga = \LigaModel::findById($arrRow['liga']);
+        if (!$liga) {
+            return sprintf("%s <span class='tl_red'>Liga '%d' existiert nicht mehr!</span>",
+                $arrRow['name'],
+                $arrRow['liga']);
+        }
+        $spielort = \SpielortModel::findById($arrRow['spielort']);
+        //$spieler = \SpielerModel::findByPid($arrRow['id']);
+        $spieler = \Database::getInstance()
+            ->prepare("SELECT COUNT(*) as n FROM tl_spieler WHERE pid=?")
+            ->execute($arrRow['id']);
+        $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
+        //if ($spieler) {
+        if ($spieler->n > 0) {
+            //$anzahlSpieler = sprintf("%d Spieler", count($spieler));
+            $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
+        }
+
+        return sprintf('<div class="tl_content_left">%s, %s %s (%s, %s)</div>',
+            $arrRow['name'],
+            $liga->name,
+            $liga->getRelated('saison')->name,
+            $spielort->name,
+            $anzahlSpieler
+        );
+    }
+
+    /**
+     * Alle zur Vefügung stehenden Ligen
+     * ('options_callback' in tl_mannschaft)
+     *
+     * @param \DataContainer $dc
+     */
+    public
+    static function getLigaForSelect(\DataContainer $dc)
+    {
+        $result = [];
+        $ligen = \LigaModel::findAll();
+
+        if (null === $ligen) {
+            return ['0' => 'keine Ligen gefunden. Btte erst anlegen!'];
+        }
+        foreach ($ligen as $liga) {
+            $result[$liga->id] = sprintf("%s %s",
+                $liga->name,
+                $liga->getRelated('saison')->name
+            );
+        }
+        return $result;
+    }
+
+    /* Helper für tl_begegnung */
+
+    /**
+     * Label für eine Begegnung (Spiel zweier Mansnchaften gegeneinander)
+     * ('label_callback' in tl_begegnung)
+     *
      * @param array $row
      * @param string $label
      * @return string
@@ -21,12 +87,19 @@ class DCAHelper
         $liga = \LigaModel::findById($row['pid']);
         $home = \MannschaftModel::findById($row['home']);
         $away = \MannschaftModel::findById($row['away']);
+        $spiele = \Database::getInstance()
+            ->prepare("SELECT COUNT(*) as n FROM tl_spiel WHERE pid=?")
+            ->execute($row['id']);
+        $spieleHinterlegt = '';
+        if ($spiele->n > 0) {
+            $spieleHinterlegt = sprintf('(%d Spiele)', $spiele->n);
+        }
         return sprintf("%s %s <span class='tl_blue'>%s vs %s</span> %s",
             $liga->name,
             $liga->getRelated('saison')->name,
             $home->name,
             $away->name,
-            'TODO Anzahl hinterlegter Spiele'
+            $spieleHinterlegt
         );
     }
 
@@ -41,23 +114,6 @@ class DCAHelper
     {
         $result = [];
         $ligen = \LigaModel::findBy(['aktiv=?'], ['1']);
-        if (null === $ligen) {
-            return ['0' => 'keine Ligen gefunden!'];
-        }
-        foreach ($ligen as $liga) {
-            $result[$liga->id] = sprintf("%s %s", $liga->name, $liga->getRelated('saison')->name);
-        }
-        return $result;
-    }
-
-    /**
-     * @param \DataContainer $dc
-     * @return array
-     */
-    public static function getAlleLigenForSelect(\DataContainer $dc)
-    {
-        $result = [];
-        $ligen = \LigaModel::findAll();
         if (null === $ligen) {
             return ['0' => 'keine Ligen gefunden!'];
         }
@@ -94,59 +150,12 @@ class DCAHelper
         return $result;
     }
 
-    /**
-     * Einträge für ein Mannschaftsauswahl Dropdown. Da hier alle Ligen aller Saisons in
-     * Betracht kommen und eine Mannschaft gleichen Namens daher mehrfach auftaucht,
-     * hängen wir Liga und Saison an, um die Auswahl eindeutig zu machen.
-     * ('options_callback' in tl_content)
-     *
-     * @param \DataContainer $dc
-     * @return array
-     */
-    public static function getAlleMannschaftenForSelect(\DataContainer $dc)
-    {
-        $result = [];
-        if (!$dc->activeRecord->liga) {
-            $mannschaften = \MannschaftModel::findAll();
-        } else {
-            $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga);
-        }
-        if (null === $mannschaften) {
-            return ['0' => 'keine Mannschaften gefunden. Liga wählen und speichern!'];
-        }
-        foreach ($mannschaften as $mannschaft) {
-            $result[$mannschaft->id] = sprintf("%s (%s %s)",
-                $mannschaft->name,
-                $mannschaft->getRelated('liga')->name,
-                $mannschaft->getRelated('liga')->getRelated('saison')->name
-            );
-        }
-        return $result;
-    }
 
-    /**
-     * @param \DataContainer $dc
-     */
-    public static function getLigaForSelect(\DataContainer $dc)
-    {
-        $result = [];
-        $ligen = \LigaModel::findAll();
-
-        if (null === $ligen) {
-            return ['0' => 'keine Ligen gefunden. Btte erst anlegen!'];
-        }
-        foreach ($ligen as $liga) {
-            $result[$liga->id] = sprintf("%s %s",
-                $liga->name,
-                $liga->getRelated('saison')->name
-            );
-        }
-        return $result;
-    }
+    /* Helper für tl_spieler */
 
     /**
      * Einträge für ein Spielerauswahl Dropdown.
-     * ('options_callback' in tl_mannschaft)
+     * ('options_callback' in tl_spieler)
      *
      * @param \DataContainer $dc
      * @return array
@@ -192,7 +201,6 @@ class DCAHelper
      */
     public static function listMemberCallback($arrRow)
     {
-        //return json_encode($arrRow);
         $member = \MemberModel::findById($arrRow['member_id']);
 
         $teamcaptain_label = $arrRow['teamcaptain'] ? ('(Teamcaptain: ' . $member->email . ')') : '';
@@ -205,70 +213,17 @@ class DCAHelper
     }
 
     /**
-     * Return HTML Code to display one team
-     * ('child_record_callback' in tl_mannschaft_link)
-     *
-     * @param $arrRow
-     * @return string
-     */
-    public static function listMannschaftLinkCallback($arrRow)
-    {
-        $mannschaft = \MannschaftModel::findById($arrRow['mannschaft_id']);
-        if (!$mannschaft) {
-            return sprintf("Mannschaft mit der ID %d nicht gefunden", $arrRow['mannschaft_id']);
-        }
-        return sprintf("%s",
-            $mannschaft->name
-        );
-    }
-
-    /**
-     * Return HTML Code to display one team
-     * ('child_record_callback' in tl_mannschaft)
-     *
-     * @param $arrRow
-     * @return string
-     */
-    public static function mannschaftLabelCallback($arrRow)
-    {
-        $liga = \LigaModel::findById($arrRow['liga']);
-        if (!$liga) {
-            return sprintf("%s <span class='tl_red'>Liga '%d' existiert nicht mehr!</span>",
-                $arrRow['name'],
-                $arrRow['liga']);
-        }
-        $spielort = \SpielortModel::findById($arrRow['spielort']);
-        //$spieler = \SpielerModel::findByPid($arrRow['id']);
-        $spieler = \Database::getInstance()
-            ->prepare("SELECT COUNT(*) as n FROM tl_spieler WHERE pid=?")
-            ->execute($arrRow['id']);
-        $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
-        //if ($spieler) {
-        if ($spieler->n > 0) {
-            //$anzahlSpieler = sprintf("%d Spieler", count($spieler));
-            $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
-        }
-
-        return sprintf('<div class="tl_content_left">%s, %s %s (%s, %s)</div>',
-            $arrRow['name'],
-            $liga->name,
-            $liga->getRelated('saison')->name,
-            $spielort->name,
-            $anzahlSpieler
-        );
-    }
-
-    /**
-     * Das zum Spieler gehörige Mitglied (tl_member) in einem Modal-Window bearbeiten
+     * Button um das zum Spieler gehörige Mitglied (tl_member) in einem Modal-Window bearbeiten zu können
      * ('wizard' in tl_spieler)
      *
      * @param \DataContainer $dc
      * @return string
      */
-    public static function editMemberWizard(\DataContainer $dc)
+    public
+    static function editMemberWizard(\DataContainer $dc)
     {
         if ($dc->value < 1) {
-            return '<span>NO DC</span>';
+            return '';
         }
         return '<a href="contao/main.php?do=member&amp;&amp;act=edit&amp;id=' . $dc->value
             . '&amp;popup=1&amp;&amp;rt=' . REQUEST_TOKEN
@@ -280,13 +235,17 @@ class DCAHelper
             . '</a>';
     }
 
+
+    /* Helper für tl_spiel */
+
     /**
      * Spieler der Heimmannschaft
      * ('options_callback' in tl_spiel)
      *
      * @param DataContaner|DC_Table $dc
      */
-    public static function getHomeSpielerForSelect($dc)
+    public
+    static function getHomeSpielerForSelect($dc)
     {
         if (!$dc->activeRecord->pid) {
             return [];
@@ -340,10 +299,64 @@ class DCAHelper
     {
         $memberHome = \MemberModel::findById($row['home']);
         $memberAway = \MemberModel::findById($row['away']);
-        return sprintf("%s : %s (%s)",
-            $memberHome->lastname,
-            $memberAway->lastname,
+        return sprintf("%s : %s <span style='color:#ccc'>%s</span>",
+            sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
+            sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
             json_encode($row)
         );
     }
+
+
+    /* Helper für tl_content */
+
+    /**
+     * Liste aller definierte Ligen
+     * ('options_callback' in tl_content)
+     *
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public static function getAlleLigenForSelect(\DataContainer $dc)
+    {
+        $result = [];
+        $ligen = \LigaModel::findAll();
+        if (null === $ligen) {
+            return ['0' => 'keine Ligen gefunden!'];
+        }
+        foreach ($ligen as $liga) {
+            $result[$liga->id] = sprintf("%s %s", $liga->name, $liga->getRelated('saison')->name);
+        }
+        return $result;
+    }
+
+    /**
+     * Einträge für ein Mannschaftsauswahl Dropdown. Da hier alle Ligen aller Saisons in
+     * Betracht kommen und eine Mannschaft gleichen Namens daher mehrfach auftaucht,
+     * hängen wir Liga und Saison an, um die Auswahl eindeutig zu machen.
+     * ('options_callback' in tl_content)
+     *
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public static function getAlleMannschaftenForSelect(\DataContainer $dc)
+    {
+        $result = [];
+        if (!$dc->activeRecord->liga) {
+            $mannschaften = \MannschaftModel::findAll();
+        } else {
+            $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga);
+        }
+        if (null === $mannschaften) {
+            return ['0' => 'keine Mannschaften gefunden. Liga wählen und speichern!'];
+        }
+        foreach ($mannschaften as $mannschaft) {
+            $result[$mannschaft->id] = sprintf("%s (%s %s)",
+                $mannschaft->name,
+                $mannschaft->getRelated('liga')->name,
+                $mannschaft->getRelated('liga')->getRelated('saison')->name
+            );
+        }
+        return $result;
+    }
+
 }
