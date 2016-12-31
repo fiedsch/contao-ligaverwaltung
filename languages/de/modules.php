@@ -14,7 +14,7 @@ $GLOBALS['TL_LANG']['MOD']['liga.spielort'] = [
 ];
 
 $GLOBALS['TL_LANG']['MOD']['liga.saison'] = [
-    'Saison',
+    'Saisons',
     'Verwaltung von Saisons',
 ];
 
