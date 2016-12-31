@@ -14,8 +14,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['liga'] = [
     'foreignKey'       => '',
     'inputType'        => 'select',
     'eval'             => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    //'eval'             => ['mandatory' => true, 'multiple'=>true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    //'inputType'        => 'checkboxWizard',
+    //'eval'             => ['mandatory' => true, 'multiple'=>true, 'tl_class' => ''],
     'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAlleLigenForSelect'],
     'sql'              => "int(10) unsigned NOT NULL default '0'",
+    //'sql'              => "blob NULL",
 ];
 
 /* Spielerliste */
