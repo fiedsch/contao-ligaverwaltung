@@ -124,6 +124,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'sorting'    => false,
             'eval'       => ['mandatory' => true, 'chosen' => true, 'includeBlankOption' => true],
             'foreignKey' => 'tl_spielort.name',
+            'relation'   => ['type' => 'hasOne', 'load' => 'eager'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
     ],
