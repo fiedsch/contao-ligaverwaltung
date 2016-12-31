@@ -38,9 +38,12 @@ class ContentSpielplan extends \ContentElement
 
         $listitems = [];
         foreach ($begegnungen as $begegnung) {
-            $home = \MannschaftModel::findById($begegnung->home);
-            $away = \MannschaftModel::findById($begegnung->away);
-            $spielort = \SpielortModel::findById($home->spielort);
+            //$home = \MannschaftModel::findById($begegnung->home);
+            //$away = \MannschaftModel::findById($begegnung->away);
+            //$spielort = \SpielortModel::findById($home->spielort);
+            $home = $begegnung->getRelated('home');
+            $away = $begegnung->getRelated('away');
+            $spielort = $home->getRelated('spielort');
             $listitems[] = sprintf("%s : %s (%s)",
                 $home->name,
                 $away->name,
