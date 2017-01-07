@@ -30,7 +30,12 @@ class ContentSpielerliste extends \ContentElement
         if ($this->liga == '') {
             return;
         }
-        $mannschaftsspieler = \SpielerModel::findByPid($this->mannschaft);
+        //$mannschaftsspieler = \SpielerModel::findByPid($this->mannschaft);
+        $mannschaftsspieler = \SpielerModel::findAll([
+            'column' => ['pid=?'],
+            'value'  => [$this->mannschaft],
+            'order'  => 'teamcaptain DESC, co_teamcaptain DESC, lastname ASC, firstname ASC',
+        ]);
         if ($mannschaftsspieler === null) {
             return;
         }
@@ -38,11 +43,10 @@ class ContentSpielerliste extends \ContentElement
         $listitems = [];
         foreach ($mannschaftsspieler as $spieler) {
             $member = $spieler->getRelated('member_id');
-            $listitems[] = sprintf("%s, %s", $member->lastname, $member->firstname);
+            $listitems[] = ['member' => $member, 'spieler' => $spieler];
         }
 
         $this->Template->listitems = $listitems;
-
     }
 
 }

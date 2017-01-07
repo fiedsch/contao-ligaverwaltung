@@ -5,7 +5,16 @@
 <?php if ($this->listitems): ?>
   <ul>
     <?php foreach ($this->listitems as $listitem): ?>
-      <li><?= $listitem ?></li>
+      <li>
+      <?php
+      $teamcaptain_suffix = '';
+                  if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= ' (TC)';    }
+                  if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= ' (Co-TC)'; }
+      printf("%s, %s%s",
+                                $listitem['member']->lastname,
+                                $listitem['member']->firstname,
+                                $teamcaptain_suffix);
+      ?></li>
     <?php endforeach; ?>
   </ul>
 <?php endif; ?>
