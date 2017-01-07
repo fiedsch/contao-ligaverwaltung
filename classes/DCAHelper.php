@@ -171,21 +171,42 @@ class DCAHelper
             $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
         }
 
-        // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in einer
-        // Liga spielen, die "in der gleichen Saison ist" (unabhängig von der Liga)
-        // wie die aktuell betrachtete.
-        // Annahme: ein Spieler darf in einer Saison nur in einer Mannschaft spielen!
 
-        $saison = \MannschaftModel::findById($dc->activeRecord->pid)->getRelated('liga')->saison;
+        if (\Config::get('ligaverwaltung_exclusive_model') == 1) {
+            // Modell I (edart-bayern.de-Modell);
+            // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in einer
+            // Liga spielen, die "in der gleichen Saison ist" (unabhängig von der Liga)
+            // wie die aktuell betrachtete.
+            // Annahme: ein Spieler darf in einer Saison nur in einer Mannschaft spielen!
 
-        $query =
-            'SELECT * FROM tl_member WHERE id NOT IN ('
-            . ' SELECT s.member_id FROM tl_spieler s'
-            . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
-            . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
-            . ' WHERE l.saison=?'
-            . ')';
-        $member = \Database::getInstance()->prepare($query)->execute($saison);
+            $saison = \MannschaftModel::findById($dc->activeRecord->pid)->getRelated('liga')->saison;
+
+            $query =
+                'SELECT * FROM tl_member WHERE id NOT IN ('
+                . ' SELECT s.member_id FROM tl_spieler s'
+                . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
+                . ' WHERE l.saison=?'
+                . ')';
+            $member = \Database::getInstance()->prepare($query)->execute($saison);
+        } else {
+            // Modell II harlekin Modell (weniger restriktiv):
+            // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in der gleichen
+            // Liga spielen.
+            // Annahme: ein Spieler darf in einer Liga nur in einer Mannschaft spielen!
+
+            $liga = \MannschaftModel::findById($dc->activeRecord->pid)->getRelated('liga')->id;
+
+            $query =
+                'SELECT * FROM tl_member WHERE id NOT IN ('
+                . ' SELECT s.member_id FROM tl_spieler s'
+                . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                . ' WHERE m.liga=?'
+                . ')';
+            $member = \Database::getInstance()->prepare($query)->execute($liga);
+        }
+
+
         while ($member->next()) {
             $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
         }
@@ -204,11 +225,13 @@ class DCAHelper
         $member = \MemberModel::findById($arrRow['member_id']);
 
         $teamcaptain_label = $arrRow['teamcaptain'] ? ('(Teamcaptain: ' . $member->email . ')') : '';
+        $co_teamcaptain_label = $arrRow['co_teamcaptain'] ? ('(Co-Teamcaptain: ' . $member->email . ')') : '';
 
-        return sprintf('<div class="tl_content_left">%s, %s %s</div>',
+        return sprintf('<div class="tl_content_left">%s, %s %s%s</div>',
             $member->lastname,
             $member->firstname,
-            $teamcaptain_label
+            $teamcaptain_label,
+            $co_teamcaptain_label
         );
     }
 
