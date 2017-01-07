@@ -53,3 +53,8 @@ $GLOBALS['TL_LANG']['tl_spieler']['teamcaptain'] = [
     'Teamcaptain',
     'Dieser Spieler ist der Teamcaptain',
 ];
+
+$GLOBALS['TL_LANG']['tl_spieler']['co_teamcaptain']  = [
+    'Co-Teamcaptain',
+    'Dieser Spieler ist der Co-Teamcaptain/zweite Teamcaptain',
+];

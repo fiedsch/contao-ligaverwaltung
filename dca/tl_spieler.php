@@ -29,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
             // TODO: wird flag bei mode 4 nicht berücksichtigt?
             // Workarround: DESC als Teil des Feldnamens angeben
             'flag'                  => 1,
-            'fields'                => ['teamcaptain DESC'],
+            'fields'                => ['teamcaptain DESC,co_teamcaptain DESC'],
             'panelLayout'           => '', // sort, search,filter etc. nicht anzeigen
             'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listMemberCallback'],
             'child_record_class'    => 'no_padding',
@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
     ],
 
     'palettes' => [
-        'default' => '{member_legend},member_id;{details_legend},teamcaptain',
+        'default' => '{member_legend},member_id;{details_legend},teamcaptain,co_teamcaptain',
     ],
 
     'fields' => [
@@ -107,6 +107,11 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
         ],
         'teamcaptain' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_spieler']['teamcaptain'],
+            'inputType' => 'checkbox',
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'co_teamcaptain' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spieler']['co_teamcaptain'],
             'inputType' => 'checkbox',
             'sql'       => "char(1) NOT NULL default ''",
         ],
