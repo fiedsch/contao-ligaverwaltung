@@ -45,15 +45,15 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             ],
         ],
         'operations'        => [
-            'editheader'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['editheader'],
-                'href'  => 'act=edit',
-                'icon'  => 'header.gif',
-            ],
             'edit'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['edit'],
                 'href'  => 'table=tl_spiel',
                 'icon'  => 'edit.gif',
+            ],
+            'editheader'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['editheader'],
+                'href'  => 'act=edit',
+                'icon'  => 'header.gif',
             ],
             'copy'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['copy'],

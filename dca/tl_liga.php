@@ -9,12 +9,12 @@
 $GLOBALS['TL_DCA']  ['tl_liga'] = [
     'config' => [
         'dataContainer'    => 'Table',
-        //'ctable'           => ['tl_begegnung'],
+        'ptable'           => 'tl_verband',
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
                 'id'          => 'primary',
-                'name,saison' => 'unique',
+                'pid,name,saison' => 'unique',
             ],
         ],
     ],
@@ -44,24 +44,10 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             ],
         ],
         'operations'        => [
-            /*
-            'edit'       => [
-                'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
-                'href'  => 'table=tl_begegnung',
-                'icon'  => 'edit.gif',
-            ],
-            'editheader' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_liga']['editheader'],
-                'href'  => 'act=edit',
-                'icon'  => 'header.gif',
-                //'button_callback'     => array('tl_article', 'editHeader')
-            ],
-            */
             'edit' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.gif',
-                //'button_callback'     => array('tl_article', 'editHeader')
             ],
             'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['copy'],
@@ -109,6 +95,11 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
         ],
         'tstamp' => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'pid'         => [
+            'foreignKey' => 'tl_verband.name',
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
         'name'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_liga']['name'],

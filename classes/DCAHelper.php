@@ -39,8 +39,9 @@ class DCAHelper
             $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
         }
 
-        return sprintf('<div class="tl_content_left">%s, %s %s (%s, %s)</div>',
+        return sprintf('<div class="tl_content_left">%s, %s %s %s (%s, %s)</div>',
             $arrRow['name'],
+            $liga->getRelated('pid')->name,
             $liga->name,
             $liga->getRelated('saison')->name,
             $spielort->name,
@@ -64,7 +65,8 @@ class DCAHelper
             return ['0' => 'keine Ligen gefunden. Btte erst anlegen!'];
         }
         foreach ($ligen as $liga) {
-            $result[$liga->id] = sprintf("%s %s",
+            $result[$liga->id] = sprintf("%s %s %s",
+                $liga->getRelated('pid')->name,
                 $liga->name,
                 $liga->getRelated('saison')->name
             );
@@ -85,6 +87,7 @@ class DCAHelper
     public static function begegnungLabelCallback($row, $label)
     {
         $liga = \LigaModel::findById($row['pid']);
+        $verband = \VerbandModel::findById($liga->pid);
         $home = \MannschaftModel::findById($row['home']);
         $away = \MannschaftModel::findById($row['away']);
         $spiele = \Database::getInstance()
@@ -94,7 +97,8 @@ class DCAHelper
         if ($spiele->n > 0) {
             $spieleHinterlegt = sprintf('(%d Spiele)', $spiele->n);
         }
-        return sprintf("%s %s <span class='tl_blue'>%s vs %s</span> %s",
+        return sprintf("%s %s %s <span class='tl_blue'>%s vs %s</span> %s",
+            $verband->name,
             $liga->name,
             $liga->getRelated('saison')->name,
             $home->name,
@@ -118,7 +122,7 @@ class DCAHelper
             return ['0' => 'keine Ligen gefunden!'];
         }
         foreach ($ligen as $liga) {
-            $result[$liga->id] = sprintf("%s %s", $liga->name, $liga->getRelated('saison')->name);
+            $result[$liga->id] = sprintf("%s %s %s", $liga->getRelated('pid')->name, $liga->name, $liga->getRelated('saison')->name);
         }
         return $result;
     }

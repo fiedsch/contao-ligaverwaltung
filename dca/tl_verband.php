@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * @package Ligaverwaltung
+ * @link https://github.com/fiedsch/contao-ligaverwaltung/
+ * @license https://opensource.org/licenses/MIT
+ */
+
+$GLOBALS['TL_DCA']  ['tl_verband'] = [
+    'config' => [
+        'dataContainer'    => 'Table',
+        'ctable'           => ['tl_liga'],
+        'enableVersioning' => true,
+        'sql'              => [
+            'keys' => [
+                'id'   => 'primary',
+                'name' => 'unique',
+            ],
+        ],
+    ],
+
+    'list' => [
+        'sorting'           => [
+            'mode'        => 0,
+            'fields'      => ['name'],
+            'flag'        => 1,
+            'panelLayout' => 'sort,filter;search,limit',
+        ],
+        'label'             => [
+            'fields'         => ['name'],
+            'format'         => '%s',
+        ],
+        'global_operations' => [
+            'all' => [
+                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href'       => 'act=select',
+                'class'      => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
+        ],
+        'operations'        => [
+            'edit'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_verband']['edit'],
+                'href'  => 'table=tl_liga',
+                'icon'  => 'edit.gif',
+            ],
+            'editheader' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_mannschaft']['editheader'],
+                'href'  => 'act=edit',
+                'icon'  => 'header.gif',
+            ],
+            'copy'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_verband']['copy'],
+                'href'  => 'act=copy',
+                'icon'  => 'copy.gif',
+            ],
+            'delete' => [
+                'label'      => &$GLOBALS['TL_LANG']['tl_verband']['delete'],
+                'href'       => 'act=delete',
+                'icon'       => 'delete.gif',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+            ],
+            'show'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_verband']['show'],
+                'href'  => 'act=show',
+                'icon'  => 'show.gif',
+            ],
+        ],
+    ],
+
+    'palettes' => [
+        'default' => '{title_legend},name',
+    ],
+
+    'fields' => [
+        'id'     => [
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+        ],
+        'tstamp' => [
+            'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'name'   => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_verband']['name'],
+            'sorting'   => true,
+            'flag'      => 11, // sort ascending
+            'inputType' => 'text',
+            'exclude'   => true,
+            'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
+            'sql'       => "varchar(128) NOT NULL default ''",
+        ]
+    ]
+
+];

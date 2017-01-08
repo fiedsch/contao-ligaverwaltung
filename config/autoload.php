@@ -24,6 +24,7 @@ ClassLoader::addClasses([
     'SaisonModel'             => 'system/modules/ligaverwaltung/models/SaisonModel.php',
     'BegegnungModel'          => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
     'SpielModel'              => 'system/modules/ligaverwaltung/models/SpielModel.php',
+    'VerbandModel'            => 'system/modules/ligaverwaltung/models/VerbandModel.php',
     // Modules
 
 ]);

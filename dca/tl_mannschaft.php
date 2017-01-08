@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 2,
+            'mode'        => 2, // Records are sorted by a switchable field
             'fields'      => ['name', 'liga'],
             'flag'        => 1, // Sort by initial letter ascending
             'panelLayout' => 'sort,filter;search,limit',
@@ -46,7 +46,6 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
                 'href'  => 'table=tl_spieler',
                 'icon'  => 'edit.gif',
             ],
-
             'editheader' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_mannschaft']['editheader'],
                 'href'  => 'act=edit',
@@ -96,7 +95,6 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'filter'           => true,
             'sorting'          => true,
             'flag'             => 1,
-            'foreignKey'       => 'tl_liga.name',
             'relation'         => ['type' => 'belongsTo', 'load' => 'eager'],
             'foreignKey'       => 'tl_liga.name',
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],

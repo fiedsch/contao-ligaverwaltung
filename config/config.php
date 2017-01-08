@@ -12,10 +12,14 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'tables' => ['tl_saison'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/saison.gif'
         ],
-        'liga.liga'       => [
-            'tables' => ['tl_liga', 'tl_begegnung', 'tl_spiel'],
-            //'icon' => 'system/modules/ligaverwaltung/assets/img/liga.gif'
+        'liga.verband'     => [
+            'tables' => ['tl_verband','tl_liga'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/saison.gif'
         ],
+        //'liga.liga'       => [
+        //    'tables' => ['tl_liga', 'tl_begegnung', 'tl_spiel'],
+        //    //'icon' => 'system/modules/ligaverwaltung/assets/img/liga.gif'
+        //],
         'liga.mannschaft' => [
             'tables' => ['tl_mannschaft', 'tl_spieler'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/mannschaft.gif'

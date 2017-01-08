@@ -18,9 +18,14 @@ $GLOBALS['TL_LANG']['MOD']['liga.saison'] = [
     'Verwaltung von Saisons',
 ];
 
-$GLOBALS['TL_LANG']['MOD']['liga.liga'] = [
-    'Ligen',
-    'Verwaltung von Ligen',
+//$GLOBALS['TL_LANG']['MOD']['liga.liga'] = [
+//    'Ligen',
+//    'Verwaltung von Ligen',
+//];
+
+$GLOBALS['TL_LANG']['MOD']['liga.verband'] = [
+    'Verbände/Ligen',
+    'Verwaltung von Ligen in Verbänden',
 ];
 
 $GLOBALS['TL_LANG']['MOD']['liga.mannschaft'] = [
