@@ -10,7 +10,40 @@ namespace Fiedsch\Liga;
 
 class DCAHelper
 {
-    /* Helper für tl_mannschft */
+
+    /* Helper für tl_verband */
+
+    /**
+     * @param $row
+     * @param $label
+     * @return string
+     */
+    public static function verbandLabelCallback($row, $label)
+    {
+        $ligen = \Database::getInstance()
+            ->prepare("SELECT COUNT(*) n FROM tl_liga WHERE pid=?")
+            ->execute($row['id']);
+        return sprintf("%s (%d Ligen)", $label, $ligen->n);
+    }
+
+    /* Helper für tl_liga */
+
+    /**
+     * Label für eine Liga
+     * * ('label_callback' in tl_mannschaft)
+     *
+     * @param $row
+     * @param $label
+     * @return string
+     */
+    public static function ligaLabelCallback($row, $label)
+    {
+        $saison = \SaisonModel::findById($row['saison']);
+        $class = $row['aktiv'] ? 'tl_green' : 'tl_red';
+        return sprintf("<span class='%s'>%s %s</span>", $class, $label, $saison->name);
+    }
+
+    /* Helper für tl_mannschaft */
 
     /**
      * Label für eine Mannschaft
@@ -28,14 +61,11 @@ class DCAHelper
                 $arrRow['liga']);
         }
         $spielort = \SpielortModel::findById($arrRow['spielort']);
-        //$spieler = \SpielerModel::findByPid($arrRow['id']);
         $spieler = \Database::getInstance()
             ->prepare("SELECT COUNT(*) as n FROM tl_spieler WHERE pid=?")
             ->execute($arrRow['id']);
         $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
-        //if ($spieler) {
         if ($spieler->n > 0) {
-            //$anzahlSpieler = sprintf("%d Spieler", count($spieler));
             $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
         }
 

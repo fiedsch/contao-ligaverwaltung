@@ -21,14 +21,14 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 0,
+            'mode'        => 2,
             'fields'      => ['name'],
-            'flag'        => 1,
             'panelLayout' => 'sort,filter;search,limit',
         ],
         'label'             => [
             'fields'         => ['name'],
             'format'         => '%s',
+            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'verbandLabelCallback'],
         ],
         'global_operations' => [
             'all' => [
@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
             ],
         ],
         'operations'        => [
-            'edit'   => [
+            'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_verband']['edit'],
                 'href'  => 'table=tl_liga',
                 'icon'  => 'edit.gif',
@@ -49,18 +49,18 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
                 'href'  => 'act=edit',
                 'icon'  => 'header.gif',
             ],
-            'copy'   => [
+            'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_verband']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
-            'delete' => [
+            'delete'     => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_verband']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'   => [
+            'show'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_verband']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
@@ -82,12 +82,12 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
         'name'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_verband']['name'],
             'sorting'   => true,
-            'flag'      => 11, // sort ascending
+            'flag'        => 1, // Sort by initial letter ascending
             'inputType' => 'text',
             'exclude'   => true,
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
-        ]
-    ]
+        ],
+    ],
 
 ];

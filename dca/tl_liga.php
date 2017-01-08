@@ -29,11 +29,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
         'label'             => [
             'fields'         => ['name'],
             'format'         => '%s',
-            'label_callback' => function($row, $label) {
-                $saison = \SaisonModel::findById($row['saison']);
-                $class = $row['aktiv'] ? 'tl_green' : 'tl_red';
-                return sprintf("<span class='%s'>%s %s</span>", $class, $label, $saison->name);
-            },
+            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'ligaLabelCallback'],
         ],
         'global_operations' => [
             'all' => [

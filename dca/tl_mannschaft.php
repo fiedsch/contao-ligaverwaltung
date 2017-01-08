@@ -24,7 +24,6 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
         'sorting'           => [
             'mode'        => 2, // Records are sorted by a switchable field
             'fields'      => ['name', 'liga'],
-            'flag'        => 1, // Sort by initial letter ascending
             'panelLayout' => 'sort,filter;search,limit',
         ],
         'label'             => [
@@ -94,7 +93,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'inputType'        => 'select',
             'filter'           => true,
             'sorting'          => true,
-            'flag'             => 1,
+            'flag'        => 1, // Sort by initial letter ascending
             'relation'         => ['type' => 'belongsTo', 'load' => 'eager'],
             'foreignKey'       => 'tl_liga.name',
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -109,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'search'    => true,
             'filter'    => false,
             'sorting'   => true,
-            'flag'      => 11, // sort ascending
+            'flag'        => 1, // Sort by initial letter ascending
             'eval'      => ['mandatory' => true, 'maxlength' => 255],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
