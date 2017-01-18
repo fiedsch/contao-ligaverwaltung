@@ -7,6 +7,7 @@
  */
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['title_legend'] = 'Titel';
+$GLOBALS['TL_LANG']['tl_mannschaft']['details_legend'] = 'Details';
 
 $GLOBALS['TL_LANG']['tl_mannschaft']['new'] = [
     'Neue Mannschaft erstellen',
@@ -56,4 +57,9 @@ $GLOBALS['TL_LANG']['tl_mannschaft']['name'] = [
 $GLOBALS['TL_LANG']['tl_mannschaft']['spielort'] = [
     'Spielort',
     '(Heim-)Spielort der Mannschaft',
+];
+
+$GLOBALS['TL_LANG']['tl_mannschaft']['teampage'] = [
+    'Mannschaftsseite',
+    'Eine optionale Seite mit Details zur Mannschaft',
 ];

@@ -26,15 +26,29 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
 
     'list' => [
         'sorting'           => [
+            // note: these settings will be used if we are not called as a child record
+            // see if () {} at the end of this file
+            /*
             'mode'        => 2,
             'flag'        => 11, // sort ascending
             'fields'      => ['pid','home','away'],
             'panelLayout' => 'sort,filter;search,limit',
+            */
+            /* */
+            'mode'                  => 4, // Displays the child records of a parent record
+            'flag'                  => 11, // sort ascending
+            'fields'                => ['pid', 'home', 'away'],
+            'panelLayout'           => 'sort,filter;search,limit',
+            'headerFields'          => ['name', 'saison'],
+            'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listBegegnungCallback'],
+            'child_record_class'    => 'no_padding',
+            'disableGrouping'       => true,
+            /**/
         ],
         'label'             => [
-            'fields'         => ['home','away'],
+            'fields'         => ['home', 'away'],
             'format'         => '%s : %s',
-            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'begegnungLabelCallback'],
+            'label_callback' => ['\Fiedsch\Liga\DCAHelper', 'labelBegegnungCallback'],
         ],
         'global_operations' => [
             'all' => [
@@ -45,28 +59,28 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             ],
         ],
         'operations'        => [
-            'edit'   => [
+            'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['edit'],
                 'href'  => 'table=tl_spiel',
                 'icon'  => 'edit.gif',
             ],
-            'editheader'   => [
+            'editheader' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['editheader'],
                 'href'  => 'act=edit',
                 'icon'  => 'header.gif',
             ],
-            'copy'   => [
+            'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
-            'delete' => [
+            'delete'     => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_begegnung']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'   => [
+            'show'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
@@ -125,3 +139,13 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
         ],
     ],
 ];
+
+/* Bei Aufruf "nicht als child record */
+if (\Input::get('do') == 'liga.begegnung') {
+    $GLOBALS['TL_DCA']  ['tl_begegnung']['list']['sorting'] = [
+        'mode'        => 2,
+        'flag'        => 11, // sort ascending
+        'fields'      => ['pid', 'home', 'away'],
+        'panelLayout' => 'sort,filter;search,limit',
+    ];
+}

@@ -6,9 +6,20 @@
  * @license https://opensource.org/licenses/MIT
  */
 
+$GLOBALS['TL_LANG']['tl_content']['auswahl_legend'] = 'Auswahl';
 $GLOBALS['TL_LANG']['tl_content']['liga_legend'] = 'Liga';
 
 $GLOBALS['TL_LANG']['tl_content']['mannschaft_legend'] = 'Mannschaft';
+
+$GLOBALS['TL_LANG']['tl_content']['verband'] = [
+    'Verband',
+    'Verband dessen Ligen, Mannschaften etc. dargestellt werden sollen.',
+];
+
+$GLOBALS['TL_LANG']['tl_content']['saison'] = [
+    'Saisons',
+    'Saisons die für die Auswahl berücksichtigt werden sollen.',
+];
 
 $GLOBALS['TL_LANG']['tl_content']['liga'] = [
     'Liga',

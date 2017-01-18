@@ -63,3 +63,8 @@ $GLOBALS['TL_LANG']['tl_liga']['toggle'] = [
     'aktivieren/deaktivieren',
     "Den Status 'aktiv' ändern",
 ];
+
+$GLOBALS['TL_LANG']['tl_liga']['spielstaerke'] = [
+    'Spielstärke',
+    'Die Spielstärke wird verwendet, um ggf. Ligen zu sortieren. (1=höchste Spielstärke).'
+];

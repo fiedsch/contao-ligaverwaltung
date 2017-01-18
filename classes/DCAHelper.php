@@ -29,6 +29,23 @@ class DCAHelper
     /* Helper für tl_liga */
 
     /**
+     *
+     * * ('child_record_callback' in tl_liga)
+     *
+     * @param $arrRow
+     * @return string
+     */
+    public static function ligaListCallback($arrRow)
+    {
+        $begegnungen = \Database::getInstance()
+            ->prepare("SELECT COUNT(*) n FROM tl_begegnung WHERE pid=?")
+            ->execute($arrRow['id']);
+        return self::ligaLabelCallback($arrRow, $arrRow['name'])
+            . sprintf(" (%d Begegnungen)", $begegnungen->n)//. ' <span class="tl_gray">'. json_encode($arrRow).'</span>'
+            ;
+    }
+
+    /**
      * Label für eine Liga
      * * ('label_callback' in tl_mannschaft)
      *
@@ -39,7 +56,7 @@ class DCAHelper
     public static function ligaLabelCallback($row, $label)
     {
         $saison = \SaisonModel::findById($row['saison']);
-        $class = $row['aktiv'] ? 'tl_green' : 'tl_red';
+        $class = $row['aktiv'] ? 'tl_green' : 'tl_gray';
         return sprintf("<span class='%s'>%s %s</span>", $class, $label, $saison->name);
     }
 
@@ -107,6 +124,21 @@ class DCAHelper
     /* Helper für tl_begegnung */
 
     /**
+     *
+     * * ('child_record_callback' in tl_begegnung)
+     *
+     * @param $arrRow
+     * @return string
+     */
+    public static function listBegegnungCallback($arrRow)
+    {
+        $home = \MannschaftModel::findById($arrRow['home']);
+        $away = \MannschaftModel::findById($arrRow['away']);
+        return sprintf("%s vs %s", $home->name, $away->name)//.' <span class="tl_gray">'.json_encode($arrRow).'</span>'
+            ;
+    }
+
+    /**
      * Label für eine Begegnung (Spiel zweier Mansnchaften gegeneinander)
      * ('label_callback' in tl_begegnung)
      *
@@ -114,7 +146,7 @@ class DCAHelper
      * @param string $label
      * @return string
      */
-    public static function begegnungLabelCallback($row, $label)
+    public static function labelBegegnungCallback($row, $label)
     {
         $liga = \LigaModel::findById($row['pid']);
         $verband = \VerbandModel::findById($liga->pid);
@@ -365,6 +397,27 @@ class DCAHelper
 
 
     /* Helper für tl_content */
+
+
+    /**
+     * Liste aller definierten Verbände
+     * ('options_callback' in tl_content)
+     *
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public static function getAlleVerbaendeForSelect(\DataContainer $dc)
+    {
+        $result = [];
+        $verbaende = \VerbandModel::findAll();
+        if (null === $verbaende) {
+            return ['0' => 'keine Verbände gefunden!'];
+        }
+        foreach ($verbaende as $verband) {
+            $result[$verband->id] = $verband->name;
+        }
+        return $result;
+    }
 
     /**
      * Liste aller definierte Ligen

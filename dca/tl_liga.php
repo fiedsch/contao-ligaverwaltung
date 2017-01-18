@@ -10,10 +10,11 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
     'config' => [
         'dataContainer'    => 'Table',
         'ptable'           => 'tl_verband',
+        'ctable'           => ['tl_begegnung'],
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
-                'id'          => 'primary',
+                'id'              => 'primary',
                 'pid,name,saison' => 'unique',
             ],
         ],
@@ -25,6 +26,16 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'flag'        => 11,
             'fields'      => ['name'],
             'panelLayout' => 'sort,filter;search,limit',
+    /* */
+            'mode'                  => 4, // Displays the child records of a parent record
+            'flag'                  => 11, // sort ascending
+            'fields'                => ['name'],
+            'panelLayout'           => 'sort,filter;search,limit',
+            'headerFields'          => ['name'],
+            'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'ligaListCallback'],
+            'child_record_class'    => 'no_padding',
+            'disableGrouping'       => true,
+    /**/
         ],
         'label'             => [
             'fields'         => ['name'],
@@ -40,28 +51,35 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             ],
         ],
         'operations'        => [
-            'edit' => [
+            'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['edit'],
-                'href'  => 'act=edit',
+                //'href'  => 'act=edit',
+                'href'  => 'table=tl_begegnung',
                 'icon'  => 'edit.gif',
             ],
-            'copy'       => [
+            'editheader' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_liga']['editheader'],
+                'href'  => 'act=edit',
+                'icon'  => 'header.gif',
+            ],
+
+            'copy'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
-            'delete'     => [
+            'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_liga']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'       => [
+            'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_liga']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
-            'toggle'     => [
+            'toggle' => [
                 'label'                => &$GLOBALS['TL_LANG']['tl_liga']['toggle'],
                 'attributes'           => 'onclick="Backend.getScrollOffset();"',
                 'haste_ajax_operation' => [
@@ -82,7 +100,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name,saison,aktiv',
+        'default' => '{title_legend},name,saison,aktiv,spielstaerke',
     ],
 
     'fields' => [
@@ -92,7 +110,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
         'tstamp' => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'pid'         => [
+        'pid'    => [
             'foreignKey' => 'tl_verband.name',
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
@@ -124,5 +142,13 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
+        'spielstaerke' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_liga']['spielstaerke'],
+            'inputType' => 'text',
+            'filter'    => true,
+            'exclude'   => true,
+            'eval'      => ['tl_class' => 'w50','rgxp'=>'digit','tl_class'=>'w50 clr'],
+            'sql'       => "int(10) NOT NULL default '0'",
+        ]
     ],
 ];

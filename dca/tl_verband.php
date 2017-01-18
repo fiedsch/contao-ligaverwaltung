@@ -21,9 +21,10 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 2,
-            'fields'      => ['name'],
-            'panelLayout' => 'sort,filter;search,limit',
+            'mode'         => 2,
+            'fields'       => ['name'],
+            'panelLayout'  => 'sort,filter;search,limit',
+            'headerFields' => ['home'],
         ],
         'label'             => [
             'fields'         => ['name'],
@@ -82,7 +83,7 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
         'name'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_verband']['name'],
             'sorting'   => true,
-            'flag'        => 1, // Sort by initial letter ascending
+            'flag'      => 1, // Sort by initial letter ascending
             'inputType' => 'text',
             'exclude'   => true,
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],

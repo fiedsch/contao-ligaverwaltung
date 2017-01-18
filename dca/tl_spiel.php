@@ -28,8 +28,8 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'flag'                  => 11, // sort ascending
             'fields'                => ['id'],
             'panelLayout'           => 'sort,filter;search,limit',
-            'headerFields'          => ['home', 'away','pid'],
-                'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listSpielCallback'],
+            'headerFields'          => ['home', 'away', 'pid'],
+            'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listSpielCallback'],
             'child_record_class'    => 'no_padding',
             'disableGrouping'       => true,
         ],
