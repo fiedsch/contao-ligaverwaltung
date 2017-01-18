@@ -6,6 +6,11 @@
  * @license https://opensource.org/licenses/MIT
  */
 
+$GLOBALS['TL_LANG']['CTE']['ligenliste'] = [
+    'Ligenliste',
+    'Liste aller Ligen (eines Verbands) aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
+];
+
 $GLOBALS['TL_LANG']['CTE']['mannschaftsliste'] = [
     'Mannschaftsliste',
     'Mannschaftsliste aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
