@@ -33,6 +33,6 @@ $GLOBALS['TL_LANG']['MOD']['liga.mannschaft'] = [
     'Verwaltung von Mannschaften',
 ];
 $GLOBALS['TL_LANG']['MOD']['liga.begegnung'] = [
-    'Spiele',
-    'Verwaltung von Spielen zwischen Mannschaften (Begegnungen)',
+    'Begegnungen',
+    'Verwaltung von Begegnungen zwischen Mannschaften',
 ];
