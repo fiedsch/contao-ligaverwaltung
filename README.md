@@ -14,3 +14,18 @@ die Spieler, die beim Hinzufügen zu einer Mannschaft im Auswahlmenü angezeigt 
   Mannschaft spielen
 * "in einer Mannschft (je Liga)" — weniger restriktiv: ein Spieler darf in einer Liga nur in einer 
   Mannschaft spielen. In einer anderen Liga darf er aber zeitgleich auch spielen!
+  
+## Datenstrukturen
+  
+```
+tl_spielort (Marker; wird einer Mannschaft zugeordnet)
+  
+tl_saison (Marker; wird einer Liga zugeordnet)
+  
+tl_verband
+    tl_liga
+        tl_begegnung (Mannschaft gegen Mannschaft)
+        tl_spiel (Spieler gegen Spieler)
+          
+tl_mannschaft (hat als Attribut (u.A.) eine Liga)
+```
