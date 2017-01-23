@@ -1,0 +1,27 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<div>
+
+<h2>Bistro Harlekin</h2>
+
+<div>
+  <?= $this->spielort->street; ?><br>
+  <?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>
+</div>
+
+<div>
+  <?php if ($this->spielort->phone): ?>
+  Telefon: <?= $this->spielort->phone; ?>
+  <?php endif; ?>
+  <?php if ($this->spielort->website): ?>
+    <br><a target="_blank" href="<?= $this->spielort->website; ?>"><?= $this->spielort->website; ?></a>
+  <?php endif; ?>
+</div>
+
+</div>
+<?php $this->endblock(); ?>
+
+
+

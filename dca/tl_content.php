@@ -61,3 +61,16 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['mannschaft'] = [
 /* Spielplan */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['spielplan'] = '{type_legend},type,headline;{liga_legend},liga;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 // $GLOBALS['TL_DCA']['tl_content']['fields']['liga'] = [ ... ]; // bereits bei der Mannschaftsliste definiert!
+
+/* Spielortinfos */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['spielortinfo'] = '{type_legend},type,headline,spielort;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['fields']['spielort'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_content']['spielort'],
+    'exclude'          => true,
+    'foreignKey'       => '',
+    'inputType'        => 'select',
+    'eval'             => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    'foreignKey'       => 'tl_spielort.name',
+    'sql'              => "int(10) unsigned NOT NULL default '0'",
+    //'sql'              => "blob NULL",
+];

@@ -63,17 +63,17 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name',
+        'default' => '{title_legend},name;{details_legend},phone,website,street,postal,city',
     ],
 
     'fields' => [
-        'id'     => [
+        'id'      => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp' => [
+        'tstamp'  => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'name'   => [
+        'name'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['name'],
             'sorting'   => true,
             'search'    => true,
@@ -83,6 +83,49 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
-
+        'street'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['street'],
+            'sorting'   => false,
+            'search'    => false,
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 128, 'tl_class' => 'long'],
+            'sql'       => "varchar(128) NOT NULL default ''",
+        ],
+        'postal'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['postal'],
+            'sorting'   => false,
+            'search'    => false,
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
+            'sql'       => "varchar(32) NOT NULL default ''",
+        ],
+        'city'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['city'],
+            'sorting'   => false,
+            'search'    => false,
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'phone'   => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['phone'],
+            'sorting'   => false,
+            'search'    => false,
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 64, 'tl_class' => 'w50', 'rgxp' => 'phone'],
+            'sql'       => "varchar(64) NOT NULL default ''",
+        ],
+        'website' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['website'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'url', 'maxlength' => 255, 'feEditable' => true, 'feViewable' => true, 'feGroup' => 'contact', 'tl_class' => 'w50'],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
     ],
 ];

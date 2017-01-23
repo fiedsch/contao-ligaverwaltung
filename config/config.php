@@ -39,3 +39,4 @@ $GLOBALS['TL_CTE']['texts']['ligenliste'] = 'ContentLigenliste';
 $GLOBALS['TL_CTE']['texts']['mannschaftsliste'] = 'ContentMannschaftsliste';
 $GLOBALS['TL_CTE']['texts']['spielerliste'] = 'ContentSpielerliste';
 $GLOBALS['TL_CTE']['texts']['spielplan'] = 'ContentSpielplan';
+$GLOBALS['TL_CTE']['texts']['spielortinfo'] = 'ContentSpielortinfo';

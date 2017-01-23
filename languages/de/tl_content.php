@@ -30,3 +30,8 @@ $GLOBALS['TL_LANG']['tl_content']['mannschaft'] = [
     'Mannschaft',
     'Mannschaft deren Daten dargestellt werden sollen',
 ];
+
+$GLOBALS['TL_LANG']['tl_content']['spielort'] = [
+    'Spielort',
+    'Spielort dessen Daten dargestellt werden sollen',
+];

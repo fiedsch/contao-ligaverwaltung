@@ -25,3 +25,8 @@ $GLOBALS['TL_LANG']['CTE']['spielplan'] = [
     'Spielplan',
     'Spielplan aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
 ];
+
+$GLOBALS['TL_LANG']['CTE']['spielortinfo'] = [
+    'Spielort-Info',
+    'Informationen zu einem Spielort',
+];

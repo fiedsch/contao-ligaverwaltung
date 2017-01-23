@@ -37,3 +37,27 @@ $GLOBALS['TL_LANG']['tl_spielort']['name'] = [
     'Name des Spielorts',
 ];
 
+$GLOBALS['TL_LANG']['tl_spielort']['phone'] = [
+    'Telefon',
+    'Telefonnummer des Spielorts',
+];
+
+$GLOBALS['TL_LANG']['tl_spielort']['website'] = [
+    'Website',
+    'Website des Spielorts',
+];
+
+$GLOBALS['TL_LANG']['tl_spielort']['postal'] = [
+    'Postleitzahl',
+    'Postleitzahl',
+];
+
+$GLOBALS['TL_LANG']['tl_spielort']['street'] = [
+    'Straße',
+    'Straße',
+];
+
+$GLOBALS['TL_LANG']['tl_spielort']['city'] = [
+    'Ort',
+    'Ort',
+];
