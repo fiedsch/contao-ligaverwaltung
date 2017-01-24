@@ -28,14 +28,16 @@ ClassLoader::addClasses([
     'BegegnungModel'              => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
     'SpielModel'                  => 'system/modules/ligaverwaltung/models/SpielModel.php',
     'VerbandModel'                => 'system/modules/ligaverwaltung/models/VerbandModel.php',
-    // Modules
 
+    // Modules
+    'ModuleMannschaftsseite'      => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseite.php',
 ]);
 
 TemplateLoader::addFiles([
-    'ce_ligenliste'       => 'system/modules/ligaverwaltung/templates',
-    'ce_mannschaftsliste' => 'system/modules/ligaverwaltung/templates',
-    'ce_spielerliste'     => 'system/modules/ligaverwaltung/templates',
-    'ce_spielplan'        => 'system/modules/ligaverwaltung/templates',
-    'ce_spielortinfo'     => 'system/modules/ligaverwaltung/templates',
+    'ce_ligenliste'        => 'system/modules/ligaverwaltung/templates',
+    'ce_mannschaftsliste'  => 'system/modules/ligaverwaltung/templates',
+    'ce_spielerliste'      => 'system/modules/ligaverwaltung/templates',
+    'ce_spielplan'         => 'system/modules/ligaverwaltung/templates',
+    'ce_spielortinfo'      => 'system/modules/ligaverwaltung/templates',
+    'mod_mannschaftsseite' => 'system/modules/ligaverwaltung/templates',
 ]);

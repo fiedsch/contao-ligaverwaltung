@@ -30,3 +30,8 @@ $GLOBALS['TL_LANG']['CTE']['spielortinfo'] = [
     'Spielort-Info',
     'Informationen zu einem Spielort',
 ];
+
+$GLOBALS['TL_LANG']['FMD']['mannschaftsseite'] = [
+    'Mannschaftsseite',
+    'Mannschaftsseite bündelt mehrere Contentelemente (Spielortinfo, Spielerliste, ...)',
+];

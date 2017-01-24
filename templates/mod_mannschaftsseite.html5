@@ -1,0 +1,16 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?= $this->spielerliste; ?>
+
+<!--
+  <pre>
+    <?php $this->showTemplateVars(); ?>
+  </pre>
+-->
+
+<?php $this->endblock(); ?>
+
+
+
