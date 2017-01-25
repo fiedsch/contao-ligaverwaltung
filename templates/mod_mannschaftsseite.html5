@@ -2,13 +2,15 @@
 
 <?php $this->block('content'); ?>
 
-<?= $this->spielerliste; ?>
+<div class="row">
+<div class="spielortinfo col-md-6 col-xs-12">
+    <?= $this->spielortinfo; ?>
+</div>
 
-<!--
-  <pre>
-    <?php $this->showTemplateVars(); ?>
-  </pre>
--->
+<div class="spielerliste  col-md-6 col-xs-12">
+    <?= $this->spielerliste; ?>
+</div>
+</div>
 
 <?php $this->endblock(); ?>
 

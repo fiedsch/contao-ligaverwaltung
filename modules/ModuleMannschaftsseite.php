@@ -43,24 +43,31 @@ class ModuleMannschaftsseite extends \Module
 
     public function compile()
     {
-        $this->mannschaft = 16; // Mockup
-
         $mannschaftModel = \MannschaftModel::findById($this->mannschaft);
 
+        // Spielortinfo
+        $contentModel = new \ContentModel();
+        $contentModel->type = 'spielortinfo';
+        $contentModel->spielort = $mannschaftModel->spielort;
+        $contentModel->headline = [
+            'value' => 'Spielort ' . $mannschaftModel->name,
+            'unit'  => 'h2',
+        ];
+        $contentElement = new \ContentSpielortinfo($contentModel);
+        $this->Template->spielortinfo = $contentElement->generate();
+
+        // Spielerliste
         $contentModel = new \ContentModel();
         $contentModel->type = 'spielerliste';
         $contentModel->mannschaft = $this->mannschaft;
         $contentModel->showdetails = '1';
         $contentModel->headline = [
-            'value' => 'Modul Mannschaftsseite: ' . $mannschaftModel->name,
+            'value' => 'Spielerliste ' . $mannschaftModel->name,
             'unit'  => 'h2',
         ];
-
         $contentElement = new \ContentSpielerliste($contentModel);
-
         $this->Template->spielerliste = $contentElement->generate();
 
-        // TODO: dito für Spielort, etc.
     }
 
 }
