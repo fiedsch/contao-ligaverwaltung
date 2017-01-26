@@ -8,6 +8,8 @@
 
 $GLOBALS['TL_LANG']['tl_begegnung']['title_legend'] = 'Titel';
 
+$GLOBALS['TL_LANG']['tl_begegnung']['details_legend'] = 'Details';
+
 $GLOBALS['TL_LANG']['tl_begegnung']['new'] = [
     'Neue Begegnung erstellen',
     'Eine neue Begegnung (Spiel zwischen zwei Mannschaften) erstellen',
@@ -34,7 +36,7 @@ $GLOBALS['TL_LANG']['tl_begegnung']['show'] = [
 
 $GLOBALS['TL_LANG']['tl_begegnung']['pid'] = [
     'Liga',
-    'Liga in der die Begegnung gespielt wird',
+    'Liga, in der die Begegnung gespielt wird.',
 ];
 
 $GLOBALS['TL_LANG']['tl_begegnung']['home'] = [
@@ -45,4 +47,14 @@ $GLOBALS['TL_LANG']['tl_begegnung']['home'] = [
 $GLOBALS['TL_LANG']['tl_begegnung']['away'] = [
     'Auswärtsmannschaft',
     'Auswärtsmannschaft',
+];
+
+$GLOBALS['TL_LANG']['tl_begegnung']['spiel_tag'] = [
+    'Spieltag',
+    'Spieltag (Zahl): x-ter Spieltag.'
+];
+
+$GLOBALS['TL_LANG']['tl_begegnung']['spiel_am'] = [
+    'Begegnung findet statt am',
+    'Datum, an dem die Begegnung statt findet.'
 ];

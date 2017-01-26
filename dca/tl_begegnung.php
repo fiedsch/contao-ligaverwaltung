@@ -89,17 +89,17 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},pid,home,away',
+        'default' => '{title_legend},pid,home,away;{details_legend},spiel_tag,spiel_am',
     ],
 
     'fields' => [
-        'id'     => [
+        'id'        => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp' => [
+        'tstamp'    => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'pid'    => [
+        'pid'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['pid'],
             'filter'           => true,
             'exclude'          => true,
@@ -111,7 +111,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAktiveLigenForSelect'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
-        'home'   => [
+        'home'      => [
             'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['home'],
             'filter'           => true,
             'exclude'          => true,
@@ -124,7 +124,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
-        'away'   => [
+        'away'      => [
             'label'            => &$GLOBALS['TL_LANG']['tl_begegnung']['away'],
             'filter'           => true,
             'exclude'          => true,
@@ -136,6 +136,21 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'relation'         => ['type' => 'hasOne', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
+        ],
+        'spiel_tag' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_begegnung']['spiel_tag'],
+            'exclude'   => true,
+            'sorting'   => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'minval'=>1, 'mandatory'=> true, 'tl_class' => 'w50'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'spiel_am'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_begegnung']['spiel_am'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(11) NOT NULL default ''",
         ],
     ],
 ];

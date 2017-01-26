@@ -20,6 +20,34 @@ class ContentSpielplan extends \ContentElement
      */
     protected $strTemplate = 'ce_spielplan';
 
+    public function generate()
+    {
+        if (TL_MODE === 'BE') {
+            return $this->generateBackendView();
+        }
+        return parent::generate();
+    }
+
+    protected function generateBackendView()
+    {
+        $liga = \LigaModel::findById($this->liga);
+        $filter = '';
+        if ($this->filtermannschafft) {
+            $mannschafft = \MannschaftModel::findById($this->filtermannschafft);
+            $filter = ' (nur Begegnungen der ' . $mannschafft->name . ')';
+        }
+        $saison = \SaisonModel::findById($liga->saison);
+        $ligalabel = sprintf("%s %s %s",
+            $liga->getRelated('pid')->name,
+            $liga->name,
+            $saison->name
+        );
+        return sprintf("Spielplan der %s %s",
+            $ligalabel,
+            $filter
+        );
+    }
+
     /**
      * Generate the content element
      *
@@ -30,7 +58,18 @@ class ContentSpielplan extends \ContentElement
         if ($this->liga == '') {
             return;
         }
-        $begegnungen = \BegegnungModel::findByPid($this->liga);
+        $columns = ['pid=?'];
+        $conditions = [$this->liga];
+        if ($this->filtermannschaft) {
+            $columns[] = 'home=? OR away=?';
+            $conditions[] = $this->filtermannschaft;
+            $conditions[] = $this->filtermannschaft;
+        }
+        $begegnungen = \BegegnungModel::findBy(
+            $columns,
+            $conditions,
+            ['order' => 'spiel_tag ASC']
+        );
 
         if ($begegnungen === null) {
             return;
@@ -38,17 +77,27 @@ class ContentSpielplan extends \ContentElement
 
         $listitems = [];
         foreach ($begegnungen as $begegnung) {
-            //$home = \MannschaftModel::findById($begegnung->home);
-            //$away = \MannschaftModel::findById($begegnung->away);
-            //$spielort = \SpielortModel::findById($home->spielort);
+
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
             $spielort = $home->getRelated('spielort');
-            $listitems[] = sprintf("%s : %s (%s)",
+            $listitem = sprintf("%s : %s (%d. Spieltag %s; %s)",
                 $home->name,
                 $away->name,
+                $begegnung->spiel_tag,
+                \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am),
                 $spielort->name
             );
+            if ($this->filtermannschaft) {
+                $listitem = sprintf("<span class='%s'>%s</span>",
+                    $home->id === $this->filtermannschaft
+                            ? 'home'
+                            : $away->id === $this->filtermannschaft ? 'away' : '',
+                    $listitem
+                );
+            }
+
+            $listitems[] = $listitem;
         }
 
         $this->Template->listitems = $listitems;
