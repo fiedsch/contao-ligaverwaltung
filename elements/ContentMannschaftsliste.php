@@ -37,7 +37,16 @@ class ContentMannschaftsliste extends \ContentElement
 
         $listitems = [];
         foreach ($mannschaften as $mannschaft) {
-            $listitems[] = sprintf("%s", $mannschaft->name);
+            if ($mannschaft->teampage) {
+                $teampage = \PageModel::findById($mannschaft->teampage);
+                $listitem = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl($teampage->row()),
+                    $mannschaft->name
+                );
+            } else {
+                $listitem = $mannschaft->name;
+            }
+            $listitems[] = $listitem;
         }
 
         $this->Template->listitems = $listitems;
