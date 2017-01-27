@@ -11,6 +11,9 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
         'dataContainer'    => 'Table',
         'ctable'           => ['tl_liga'],
         'enableVersioning' => true,
+        'onload_callback' => [
+            ['tl_verband','checkPermission'], // FIXME experimental only
+        ],
         'sql'              => [
             'keys' => [
                 'id'   => 'primary',
@@ -92,3 +95,30 @@ $GLOBALS['TL_DCA']  ['tl_verband'] = [
     ],
 
 ];
+
+
+class tl_verband extends Backend
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->import('BackendUser', 'User'); // TODO: Contao 3.5-way
+    }
+
+    public function checkPermission()
+  {
+      // do nothing => User has all rights
+      // return;
+
+      // User has access top IDs 1 and 2 only
+      //$GLOBALS['TL_DCA']['tl_verband']['list']['sorting']['root'] = [1,2];
+      //return;
+
+      // Table is closed, new records can not be created
+      //$GLOBALS['TL_DCA']['tl_verband']['config']['closed'] = true;
+      //return;
+
+      // ...
+
+  }
+}
