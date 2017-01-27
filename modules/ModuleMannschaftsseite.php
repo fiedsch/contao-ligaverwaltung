@@ -68,6 +68,17 @@ class ModuleMannschaftsseite extends \Module
         $contentElement = new \ContentSpielerliste($contentModel);
         $this->Template->spielerliste = $contentElement->generate();
 
+        // Spielplan
+        $contentModel = new \ContentModel();
+        $contentModel->type = 'spielplan';
+        $contentModel->liga = $mannschaftModel->liga;
+        $contentModel->filtermannschaft = $mannschaftModel->id;
+        $contentModel->headline = [
+            'value' => 'Spielplan ' . $mannschaftModel->name,
+            'unit'  => 'h2',
+        ];
+        $contentElement = new \ContentSpielplan($contentModel);
+        $this->Template->spielplan = $contentElement->generate();
     }
 
 }

@@ -3,13 +3,23 @@
 <?php $this->block('content'); ?>
 
 <div class="row">
-<div class="spielortinfo col-md-6 col-xs-12">
-    <?= $this->spielortinfo; ?>
+
+  <div class="spielortinfo col-md-6 col-xs-12">
+      <?= $this->spielortinfo; ?>
+  </div>
+
+  <div class="spielerliste col-md-6 col-xs-12">
+      <?= $this->spielerliste; ?>
+  </div>
+
 </div>
 
-<div class="spielerliste  col-md-6 col-xs-12">
-    <?= $this->spielerliste; ?>
-</div>
+<div class="row">
+
+  <div class="spielplan col-md-6 col-xs-12">
+      <?= $this->spielplan; ?>
+  </div>
+
 </div>
 
 <?php $this->endblock(); ?>
