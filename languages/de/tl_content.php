@@ -8,6 +8,7 @@
 
 $GLOBALS['TL_LANG']['tl_content']['auswahl_legend'] = 'Auswahl';
 $GLOBALS['TL_LANG']['tl_content']['liga_legend'] = 'Liga';
+$GLOBALS['TL_LANG']['tl_content']['filter_legend'] = 'Filter';
 
 $GLOBALS['TL_LANG']['tl_content']['mannschaft_legend'] = 'Mannschaft';
 
@@ -31,7 +32,17 @@ $GLOBALS['TL_LANG']['tl_content']['mannschaft'] = [
     'Mannschaft deren Daten dargestellt werden sollen',
 ];
 
+$GLOBALS['TL_LANG']['tl_content']['filtermannschaft'] = [
+    'Mannschaft',
+    'Falls angegeben: Mannschaft deren Daten dargestellt werden sollen',
+];
+
 $GLOBALS['TL_LANG']['tl_content']['spielort'] = [
     'Spielort',
     'Spielort dessen Daten dargestellt werden sollen',
+];
+
+$GLOBALS['TL_LANG']['tl_content']['showdetails'] = [
+    'Details anzeigen',
+    'Details wie E-Mail-Adresse oder Telefonnummer anzeigen'
 ];

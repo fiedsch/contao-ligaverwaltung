@@ -27,10 +27,6 @@ class ContentSpielerliste extends \ContentElement
      */
     public function compile()
     {
-        if ($this->liga == '') {
-            return;
-        }
-        //$mannschaftsspieler = \SpielerModel::findByPid($this->mannschaft);
         $mannschaftsspieler = \SpielerModel::findAll([
             'column' => ['pid=?'],
             'value'  => [$this->mannschaft],
@@ -47,6 +43,7 @@ class ContentSpielerliste extends \ContentElement
         }
 
         $this->Template->listitems = $listitems;
+        $this->Template->showdetails = $this->showdetails;
     }
 
 }
