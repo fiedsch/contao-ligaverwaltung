@@ -15,7 +15,7 @@ $GLOBALS['TL_DCA']  ['tl_module']['fields']['mannschaft'] = [
             'sorting'          => true,
             'flag'             => 11, // sort ascending
             'foreignKey'       => 'tl_mannschaft.name',
-            // TODO options_callback => Mannschaftsname inkl Liga/Saison
+            'options_callback' => ['\\Fiedsch\\Liga\\DCAHelper', 'getMannschaftenAndLigaForSelect'],
             'inputType'        => 'select',
             'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
             'sql'              => "int(10) NOT NULL default '0'",

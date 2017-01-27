@@ -121,6 +121,8 @@ class DCAHelper
         return $result;
     }
 
+
+
     /* Helper für tl_begegnung */
 
     /**
@@ -159,10 +161,11 @@ class DCAHelper
         if ($spiele->n > 0) {
             $spieleHinterlegt = sprintf('(%d Spiele)', $spiele->n);
         }
-        return sprintf("%s %s %s <span class='tl_blue'>%s vs %s</span> %s",
+        return sprintf("%s %s %s %d. Spieltag: <span class='tl_blue'>%s vs %s</span> <span class='tl_gray'>%s</span>",
             $verband->name,
             $liga->name,
             $liga->getRelated('saison')->name,
+            $row['spiel_tag'],
             $home->name,
             $away->name,
             $spieleHinterlegt
@@ -464,6 +467,34 @@ class DCAHelper
                 $mannschaft->name,
                 $mannschaft->getRelated('liga')->name,
                 $mannschaft->getRelated('liga')->getRelated('saison')->name
+            );
+        }
+        return $result;
+    }
+
+    /* Helper für tl_module */
+
+    /**
+     * Einträge für ein Mannschaftsauswahl Dropdown -- Mannschaftsname inkl. Liga zur Unterscheidung
+     * ('options_callback' in tl_module)
+     *
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public static function getMannschaftenAndLigaForSelect(\DataContainer $dc)
+    {
+        $result = [];
+        $mannschaften = \MannschaftModel::findAll(['order'=>'name ASC']);
+
+        if (null === $mannschaften) {
+            return ['0' => 'keine Mannschaften gefunden. Bitte erst anlegen un dieser Liga zuordnen!'];
+        }
+        foreach ($mannschaften as $mannschaft) {
+            $result[$mannschaft->id] = sprintf("%s (%s %s %s)",
+                $mannschaft->name,
+                $mannschaft->getRelated("liga")->getRelated('pid')->name,   // Verband
+                $mannschaft->getRelated("liga")->name,                      // Liga
+                $mannschaft->getRelated("liga")->getRelated('saison')->name // Saison
             );
         }
         return $result;
