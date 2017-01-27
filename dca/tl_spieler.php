@@ -26,7 +26,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
         'sorting'           => [
             'mode'                  => 4, // Displays the child records of a parent record
             'headerFields'          => ['name', 'spielort', 'liga'],
-            // TODO: wird flag bei mode 4 nicht berücksichtigt?
+            // TODO(?): wird flag bei mode 4 nicht berücksichtigt?
             // Workarround: DESC als Teil des Feldnamens angeben
             'flag'                  => 1,
             'fields'                => ['teamcaptain DESC,co_teamcaptain DESC'],

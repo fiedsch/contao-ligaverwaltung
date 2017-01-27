@@ -7,13 +7,30 @@
     <?php foreach ($this->listitems as $listitem): ?>
       <li>
       <?php
+      $details = '';
+      if ($this->showdetails) {
+        if ($listitem['member']->mobile) {
+            $details .= sprintf(" <a href='tel:%s'>%s</a>",
+                $listitem['member']->mobile,
+                $listitem['member']->mobile
+                );
+        }
+        if ($listitem['member']->email) {
+            $details .= sprintf(" <a href='%s'>%s</a>",
+                \StringUtil::encodeEmail('mailto:'.$listitem['member']->email),
+                \StringUtil::encodeEmail($listitem['member']->email)
+            );
+        }
+      }
       $teamcaptain_suffix = '';
-                  if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= ' (TC)';    }
-                  if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= ' (Co-TC)'; }
+      if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= " (TC$details)";    }
+      if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= " (Co-TC$details)"; }
+
       printf("%s, %s%s",
                                 $listitem['member']->lastname,
                                 $listitem['member']->firstname,
-                                $teamcaptain_suffix);
+                                $teamcaptain_suffix
+                                );
       ?></li>
     <?php endforeach; ?>
   </ul>

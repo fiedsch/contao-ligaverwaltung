@@ -2,16 +2,14 @@
 
 <?php $this->block('content'); ?>
 
-<div>
+<h3><?= $this->spielort->name ?></h3>
 
-<h2>Bistro Harlekin</h2>
-
-<div>
+<div class="address">
   <?= $this->spielort->street; ?><br>
   <?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>
 </div>
 
-<div>
+<div class="contact">
   <?php if ($this->spielort->phone): ?>
   Telefon: <?= $this->spielort->phone; ?>
   <?php endif; ?>
@@ -20,7 +18,6 @@
   <?php endif; ?>
 </div>
 
-</div>
 <?php $this->endblock(); ?>
 
 
