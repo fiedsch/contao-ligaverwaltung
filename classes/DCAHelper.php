@@ -159,11 +159,11 @@ class DCAHelper
         $away = \MannschaftModel::findById($row['away']);
         $spiele = \SpielModel::findByPid($row['id']);
         $spieleHinterlegt = count($spiele) > 0 ? sprintf('(%d Spiele)', count($spiele)) : '';
-        $punkte_home = $punkte_away = 0;
+        $score_home = $score_away = 0;
         if ($spiele) {
             foreach ($spiele as $spiel) {
-                $punkte_home += $spiel->punkte_home > $spiel->punkte_away ? 1 : 0;
-                $punkte_away += $spiel->punkte_home < $spiel->punkte_away ? 1 : 0;
+                $punkte_home += $spiel->score_home > $spiel->score_away ? 1 : 0;
+                $punkte_away += $spiel->score_home < $spiel->score_away ? 1 : 0;
             }
         }
         $final_score = $punkte_home + $punkte_away > 0 ? sprintf('%d:%d', $punkte_home, $punkte_away) : '';
@@ -401,10 +401,11 @@ class DCAHelper
     {
         $memberHome = \MemberModel::findById($row['home']);
         $memberAway = \MemberModel::findById($row['away']);
-        return sprintf("%s : %s <span style='color:#ccc'>%s</span>",
+        return sprintf("%s : %s <span class='tl_gray'>%d:%d</span>",
             sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
             sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
-            json_encode($row)
+            $row['score_home'],
+            $row['score_away']
         );
     }
 
