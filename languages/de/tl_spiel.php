@@ -46,3 +46,13 @@ $GLOBALS['TL_LANG']['tl_spiel']['away'] = [
     'Spieler Auswärtsmannschaft',
     'Spieler Auswärtsmannschaft',
 ];
+
+$GLOBALS['TL_LANG']['tl_spiel']['punkte_home'] = [
+    'Punkte Spieler Heimmannschaft',
+    'Punkte Spieler Heimmannschaft'
+];
+
+$GLOBALS['TL_LANG']['tl_spiel']['punkte_away'] = [
+    'Punkte Spieler Auswärtsmannschaft',
+    'Punkte Spieler Auswärtsmannschaft'
+];

@@ -72,7 +72,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},pid,home,away',
+        'default' => '{title_legend},pid,home,away,punkte_home,punkte_away',
     ],
 
     'fields' => [
@@ -109,6 +109,20 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
             'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAwaySpielerForSelect'],
+            'sql'              => "int(10) NOT NULL default '0'",
+        ],
+        'punkte_home'   => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['punkte_home'],
+            'exclude'          => true,
+            'inputType'        => 'text',
+            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'rgxp'=> 'digit'],
+            'sql'              => "int(10) NOT NULL default '0'",
+        ],
+        'punkte_away'   => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['punkte_away'],
+            'exclude'          => true,
+            'inputType'        => 'text',
+            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'rgxp'=> 'digit'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
     ],
