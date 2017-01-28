@@ -30,11 +30,14 @@ class ContentSpielplan extends \ContentElement
 
     protected function generateBackendView()
     {
+        /** @var \BackendTemplate|object $objTemplate */
+        $objTemplate = new \BackendTemplate('be_wildcard');
+
         $liga = \LigaModel::findById($this->liga);
         $filter = '';
-        if ($this->filtermannschafft) {
-            $mannschafft = \MannschaftModel::findById($this->filtermannschafft);
-            $filter = ' (nur Begegnungen der ' . $mannschafft->name . ')';
+        if ($this->filtermannschaft) {
+            $mannschaft = \MannschaftModel::findById($this->filtermannschaft);
+            $filter = ' (nur Begegnungen von "' . $mannschaft->name . '"")';
         }
         $saison = \SaisonModel::findById($liga->saison);
         $ligalabel = sprintf("%s %s %s",
@@ -42,10 +45,14 @@ class ContentSpielplan extends \ContentElement
             $liga->name,
             $saison->name
         );
-        return sprintf("Spielplan der %s %s",
-            $ligalabel,
-            $filter
-        );
+        $suffix =sprintf("%s %s", $ligalabel, $filter);
+        $objTemplate->title = $this->headline;
+        $objTemplate->wildcard = "### ".$GLOBALS['TL_LANG']['CTE']['spielplan'][0]." $suffix ###";
+        // $objTemplate->id = $this->id;
+        // $objTemplate->link = 'the text that will be linked with href';
+        // $objTemplate->href = 'contao/main.php?do=article&amp;table=tl_content&amp;act=edit&amp;id=' . $this->id;
+
+        return $objTemplate->parse();
     }
 
     /**
