@@ -79,7 +79,7 @@ class DCAHelper
         }
         $spielort = \SpielortModel::findById($arrRow['spielort']);
         $spieler = \Database::getInstance()
-            ->prepare("SELECT COUNT(*) as n FROM tl_spieler WHERE pid=?")
+            ->prepare("SELECT COUNT(*) AS n FROM tl_spieler WHERE pid=?")
             ->execute($arrRow['id']);
         $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
         if ($spieler->n > 0) {
@@ -136,8 +136,11 @@ class DCAHelper
     {
         $home = \MannschaftModel::findById($arrRow['home']);
         $away = \MannschaftModel::findById($arrRow['away']);
-        return sprintf("%s vs %s", $home->name, $away->name)//.' <span class="tl_gray">'.json_encode($arrRow).'</span>'
-            ;
+
+        return sprintf("%s vs %s",
+            $home->name,
+            $away->name
+        );
     }
 
     /**
@@ -154,20 +157,27 @@ class DCAHelper
         $verband = \VerbandModel::findById($liga->pid);
         $home = \MannschaftModel::findById($row['home']);
         $away = \MannschaftModel::findById($row['away']);
-        $spiele = \Database::getInstance()
-            ->prepare("SELECT COUNT(*) as n FROM tl_spiel WHERE pid=?")
-            ->execute($row['id']);
-        $spieleHinterlegt = '';
-        if ($spiele->n > 0) {
-            $spieleHinterlegt = sprintf('(%d Spiele)', $spiele->n);
+        $spiele = \SpielModel::findByPid($row['id']);
+        $spieleHinterlegt = count($spiele) > 0 ? sprintf('(%d Spiele)', count($spiele)) : '';
+        $punkte_home = $punkte_away = 0;
+        if ($spiele) {
+            foreach ($spiele as $spiel) {
+                $punkte_home += $spiel->punkte_home > $spiel->punkte_away ? 1 : 0;
+                $punkte_away += $spiel->punkte_home < $spiel->punkte_away ? 1 : 0;
+            }
         }
-        return sprintf("%s %s %s %d. Spieltag: <span class='tl_blue'>%s vs %s</span> <span class='tl_gray'>%s</span>",
+        $final_score = $punkte_home + $punkte_away > 0 ? sprintf('%d:%d', $punkte_home, $punkte_away) : '';
+        return sprintf("<span class='tl_gray'>%s %s %s %d. Spieltag:</span> 
+                        <span class='tl_blue'>%s vs %s</span> 
+                        <span class='tl_green'>%s</span> 
+                        <span class='tl_gray'>%s</span>",
             $verband->name,
             $liga->name,
             $liga->getRelated('saison')->name,
             $row['spiel_tag'],
             $home->name,
             $away->name,
+            $final_score,
             $spieleHinterlegt
         );
     }
@@ -437,7 +447,11 @@ class DCAHelper
             return ['0' => 'keine Ligen gefunden!'];
         }
         foreach ($ligen as $liga) {
-            $result[$liga->id] = sprintf("%s %s", $liga->name, $liga->getRelated('saison')->name);
+            $result[$liga->id] = sprintf("%s %s %s",
+                $liga->name,
+                $liga->getRelated('pid')->name,
+                $liga->getRelated('saison')->name
+            );
         }
         return $result;
     }
@@ -454,10 +468,10 @@ class DCAHelper
     public static function getAlleMannschaftenForSelect(\DataContainer $dc)
     {
         $result = [];
-        if (!$dc->activeRecord->liga) {
-            $mannschaften = \MannschaftModel::findAll();
+        if ($dc->activeRecord->liga) {
+            $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga, ['order' => 'name ASC']);
         } else {
-            $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga);
+            $mannschaften = \MannschaftModel::findAll(['order' => 'name ASC']);
         }
         if (null === $mannschaften) {
             return ['0' => 'keine Mannschaften gefunden. Liga wählen und speichern!'];
@@ -467,34 +481,6 @@ class DCAHelper
                 $mannschaft->name,
                 $mannschaft->getRelated('liga')->name,
                 $mannschaft->getRelated('liga')->getRelated('saison')->name
-            );
-        }
-        return $result;
-    }
-
-    /* Helper für tl_module */
-
-    /**
-     * Einträge für ein Mannschaftsauswahl Dropdown -- Mannschaftsname inkl. Liga zur Unterscheidung
-     * ('options_callback' in tl_module)
-     *
-     * @param \DataContainer $dc
-     * @return array
-     */
-    public static function getMannschaftenAndLigaForSelect(\DataContainer $dc)
-    {
-        $result = [];
-        $mannschaften = \MannschaftModel::findAll(['order'=>'name ASC']);
-
-        if (null === $mannschaften) {
-            return ['0' => 'keine Mannschaften gefunden. Bitte erst anlegen un dieser Liga zuordnen!'];
-        }
-        foreach ($mannschaften as $mannschaft) {
-            $result[$mannschaft->id] = sprintf("%s (%s %s %s)",
-                $mannschaft->name,
-                $mannschaft->getRelated("liga")->getRelated('pid')->name,   // Verband
-                $mannschaft->getRelated("liga")->name,                      // Liga
-                $mannschaft->getRelated("liga")->getRelated('saison')->name // Saison
             );
         }
         return $result;
