@@ -22,13 +22,13 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['verband'] = [
     //'sql'              => "blob NULL",
 ];
 $GLOBALS['TL_DCA']['tl_content']['fields']['saison'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_content']['saison'],
-    'exclude'          => true,
-    'foreignKey'       => 'tl_saison.name',
-    'inputType'        => 'checkboxWizard',
-    'eval'             => ['mandatory' => true, 'multiple'=>true, 'tl_class' => 'w50 clr'],
+    'label'      => &$GLOBALS['TL_LANG']['tl_content']['saison'],
+    'exclude'    => true,
+    'foreignKey' => 'tl_saison.name',
+    'inputType'  => 'checkboxWizard',
+    'eval'       => ['mandatory' => true, 'multiple' => true, 'tl_class' => 'w50 clr'],
     //'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAlleVerbaendeForSelect'],
-    'sql'              => "blob NULL",
+    'sql'        => "blob NULL",
 ];
 /* Mannschaftsliste */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['mannschaftsliste'] = '{type_legend},type,headline;{liga_legend},liga;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
@@ -58,11 +58,11 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['mannschaft'] = [
     'sql'              => "int(10) unsigned NOT NULL default '0'",
 ];
 $GLOBALS['TL_DCA']['tl_content']['fields']['showdetails'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_content']['showdetails'],
-    'exclude'          => true,
-    'inputType'        => 'checkbox',
-    'eval'             => ['tl_class' => 'w50'],
-    'sql'              => "char(1) NOT NULL default ''",
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['showdetails'],
+    'exclude'   => true,
+    'inputType' => 'checkbox',
+    'eval'      => ['tl_class' => 'w50'],
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 /* Spielplan */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['spielplan'] = '{type_legend},type,headline;{filter_legend},liga,filtermannschaft;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
@@ -80,12 +80,26 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['filtermannschaft'] = [
 /* Spielortinfo */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['spielortinfo'] = '{type_legend},type,headline,spielort;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 $GLOBALS['TL_DCA']['tl_content']['fields']['spielort'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_content']['spielort'],
-    'exclude'          => true,
-    'foreignKey'       => '',
-    'inputType'        => 'select',
-    'eval'             => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
-    'foreignKey'       => 'tl_spielort.name',
-    'sql'              => "int(10) unsigned NOT NULL default '0'",
+    'label'      => &$GLOBALS['TL_LANG']['tl_content']['spielort'],
+    'exclude'    => true,
+    'foreignKey' => '',
+    'inputType'  => 'select',
+    'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    'foreignKey' => 'tl_spielort.name',
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
     //'sql'              => "blob NULL",
+];
+
+/* Ranking/Tabelle */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] = '{type_legend},type,headline,liga,rankingtype;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'rankingtype';
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['rankingtype_2'] = 'mannschaft';
+// liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
+$GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_content']['rankingtype'],
+    'exclude'    => true,
+    'options'    => [1 => 'Mannschaften', 2 => 'Spieler'],
+    'inputType'  => 'select',
+    'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'submitOnChange'=>true],
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];

@@ -46,3 +46,8 @@ $GLOBALS['TL_LANG']['tl_content']['showdetails'] = [
     'Details anzeigen',
     'Details wie E-Mail-Adresse oder Telefonnummer anzeigen'
 ];
+
+$GLOBALS['TL_LANG']['tl_content']['rankingtype'] = [
+    'Art des Rankings',
+    'Mannschaftsranking: Ranking aller Mannschaften der Liga, Spielerranking: Ranking der Spieler einer Mannschaft.'
+];

@@ -1,0 +1,18 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?= $this->subject; ?>
+
+<?php if ($this->listitems): ?>
+  <ol>
+    <?php foreach ($this->listitems as $listitem): ?>
+      <li><?= json_encode($listitem) ?></li>
+    <?php endforeach; ?>
+  </ol>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>
+
+
+
