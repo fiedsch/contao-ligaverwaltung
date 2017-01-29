@@ -399,14 +399,43 @@ class DCAHelper
      */
     public static function listSpielCallback($row)
     {
-        $memberHome = \MemberModel::findById($row['home']);
-        $memberAway = \MemberModel::findById($row['away']);
-        return sprintf("%s : %s <span class='tl_gray'>%d:%d</span>",
-            sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
-            sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
-            $row['score_home'],
-            $row['score_away']
-        );
+        $class_home = $row['score_home'] > $row['score_away'] ? 'tl_green' : '';
+        $class_away = $row['score_home'] > $row['score_away'] ? '' : 'tl_green';
+
+        switch ($row['spieltype']) {
+            case 1:
+                $memberHome = \MemberModel::findById($row['home']);
+                $memberAway = \MemberModel::findById($row['away']);
+                return sprintf("<span class='%s'>%s</span> : <span class='%s'>%s</span> <span class='tl_gray'>%d:%d</span>",
+                    $class_home,
+                    sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
+                    $class_away,
+                    sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
+                    $row['score_home'],
+                    $row['score_away']
+                );
+                break;
+            case 2:
+                $memberHome = \MemberModel::findById($row['home']);
+                $memberHome2 = \MemberModel::findById($row['home2']);
+                $memberAway = \MemberModel::findById($row['away']);
+                $memberAway2 = \MemberModel::findById($row['away2']);
+                return sprintf("<span class='%s'>%s + %s</span> : <span class='%s'>%s + %s</span> <span class='tl_gray'>%d:%d</span>",
+                    $class_home,
+                    sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
+                    sprintf("%s, %s", $memberHome2->lastname, $memberHome2->firstname),
+                    $class_away,
+                    sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
+                    sprintf("%s, %s", $memberAway2->lastname, $memberAway2->firstname),
+                    $row['score_home'],
+                    $row['score_away']
+                );
+                break;
+            default:
+                return sprintf("invalid value for 'spieltype': <span class='tl_gray'>%s</span>",
+                    json_encode($row)
+                );
+        }
     }
 
 
