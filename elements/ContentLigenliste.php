@@ -49,7 +49,7 @@ class ContentLigenliste extends \ContentElement
                 $liga->name,
                 $liga->getRelated("saison")->name
             );
-            $mannschaften = \MannschaftModel::findByLiga($liga->id);
+            $mannschaften = \MannschaftModel::findByLiga($liga->id, ['order'=>'name ASC']);
             $temp = [];
             foreach ($mannschaften as $mannschaft) {
                 if ($mannschaft->teampage) {

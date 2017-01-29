@@ -30,7 +30,7 @@ class ContentMannschaftsliste extends \ContentElement
         if ($this->liga == '') {
             return;
         }
-        $mannschaften = \MannschaftModel::findByLiga($this->liga);
+        $mannschaften = \MannschaftModel::findByLiga($this->liga, ['order'=>'name ASC']);
         if ($mannschaften === null) {
             return;
         }
