@@ -72,20 +72,26 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},pid,home,away,score_home,score_away',
+        '__selector__' => ['spieltype'],
+        'default' => '{title_legend},pid,spieltype,score_home,score_away',
+    ],
+
+    'subpalettes' => [
+        'spieltype_1' => 'home,away',
+        'spieltype_2' => 'home,away,home2,away2',
     ],
 
     'fields' => [
-        'id'     => [
+        'id'         => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp' => [
+        'tstamp'     => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'pid'    => [
+        'pid'        => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'home'   => [
+        'home'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['home'],
             'filter'           => true,
             'exclude'          => true,
@@ -98,7 +104,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getHomeSpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
-        'away'   => [
+        'away'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['away'],
             'filter'           => true,
             'exclude'          => true,
@@ -111,18 +117,53 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAwaySpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
-        'score_home'   => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['score_home'],
+        'score_home' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spiel']['score_home'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'rgxp' => 'digit'],
+            'sql'       => "int(10) NOT NULL default '0'",
+        ],
+        'score_away' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spiel']['score_away'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'rgxp' => 'digit'],
+            'sql'       => "int(10) NOT NULL default '0'",
+        ],
+
+        'spieltype' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spiel']['spieltype'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'options'   => [1 => 'Einzel', 2 => 'Doppel'],
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'submitOnChange' => true],
+            'sql'       => "int(10) NOT NULL default '0'",
+        ],
+        'home2'     => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['home2'],
+            'filter'           => true,
             'exclude'          => true,
-            'inputType'        => 'text',
-            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'rgxp'=> 'digit'],
+            'sorting'          => true,
+            'flag'             => 11, // sort ascending
+            'inputType'        => 'select',
+            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
+            'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getHomeSpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
-        'score_away'   => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['score_away'],
+        'away2'     => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['away2'],
+            'filter'           => true,
             'exclude'          => true,
-            'inputType'        => 'text',
-            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'rgxp'=> 'digit'],
+            'sorting'          => true,
+            'flag'             => 11, // sort ascending
+            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
+            'inputType'        => 'select',
+            'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAwaySpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
     ],

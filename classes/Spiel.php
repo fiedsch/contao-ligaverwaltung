@@ -18,14 +18,9 @@ class Spiel
 {
 
     /**
-     * @var int
+     * @var array
      */
-    protected $score_home;
-
-    /**
-     * @var int
-     */
-    protected $score_away;
+    protected $data;
 
     /**
      * Spiel constructor.
@@ -34,8 +29,7 @@ class Spiel
      */
     public function __construct($data)
     {
-        $this->score_home = $data['score_home'];
-        $this->score_away = $data['score_away'];
+        $this->data = $data;
     }
 
     /**
@@ -43,7 +37,7 @@ class Spiel
      */
     public function getScoreHome()
     {
-        return $this->score_home;
+        return $this->data['score_home'];
     }
 
     /**
@@ -51,30 +45,36 @@ class Spiel
      */
     public function getScoreAway()
     {
-        return $this->score_away;
+        return $this->data['score_away'];
     }
 
     /**
+     * Achtung: $this->data['spieltype'] (Einzel oder Doppel) wird nicht berücksichtigt,
+     * d.h. beide Spielarten werden gleich "bepunktet".
+     *
      * @return int
      */
     public function getPunkteHome()
     {
-        if ($this->score_home == $this->score_away) {
+        if ($this->data['score_home'] == $this->data['score_away']) {
             return 0;
         }
-        return $this->score_home > $this->score_away ? 1 : 0;
+        return $this->data['score_home'] > $this->data['score_away'] ? 1 : 0;
     }
 
     /**
+     * Achtung: $this->data['spieltype'] (Einzel oder Doppel) wird nicht berücksichtigt,
+     * d.h. beide Spielarten werden gleich "bepunktet".
+     *
      * @return int
      */
     public
     function getPunkteAway()
     {
-        if ($this->score_home == $this->score_away) {
+        if ($this->data['score_home'] == $this->data['score_away']) {
             return 0;
         }
-        return $this->score_home > $this->score_away ? 0 : 1;
+        return $this->data['score_home'] > $this->data['score_away'] ? 0 : 1;
     }
 
 

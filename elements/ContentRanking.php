@@ -25,7 +25,7 @@ class ContentRanking extends \ContentElement
     public function generate()
     {
         if (TL_MODE == 'BE') {
-            /** @var \BackendTemplate|object $objTemplate */
+            /** @var \BackendTemplate $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
             if ($this->rankingtype == 1) {
                 $suffix = 'Mannschaften';
@@ -41,7 +41,7 @@ class ContentRanking extends \ContentElement
                 $subject = 'Mannschaft ' . $mannschaft->name;
             }
             $objTemplate->title = $this->headline;
-            $objTemplate->wildcard = "### ".$GLOBALS['TL_LANG']['CTE']['ranking'][0]." $suffix $subject ###";
+            $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['ranking'][0] . " $suffix $subject ###";
             // $objTemplate->id = $this->id;
             // $objTemplate->link = 'the text that will be linked with href';
             // $objTemplate->href = 'contao/main.php?do=article&amp;table=tl_content&amp;act=edit&amp;id=' . $this->id;
@@ -72,6 +72,9 @@ class ContentRanking extends \ContentElement
 
     /**
      * Ranking aller Mannschaften einer Liga
+     *
+     * Achtung: Spiele vom spieltype "Doppel" gehen wie "Einzel" mit in die Berechnung
+     * ein. (d.h. hier ohne Fallunterscheidung).
      */
     protected function compileMannschaftenranking()
     {
@@ -107,6 +110,8 @@ class ContentRanking extends \ContentElement
             $begegnungen[$key]->addSpiel(new Spiel($spiele->row()));
         }
 
+        $results = [];
+
         /** @var \Fiedsch\Liga\Begegnung $begegnung */
         foreach ($begegnungen as $key => $begegnung) {
             list($home, $away) = explode(':', $key);
@@ -139,10 +144,13 @@ class ContentRanking extends \ContentElement
 
     /**
      * Ranking aller Spieler einer Mannschaft (in einer liga)
+     *
+     * Achtung: Spiele vom spieltype "Doppel" gehen *nicht* mit in die Berechnung
+     * ein -- gezählt werden nur die "Einzel".
+     *
      * TODO: ohne ausgewählte Mannschaft => Ranking aller Spieler der Liga
      */
-    protected
-    function compileSpielerranking()
+    protected function compileSpielerranking()
     {
         $mannschaft = \MannschaftModel::findById($this->mannschaft);
 
@@ -159,8 +167,12 @@ class ContentRanking extends \ContentElement
                           FROM tl_spiel s
                           LEFT JOIN tl_begegnung b
                           ON (s.pid=b.id)
-                          WHERE b.home=? OR b.away=?")
-            ->execute($this->mannschaft, $this->mannschaft);
+                          WHERE 
+                            b.home=? OR b.away=? 
+                              AND s.spieltype=1" // nur "Einzel"
+            )->execute($this->mannschaft, $this->mannschaft);
+
+        $results = [];
 
         while ($spiele->next()) {
             $heimspiel = $spiele->team_home == $this->mannschaft;
