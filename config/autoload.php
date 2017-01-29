@@ -11,6 +11,8 @@ ClassLoader::addClasses([
     // Classes
     'Fiedsch\Liga\DCAHelper'      => 'system/modules/ligaverwaltung/classes/DCAHelper.php',
     'Fiedsch\Liga\TemplateHelper' => 'system/modules/ligaverwaltung/classes/TemplateHelper.php',
+    'Fiedsch\Liga\Spiel'          => 'system/modules/ligaverwaltung/classes/Spiel.php',
+    'Fiedsch\Liga\Begegnung'      => 'system/modules/ligaverwaltung/classes/Begegnung.php',
 
     // Elements
     'ContentLigenliste'           => 'system/modules/ligaverwaltung/elements/ContentLigenliste.php',
