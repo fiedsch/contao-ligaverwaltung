@@ -131,13 +131,23 @@ class ContentRanking extends \ContentElement
             $results[$away]['punkte_other'] += $begegnung->getPunkteHome();
         }
 
-        foreach ($results as $id => $data) {
-            $results[$id]['name'] = \MannschaftModel::findById($id)->name;
-        }
-
         usort($results, function($a, $b) {
             return \Fiedsch\Liga\Begegnung::compareMannschaftResults($a, $b);
         });
+
+        // Berechnung Rang (Tabellenplatz) und Label
+        $lastpunkte = PHP_INT_MAX;
+        $lastscore = PHP_INT_MAX;
+        $rang = 0;
+        foreach ($results as $id => $data) {
+            $results[$id]['name'] = \MannschaftModel::findById($id)->name;
+            $results[$id]['rang'] = $rang;
+            if ($results[$id]['punkte_self'] < $lastpunkte || $results[$id]['score_self'] < $lastscore) {
+                $results[$id]['rang'] = ++$rang;
+            }
+            $lastpunkte = $results[$id]['punkte_self'];
+            $lastscore = $results[$id]['score_self'];
+        }
 
         $this->Template->listitems = $results;
     }
@@ -186,15 +196,29 @@ class ContentRanking extends \ContentElement
             $results[$player]['punkte_self'] += $heimspiel ? $spiel->getPunkteHome() : $spiel->getPunkteAway();
             $results[$player]['punkte_other'] += $heimspiel ? $spiel->getPunkteAway() : $spiel->getPunkteHome();
         }
+
+        usort($results, function($a, $b) {
+            return Spiel::compareSpielerResults($a, $b);
+        });
+
+        // Berechnung Rang (Tabellenplatz) und Label
+        $lastpunkte = PHP_INT_MAX;
+        $lastscore = PHP_INT_MAX;
+        $rang = 0;
         foreach ($results as $id => $data) {
             $member = \MemberModel::findById($id);
             $results[$id]['name'] = sprintf("%s, %s", $member->lastname, $member->firstname);
             // reduce; ein Spieler kann während einer Begegnung mehrere Spiele machen
             $results[$id]['begegnungen'] = count(array_values(array_unique($results[$id]['begegnungen'])));
+
+            $results[$id]['rang'] = $rang;
+            if ($results[$id]['punkte_self'] < $lastpunkte || $results[$id]['score_self'] < $lastscore) {
+                $results[$id]['rang'] = ++$rang;
+            }
+            $lastpunkte = $results[$id]['punkte_self'];
+            $lastscore = $results[$id]['score_self'];
         }
-        usort($results, function($a, $b) {
-            return Spiel::compareSpielerResults($a, $b);
-        });
+
         $this->Template->listitems = $results;
     }
 }
