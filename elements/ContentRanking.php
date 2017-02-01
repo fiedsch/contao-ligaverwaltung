@@ -210,7 +210,6 @@ class ContentRanking extends \ContentElement
             $results[$id]['name'] = sprintf("%s, %s", $member->lastname, $member->firstname);
             // reduce; ein Spieler kann während einer Begegnung mehrere Spiele machen
             $results[$id]['begegnungen'] = count(array_values(array_unique($results[$id]['begegnungen'])));
-
             $results[$id]['rang'] = $rang;
             if ($results[$id]['punkte_self'] < $lastpunkte || $results[$id]['score_self'] < $lastscore) {
                 $results[$id]['rang'] = ++$rang;
