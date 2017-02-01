@@ -59,6 +59,7 @@ foreach ($mannschafts_ids as $idHome) {
             $begegnung->pid = $liga->id;
             $begegnung->home = $idHome;
             $begegnung->away = $idAway;
+            $begegnung->spiel_tag = 1; // nur ein Marker! Bei der Spielplanerstellung manuell ändern.
             $begegnung->save();
         }
     }
