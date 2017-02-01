@@ -1,0 +1,6 @@
+<div class="begegnungserfassung">
+
+<pre>
+<?php $this->showTemplateVars(); ?>
+</pre>
+</div>

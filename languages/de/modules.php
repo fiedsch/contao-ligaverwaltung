@@ -36,3 +36,8 @@ $GLOBALS['TL_LANG']['MOD']['liga.begegnung'] = [
     'Begegnungen',
     'Verwaltung von Begegnungen zwischen Mannschaften',
 ];
+
+$GLOBALS['TL_LANG']['MOD']['liga.begegnungserfassung'] = [
+    'Ergebniseingabe',
+    'Eingabe von mehreren Spielen einer Begegnung auf ein Mal.',
+];
