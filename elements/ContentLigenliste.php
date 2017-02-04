@@ -23,8 +23,6 @@ class ContentLigenliste extends \ContentElement
 
     /**
      * Generate the content element
-     *
-     * @return string
      */
     public function compile()
     {

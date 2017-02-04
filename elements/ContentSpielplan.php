@@ -20,6 +20,11 @@ class ContentSpielplan extends \ContentElement
      */
     protected $strTemplate = 'ce_spielplan';
 
+    /**
+     * Generate the content element
+     *
+     * @return string
+     */
     public function generate()
     {
         if (TL_MODE === 'BE') {
@@ -28,6 +33,9 @@ class ContentSpielplan extends \ContentElement
         return parent::generate();
     }
 
+    /**
+     * generate the view for the back end
+     */
     protected function generateBackendView()
     {
         /** @var \BackendTemplate|object $objTemplate */
@@ -57,8 +65,6 @@ class ContentSpielplan extends \ContentElement
 
     /**
      * Generate the content element
-     *
-     * @return string
      */
     public function compile()
     {
