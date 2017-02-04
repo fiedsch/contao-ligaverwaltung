@@ -22,11 +22,6 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'        => 1,
-            'flag'        => 11,
-            'fields'      => ['name'],
-            'panelLayout' => 'sort,filter;search,limit',
-    /* */
             'mode'                  => 4, // Displays the child records of a parent record
             'flag'                  => 11, // sort ascending
             'fields'                => ['name'],
@@ -35,7 +30,6 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'ligaListCallback'],
             'child_record_class'    => 'no_padding',
             'disableGrouping'       => true,
-    /**/
         ],
         'label'             => [
             'fields'         => ['name'],
