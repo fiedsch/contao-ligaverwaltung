@@ -85,6 +85,29 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
+            'erfassen'       => [
+                'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['erfassen'],
+                'href'  => 'do=liga.begegnungserfassung',
+                'icon'  => 'editheader.gif',
+                'button_callback' => function($arrRow,
+                                              $href,
+                                              $label,
+                                              $title,
+                                              $icon,
+                                              $attributes,
+                                              $strTable,
+                                              $arrRootIds,
+                                              $arrChildRecordIds,
+                                              $blnCircularReference,
+                                              $strPrevious,
+                                              $strNext) {
+                    return sprintf('<a href="contao/main.php?%s&id=%d">%s</a>',
+                        $href,
+                        $arrRow['id'],
+                        'erfassen' // TODO Icon ; Debug: json_encode(func_get_args())
+                    );
+                }
+            ],
         ],
     ],
 
