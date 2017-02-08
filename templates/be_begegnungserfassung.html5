@@ -13,6 +13,7 @@
 <form id="spielbericht" method="POST">
     <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
     <input type="hidden" name="FORM_SUBMIT" value="begegnungserfassung">
+    <input type="hidden" name="id" value="<?= $this->begegnung ?>">
     <resultstable :home="home" :away="away" :spielplan="spielplan"></resultstable>
     <div class="row">
         <div class="">

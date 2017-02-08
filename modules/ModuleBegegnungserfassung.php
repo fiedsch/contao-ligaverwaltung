@@ -38,9 +38,10 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         if ('begegnungserfassung' === \Input::post('FORM_SUBMIT')) {
             $this->Template->form = $_POST;
-            $this->Template->message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a>)',
+            $this->Template->message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a><pre>%s</pre>)',
                 'contao/main.php?do=liga.begegnung',
-                'Zu den Begegnungen'
+                'Zu den Begegnungen',
+                print_r($_POST, true)
             );
             return;
         } else {
@@ -48,6 +49,7 @@ class ModuleBegegnungserfassung extends \BackendModule
             // data.home bzw. data.away einbaut
             $begegnung = \BegegnungModel::findById(\Input::get('id'));
             if (null !== $begegnung) {
+                $this->Template->begegnung = $begegnung->id;
                 $team_name['home'] = $begegnung->getRelated('home')->name;
                 $team_name['away'] = $begegnung->getRelated('away')->name;
                 $this->Template->team_home_name = $team_name['home'];
