@@ -357,12 +357,11 @@ class DCAHelper
             return [];
         }
         $result = [];
-        $query = 'SELECT * FROM tl_member WHERE id IN (SELECT member_id FROM tl_spieler s WHERE pid=?)';
-        $member = \Database::getInstance()->prepare($query)->execute($begegnung->home);
-
-        if ($member) {
-            while ($member->next()) {
-                $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+        $spieler = \SpielerModel::findByPid($begegnung->home);
+        if ($spieler) {
+            foreach ($spieler as $sp) {
+                $member = $sp->getRelated('member_id');
+                $result[$sp->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
             }
         }
         return $result;
@@ -381,11 +380,12 @@ class DCAHelper
         }
         $begegnung = \BegegnungModel::findById($dc->activeRecord->pid);
         $result = [];
-        $query = 'SELECT * FROM tl_member WHERE id IN (SELECT member_id FROM tl_spieler s WHERE pid=?)';
-        $member = \Database::getInstance()->prepare($query)->execute($begegnung->away);
-        if ($member) {
-            while ($member->next()) {
-                $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+        $spieler = \SpielerModel::findByPid($begegnung->away);
+        if ($spieler) {
+            $member = $spieler->getRelated('member_id');
+            foreach ($spieler as $sp) {
+                $member = $sp->getRelated('member_id');
+                $result[$sp->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
             }
         }
         return $result;
@@ -404,8 +404,8 @@ class DCAHelper
 
         switch ($row['spieltype']) {
             case 1:
-                $memberHome = \MemberModel::findById($row['home']);
-                $memberAway = \MemberModel::findById($row['away']);
+                $memberHome = \SpielerModel::findById($row['home'])->getRelated('member_id');
+                $memberAway = \SpielerModel::findById($row['away'])->getRelated('member_id');
                 return sprintf("<span class='%s'>%s</span> : <span class='%s'>%s</span> <span class='tl_gray'>%d:%d</span>",
                     $class_home,
                     sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
@@ -416,10 +416,10 @@ class DCAHelper
                 );
                 break;
             case 2:
-                $memberHome = \MemberModel::findById($row['home']);
-                $memberHome2 = \MemberModel::findById($row['home2']);
-                $memberAway = \MemberModel::findById($row['away']);
-                $memberAway2 = \MemberModel::findById($row['away2']);
+                $memberHome  = \SpielerModel::findById($row['home'])->getRelated('member_id');
+                $memberHome2 = \SpielerModel::findById($row['home2'])->getRelated('member_id');
+                $memberAway  = \SpielerModel::findById($row['away'])->getRelated('member_id');
+                $memberAway2 = \SpielerModel::findById($row['away'])->getRelated('member_id');
                 return sprintf("<span class='%s'>%s + %s</span> : <span class='%s'>%s + %s</span> <span class='tl_gray'>%d:%d</span>",
                     $class_home,
                     sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
