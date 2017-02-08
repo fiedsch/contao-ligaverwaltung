@@ -28,6 +28,7 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'tables' => ['tl_begegnung', 'tl_spiel'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
         ],
+        // Nur zu Testzwecken. Später nur über einen Button in tl_begegnung ereichbar
         'liga.begegnungserfassung'  => [
             'callback' => 'ModuleBegegnungserfassung',
             //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'

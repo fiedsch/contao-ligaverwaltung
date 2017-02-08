@@ -7,12 +7,37 @@
 /**
  * Vue Components
  */
+Vue.component('teamsetup', {
+    props: ['name','available','players'],
+    template: '\
+      <div>\
+        <h2>{{ name }}</h2>\
+        <div v-for="(p, i) in available">\
+          <select v-model="players[i].id">\
+            <option v-for="a in available" :value="a.id">({{ a.id }}) {{ a.name }}</option>\
+          </select>\
+        </div>\
+    </div>'
+});
+
+Vue.component('aufstellung', {
+    props: ['home','away'],
+    template: '\
+    <div>\
+    <div style="width:45%;float:left">\
+      <teamsetup :name="home.name" :available="home.available" :players="home.players"></teamsetup>\
+    </div>\
+    <div style="width:45%;float:left">\
+      <teamsetup :name="away.name" :available="away.available" :players="away.players"></teamsetup>\
+    <div>\
+    </div>'
+});
 
 Vue.component('resultstable', {
     props: ['home','away','spielplan'],
     template: '\
-    <table class="table table-condensed">\
-      <tableheader :home="this.home" :away="this.away"></tableheader>\
+    <table>\
+      <tableheader :home="home" :away="away"></tableheader>\
       <tablebody :home="home" :away="away" :spielplan="spielplan"></tablebody>\
     </table>'
 });
@@ -61,17 +86,34 @@ Vue.component('spielerselect', {
     <select \
       v-model="selected"  v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname" tabindex="-1">\
-        <option v-for="(player,i) in this.team.players" :value="player.name">({{ i+1 }}) {{ player.name }}</option>\
+        <option v-for="player in team.players" :value="player.id">({{ player.id }}) TODO</option>\
     </select><select\
       v-if="isDouble"\
       v-model="selected2" v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname2" tabindex="-1">\
-        <option v-for="(player,i)  in this.team.players" :value="player.name">({{ i+1 }}) {{ player.name }}</option>\
+        <option v-for="player in team.players" :value="player.id">({{ player.id }}) TODO</option>\
     </select>\
     </span>',
     computed: {
         selectname: function () {
             return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_1':'');
+        },
+        selectname2: function () {
+            return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_2':'');
+        },
+        selected: {
+            get: function () {
+                return this.team.players[this.position[0]].id;
+            }
+        },
+        selected2: {
+            get: function () {
+                if (this.position[1]) {
+                    return this.team.players[this.position[1]].id;
+                } else {
+                    return -1;
+                }
+            }
         },
         isWinner: function() {
             var other = this.team.key == 'home' ? 'away' : 'home';
@@ -89,19 +131,6 @@ Vue.component('spielerselect', {
         },
         isDouble: function() {
             return this.position.length>1;
-        },
-        selectname2: function () {
-            return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_2':'');
-        },
-        selected: {
-            get: function () {
-                return this.team.players[this.position[0]].name;
-            }
-        },
-        selected2: {
-            get: function () {
-                return this.team.players[this.position[1]].name;
-            }
         }
     }
 });
@@ -201,17 +230,24 @@ Vue.component('spielstand', {
 var app = new Vue({
     el: '#app',
     data: data,
+    /*
     methods: {
         highlight: function (event) {
             event.target.setSelectionRange(0, event.target.value.length);
             event.preventDefault();
         }
     },
+    */
     created: function() {
-        // Initialisierung
         this.spielplan.forEach(function(entry) {
             entry.scores = { home: null, away: null };
             entry.result = null;
         });
+        this.home.available.forEach(function(entry) {
+            this.home.players.push({id:entry.id});
+        }, this);
+        this.away.available.forEach(function(entry) {
+            this.away.players.push({id:entry.id});
+        }, this);
     }
 });

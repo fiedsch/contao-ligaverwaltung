@@ -23,6 +23,14 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     public function compile()
     {
+        // Aufruf über den Menüpunkte
+        if (\Input::get('id')<=0) {
+            $this->Template->message = sprintf('Aufruf bitte über den Menüpunkt <a href="%s">%s</a>!',
+                'contao/main.php?do=liga.begegnung',
+                'Begegnungen'
+            );
+            return;
+        }
         $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/ligaverwaltung/assets/vue.2.1.6.js|static';
         // Wird am Ende des Templates included:
         //$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/ligaverwaltung/assets/main.js|static';
@@ -30,11 +38,20 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         if ('begegnungserfassung' === \Input::post('FORM_SUBMIT')) {
             $this->Template->form = $_POST;
+            $this->Template->message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a>)',
+                'contao/main.php?do=liga.begegnung',
+                'Zu den Begegnungen'
+            );
+            return;
         } else {
             // TODO Teams belegen und an das Template weiterreichen, das sie dann in
             // data.home bzw. data.away einbaut
             $begegnung = \BegegnungModel::findById(\Input::get('id'));
             if (null !== $begegnung) {
+                $team_name['home'] = $begegnung->getRelated('home')->name;
+                $team_name['away'] = $begegnung->getRelated('away')->name;
+                $this->Template->team_home_name = $team_name['home'];
+                $this->Template->team_away_name = $team_name['away'];
                 $team_home = [];
                 $team_away = [];
                 foreach (['home', 'away'] as $homeaway) {
@@ -44,23 +61,21 @@ class ModuleBegegnungserfassung extends \BackendModule
                     );
                     if ($spieler) {
                         foreach ($spieler as $s) {
-                            $player_name = sprintf("Team %s, %d, %s, %s",
-                                $homeaway,
-                                $begegnung->$homeaway,
+                            $player_name = sprintf("%s, %s",
                                 $s->getRelated('member_id')->lastname,
                                 $s->getRelated('member_id')->firstname
                             );
                             if ($homeaway === 'home') {
-                                $team_home[] = sprintf("{name: '%s'}", $player_name);
+                                $team_home[] = sprintf("{name: '%s', id: %d}", $player_name, $s->id);
                             } else {
-                                $team_away[] = sprintf("{name: '%s'}", $player_name);
+                                $team_away[] = sprintf("{name: '%s', id: %d}", $player_name, $s->id);
                             }
                         }
                     }
                 }
-                // auf 6 Spieler "auffüllen"
-                for ($i=count($team_home); $i<6; $i++) { $team_home[] = sprintf("{name: '%s'}", 'no player'.$i); }
-                for ($i=count($team_away); $i<6; $i++) { $team_away[] = sprintf("{name: '%s'}", 'no player'.$i); }
+                // auf 6 Spieler "auffüllen" (TODO "6" als Option)
+                for ($i=count($team_home); $i<6; $i++) { $team_home[] = sprintf("{name: '%s',id: -%d}", 'no player'.$i, $i); }
+                for ($i=count($team_away); $i<6; $i++) { $team_away[] = sprintf("{name: '%s',id: -%d}", 'no player'.$i, $i); }
                 $this->Template->team_home_players = join(',', $team_home);
                 $this->Template->team_away_players = join(',', $team_away);
             }
