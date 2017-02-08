@@ -14,7 +14,7 @@ Vue.component('teamsetup', {
         <h2>{{ name }}</h2>\
         <div v-for="(p, i) in available">\
           <select v-model="players[i].id">\
-            <option v-for="a in available" :value="a.id">({{ a.id }}) {{ a.name }}</option>\
+            <option v-for="a in available" :value="a.id">{{ a.name }}</option>\
           </select>\
         </div>\
     </div>'
@@ -86,14 +86,21 @@ Vue.component('spielerselect', {
     <select \
       v-model="selected"  v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname" tabindex="-1">\
-        <option v-for="player in team.players" :value="player.id">({{ player.id }}) TODO</option>\
+        <option v-for="player in team.players" :value="player.id">{{ spielername(player.id) }}</option>\
     </select><select\
       v-if="isDouble"\
       v-model="selected2" v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname2" tabindex="-1">\
-        <option v-for="player in team.players" :value="player.id">({{ player.id }}) TODO</option>\
+        <option v-for="player in team.players" :value="player.id">{{ spielername(player.id) }}</option>\
     </select>\
     </span>',
+    methods: {
+        spielername: function (id) {
+            return this.team.available.filter(function(v) {
+                return v.id === id;
+            })[0].name;
+        }
+    },
     computed: {
         selectname: function () {
             return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_1':'');
@@ -230,14 +237,6 @@ Vue.component('spielstand', {
 var app = new Vue({
     el: '#app',
     data: data,
-    /*
-    methods: {
-        highlight: function (event) {
-            event.target.setSelectionRange(0, event.target.value.length);
-            event.preventDefault();
-        }
-    },
-    */
     created: function() {
         this.spielplan.forEach(function(entry) {
             entry.scores = { home: null, away: null };
