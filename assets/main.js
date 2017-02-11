@@ -8,27 +8,32 @@
  * Vue Components
  */
 Vue.component('teamsetup', {
-    props: ['name','available','players'],
+    props: ['name','available','players','slots'],
     template: '\
       <div>\
         <h2>{{ name }}</h2>\
-        <div v-for="(p, i) in available">\
-          <select v-model="players[i].id">\
+        <div v-for="i in numSlots">\
+          <select v-model="players[i-1].id">\
             <option v-for="a in available" :value="a.id">{{ a.name }}</option>\
           </select>\
         </div>\
-    </div>'
+    </div>',
+    computed: {
+        numSlots: function() {
+            return parseInt(this.slots);
+        }
+    }
 });
 
 Vue.component('aufstellung', {
-    props: ['home','away'],
+    props: ['home','away','slots'],
     template: '\
     <div>\
     <div style="width:45%;float:left">\
-      <teamsetup :name="home.name" :available="home.available" :players="home.players"></teamsetup>\
+      <teamsetup :name="home.name" :available="home.available" :players="home.players" :slots="slots"></teamsetup>\
     </div>\
     <div style="width:45%;float:left">\
-      <teamsetup :name="away.name" :available="away.available" :players="away.players"></teamsetup>\
+      <teamsetup :name="away.name" :available="away.available" :players="away.players" :slots="slots"></teamsetup>\
     <div>\
     </div>'
 });
