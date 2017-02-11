@@ -73,7 +73,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
 
     'palettes' => [
         '__selector__' => ['spieltype'],
-        'default' => '{title_legend},pid,spieltype,score_home,score_away',
+        'default' => '{title_legend},pid,spieltype,home,away,score_home,score_away',
     ],
 
     'subpalettes' => [
