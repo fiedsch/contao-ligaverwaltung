@@ -404,29 +404,68 @@ class DCAHelper
 
         switch ($row['spieltype']) {
             case 1:
-                $memberHome = \SpielerModel::findById($row['home'])->getRelated('member_id');
-                $memberAway = \SpielerModel::findById($row['away'])->getRelated('member_id');
-                return sprintf("<span class='%s'>%s</span> : <span class='%s'>%s</span> <span class='tl_gray'>%d:%d</span>",
+                $spielerHome = \SpielerModel::findById($row['home']);
+                $spielerAway = \SpielerModel::findById($row['away']);
+                $memberHome = $spielerHome ? $spielerHome->getRelated('member_id') : null;
+                $memberAway = $spielerAway ? $spielerAway->getRelated('member_id') : null;
+                if ($memberHome) {
+                    $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
+                } else {
+                    $memberHomeDisplayname = "Kein Spieler für ID " . $row['home'];
+                }
+                if ($memberAway) {
+                    $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
+                } else {
+                    $memberAwayDisplayname = "Kein Spieler für ID " . $row['away'];
+                }
+                return sprintf("(%d) <span class='%s'>%s</span> : <span class='%s'>%s</span> <span class='tl_gray'>%d:%d</span>",
+                    $row['slot'],
                     $class_home,
-                    sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
+                    $memberHomeDisplayname,
                     $class_away,
-                    sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
+                    $memberAwayDisplayname,
                     $row['score_home'],
                     $row['score_away']
                 );
                 break;
             case 2:
-                $memberHome  = \SpielerModel::findById($row['home'])->getRelated('member_id');
-                $memberHome2 = \SpielerModel::findById($row['home2'])->getRelated('member_id');
-                $memberAway  = \SpielerModel::findById($row['away'])->getRelated('member_id');
-                $memberAway2 = \SpielerModel::findById($row['away'])->getRelated('member_id');
-                return sprintf("<span class='%s'>%s + %s</span> : <span class='%s'>%s + %s</span> <span class='tl_gray'>%d:%d</span>",
+                $spielerHome = \SpielerModel::findById($row['home']);
+                $memberHome = $spielerHome ? $spielerHome->getRelated('member_id') : null;
+                $spielerHome2 = \SpielerModel::findById($row['home2']);
+                $memberHome2 = $spielerHome2 ? $spielerHome2->getRelated('member_id') : null;
+                $spielerAway = \SpielerModel::findById($row['away']);
+                $memberAway = $spielerAway ? $spielerAway->getRelated('member_id') : null;
+                $spielerAway2 = \SpielerModel::findById($row['away2']);
+                $memberAway2 = $spielerAway2 ? $spielerAway2->getRelated('member_id') : null;
+
+                if ($memberHome) {
+                    $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
+                } else {
+                    $memberHomeDisplayname = "Kein Spieler für ID " . $row['home'];
+                }
+                if ($memberHome2) {
+                    $memberHome2Displayname = sprintf("%s, %s", $memberHome2->lastname, $memberHome2->firstname);
+                } else {
+                    $memberHome2Displayname = "Kein Spieler für ID " . $row['home2'];
+                }
+                if ($memberAway) {
+                    $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
+                } else {
+                    $memberAwayDisplayname = "Kein Spieler für ID " . $row['away'];
+                }
+                if ($memberAway2) {
+                    $memberAway2Displayname = sprintf("%s, %s", $memberAway2->lastname, $memberAway2->firstname);
+                } else {
+                    $memberAway2Displayname = "Kein Spieler für ID " . $row['away2'];
+                }
+                return sprintf("(%d) <span class='%s'>%s + %s</span> : <span class='%s'>%s + %s</span> <span class='tl_gray'>%d:%d</span>",
+                    $row['slot'],
                     $class_home,
-                    sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname),
-                    sprintf("%s, %s", $memberHome2->lastname, $memberHome2->firstname),
+                    $memberHomeDisplayname,
+                    $memberHome2Displayname,
                     $class_away,
-                    sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname),
-                    sprintf("%s, %s", $memberAway2->lastname, $memberAway2->firstname),
+                    $memberAwayDisplayname,
+                    $memberAway2Displayname,
                     $row['score_home'],
                     $row['score_away']
                 );
