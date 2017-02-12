@@ -26,7 +26,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
         'sorting'           => [
             'mode'                  => 4, // Displays the child records of a parent record
             'flag'                  => 11, // sort ascending
-            'fields'                => ['id'],
+            'fields'                => ['slot'],
             'panelLayout'           => 'sort,filter;search,limit',
             'headerFields'          => ['home', 'away', 'pid'],
             'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listSpielCallback'],
@@ -73,12 +73,12 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
 
     'palettes' => [
         '__selector__' => ['spieltype'],
-        'default' => '{title_legend},pid,spieltype,home,away,score_home,score_away',
+        'default'      => '{title_legend},pid,spieltype,slot,score_home,score_away',
     ],
 
     'subpalettes' => [
-        'spieltype_1' => 'home,away',
-        'spieltype_2' => 'home,away,home2,away2',
+        'spieltype_' . \SpielModel::TYPE_EINZEL => 'home,away',
+        'spieltype_' . \SpielModel::TYPE_DOPPEL => 'home,away,home2,away2',
     ],
 
     'fields' => [
@@ -90,6 +90,13 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
         ],
         'pid'        => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'slot'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_spiel']['slot'],
+            'inputType' => 'text',
+            'sorting'   => true,
+            'eval'      => ['rgxp' => 'digit', 'minval' => 1],
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'home'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_spiel']['home'],
@@ -136,8 +143,8 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_spiel']['spieltype'],
             'exclude'   => true,
             'inputType' => 'select',
-            'options'   => [1 => 'Einzel', 2 => 'Doppel'],
-            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'submitOnChange' => true],
+            'options'   => [\SpielModel::TYPE_EINZEL => 'Einzel', \SpielModel::TYPE_DOPPEL => 'Doppel'],
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true],
             'sql'       => "int(10) NOT NULL default '0'",
         ],
         'home2'     => [
