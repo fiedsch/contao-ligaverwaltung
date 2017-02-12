@@ -7,6 +7,10 @@
  */
 class SpielModel extends \Model
 {
+
+    const TYPE_EINZEL = 1;
+    const TYPE_DOPPEL = 2;
+
     /**
      * Table name
      *

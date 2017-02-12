@@ -2,15 +2,17 @@
 
 <?php if ($this->message): ?>
 
-<p class="tl_error"><?= $this->message; ?></p>
+<div class="tl_messages">
+  <p class="tl_error"><?= $this->message; ?></p>
+</div>
 
 <?php else: ?>
 
-<?php // Aufstellung ?>
-<aufstellung :home="home" :away="away"></aufstellung>
+<?php // Aufstellung (slots="6" => Ein Team tritt mit max. slots Spielern an) ?>
+<aufstellung :home="home" :away="away" slots="6"></aufstellung>
 
 <?php // Datenerfassung ?>
-<form id="spielbericht" method="POST">
+<form id="spielbericht" method="POST" class="tl_form">
     <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
     <input type="hidden" name="FORM_SUBMIT" value="begegnungserfassung">
     <input type="hidden" name="id" value="<?= $this->begegnung ?>">

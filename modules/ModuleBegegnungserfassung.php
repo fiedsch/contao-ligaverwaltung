@@ -58,17 +58,201 @@ class ModuleBegegnungserfassung extends \BackendModule
     protected function saveFormData()
     {
         $this->Template->form = $_POST;
-        $this->Template->message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a>)<pre>%s</pre>)',
+        $message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a>)',
             'contao/main.php?do=liga.begegnung',
-            'Zu den Begegnungen',
-            print_r($_POST, true)
+            'Zu den Begegnungen'
         );
+
+        $data = $this->scanPostData();
+
+        $message .= "<pre>" . print_r($data, true) . "</pre>";
+
+        $this->saveSpiele($data);
+
+        $this->Template->message = $message;
+
+    }
+
+    /**
+     * Die (rohen) POST Daten scannen und einen "Datenbaum" aufbauen, der beim
+     *  speichern der Spiele in der Datenbank abgearbeit werden kann.
+     */
+    protected function scanPostData()
+    {
+        foreach ($_POST as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $data['begegnung'] = $v;
+                    $begegnung = \BegegnungModel::findById($v);
+                    if ($begegnung) {
+                        $data['home'] = [
+                            'name' => $begegnung->getRelated('home')->name,
+                            'id'   => $begegnung->getRelated('home')->id,
+                        ];
+                        $data['away'] = [
+                            'name' => $begegnung->getRelated('away')->name,
+                            'id'   => $begegnung->getRelated('away')->id,
+                        ];
+                    }
+                    break;
+                case 'REQUEST_TOKEN':
+                case 'FORM_SUBMIT':
+                    // ignorieren
+                    break;
+
+                default:
+                    if (preg_match("/^spieler_(home|away)_(\d+)$/", $k, $matches)) {
+                        // Einzel (Spieler)
+                        $data['spiele'][$matches[2]][$matches[1]]['spieler'] = [
+                            'name' => $this->getSpielerName($v),
+                            'id'   => $v,
+                        ];
+                    } else if (preg_match("/^spieler_(home|away)_(\d+)_(\d+)$/", $k, $matches)) {
+                        // Doppel (Spieler)
+                        $data['spiele'][$matches[2]][$matches[1]]['spieler'][$matches[3]] = [
+                            'name' => $this->getSpielerName($v),
+                            'id'   => $v,
+                        ];
+                    } else if (preg_match("/^score_(home|away)_(\d+)$/", $k, $matches)) {
+                        // Score (Einzel und Doppel)
+                        $data['spiele'][$matches[2]][$matches[1]]['score'] = $v;
+                    } else {
+                        $data['TODO'][] = sprintf("%s = %s\n", $k, $v);
+                    }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param int $id
+     */
+    protected
+    function getSpielerName($id)
+    {
+        $spieler = \SpielerModel::findById($id);
+        if (!$spieler) {
+            return "Spieler mit der ID $id nicht gefunden";
+        }
+        $member = $spieler->getRelated('member_id');
+        if (!$member) {
+            return "Mitglied zum Spieler mit der ID $id nicht gefunden";
+        }
+        return sprintf("%s, %s",
+            $member->lastname,
+            $member->firstname
+        );
+    }
+
+    /**
+     * @param array $data
+     */
+    protected
+    function saveSpiele($data)
+    {
+        // über $data['spiele'] iterieren und je Eintrag
+        // * checken, ob es bereits einen zugehörigen Eintrag in tl_spiel gibt
+        //   - falls nein, anlegen
+        //   - falls ja, ändern
+        //
+        // Dabei mit den "nicht vorhandenen Spielern" (Fülleinträge mit einer ID < 0)
+        // umgehen. Hier gäbe es mehrere Möglichkeiten:
+        // * nichts speichern, da "nicht sein kann, was nicht sein darf"
+        // * die negative ID abspeichern (sollte gehen, denn tl_spiel.home und tl_spiel.away
+        //   sind "int(10) NOT NULL default '0'".
+
+        if (!$data['spiele'] || !is_array($data['spiele'])) {
+            return;
+        }
+
+        if (!$data['begegnung']) {
+            return;
+        }
+
+        foreach ($data['spiele'] as $i => $spielData) {
+            if (isset($spielData['home']['spieler'][2])) {
+                $this->checkAndSaveDoppel($data['begegnung'], $i + 1, $spielData);
+            } else {
+                $this->checkAndSaveEinzel($data['begegnung'], $i + 1, $spielData);
+            }
+        }
+    }
+
+    /**
+     * @param int $begegnung
+     * @param int $slot
+     * @param array $spielData
+     */
+    protected
+    function checkAndSaveEinzel($begegnung, $slot, $spielData)
+    {
+        $spiel = \SpielModel::findBy(
+            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?'],
+            [
+                $begegnung,
+                \SpielModel::TYPE_EINZEL,
+                $slot,
+                $spielData['home']['spieler']['id'],
+                $spielData['away']['spieler']['id'],
+            ]
+        );
+        if (null === $spiel) {
+            $spiel = new \SpielModel();
+            $spiel->pid = $begegnung;
+            $spiel->slot = $slot;
+            $spiel->spieltype = \SpielModel::TYPE_EINZEL;
+            $spiel->home = $spielData['home']['spieler']['id'];
+            $spiel->away = $spielData['away']['spieler']['id'];
+        }
+
+        $spiel->score_home = $spielData['home']['score'] ?: 0;
+        $spiel->score_away = $spielData['away']['score'] ?: 0;
+
+        $spiel->save();
+    }
+
+    /**
+     * @param int $begegnung
+     * @param int $slot
+     * @param array $spielData
+     */
+    protected
+    function checkAndSaveDoppel($begegnung, $slot, $spielData)
+    {
+        $spiel = \SpielModel::findBy(
+            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?', 'home2=?', 'away2=?'],
+            [
+                $begegnung,
+                $slot,
+                \SpielModel::TYPE_DOPPEL,
+                $spielData['home']['spieler'][1]['id'],
+                $spielData['away']['spieler'][1]['id'],
+                $spielData['home']['spieler'][2]['id'],
+                $spielData['away']['spieler'][2]['id'],
+            ]
+        );
+        if (null === $spiel) {
+            $spiel = new \SpielModel();
+            $spiel->pid = $begegnung;
+            $spiel->slot = $slot;
+            $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
+            $spiel->home  = $spielData['home']['spieler'][1]['id'];
+            $spiel->away  = $spielData['away']['spieler'][1]['id'];
+            $spiel->home2 = $spielData['home']['spieler'][2]['id'];
+            $spiel->away3 = $spielData['away']['spieler'][2]['id'];
+        }
+
+        $spiel->score_home = $spielData['home']['score'] ?: 0;
+        $spiel->score_away = $spielData['away']['score'] ?: 0;
+
+        $spiel->save();
     }
 
     /**
      *
      */
-    protected function generateForm()
+    protected
+    function generateForm()
     {
         $GLOBALS['TL_CSS'][] = 'system/modules/ligaverwaltung/assets/begegnungserfassung.css|static';
         $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/ligaverwaltung/assets/vue.2.1.6.js|static';

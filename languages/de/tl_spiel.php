@@ -37,6 +37,11 @@ $GLOBALS['TL_LANG']['tl_spiel']['pid'] = [
     'Die Begegnung in der das Spiel gespielt wurde',
 ];
 
+$GLOBALS['TL_LANG']['tl_spiel']['slot'] = [
+    'Spielplatz',
+    'Spielplatz (1, 2, ...).',
+];
+
 $GLOBALS['TL_LANG']['tl_spiel']['home'] = [
     'Spieler Heimmannschaft',
     'Spieler Heimmannschaft',
@@ -59,15 +64,15 @@ $GLOBALS['TL_LANG']['tl_spiel']['away2'] = [
 
 $GLOBALS['TL_LANG']['tl_spiel']['score_home'] = [
     'Score (Legs/Sätze) Heimmannschaft',
-    'Legs/Sätze Spieler Heimmannschaft'
+    'Legs/Sätze Spieler Heimmannschaft',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['score_away'] = [
     'Score Auswärtsmannschaft',
-    'Legs/Sätze Spieler Auswärtsmannschaft'
+    'Legs/Sätze Spieler Auswärtsmannschaft',
 ];
 
 $GLOBALS['TL_LANG']['tl_spiel']['spieltype'] = [
     'Art des Spiels',
-    'Art des Spiels: Einzel oder Doppel'
+    'Art des Spiels: Einzel oder Doppel',
 ];
