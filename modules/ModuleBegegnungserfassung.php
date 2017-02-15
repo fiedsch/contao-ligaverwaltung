@@ -14,11 +14,13 @@
  */
 class ModuleBegegnungserfassung extends \BackendModule
 {
+
     /**
      * Anzahl der Spieler pro Mannschaft (inkl. Austauschspieler) wie sie von der
      * Vue.js App erwartet wird (siehe :slots="6").
      */
     const NUM_PLAYERS = 6;
+
     /**
      * Template
      *
@@ -53,7 +55,11 @@ class ModuleBegegnungserfassung extends \BackendModule
     }
 
     /**
-     *
+     * TODO: Situation erkennen (und behandeln) wenn beim erneuten Bearbeite
+     * durch geänderte Spielerreihenfolge andere (neue!) Spiele erzeugt werden,
+     * die alten aber nicht gelöscht werden.
+     * Immer erst alle Spiele löschen und dann alles neu anlegen (meist identisch)
+     * ist auch nicht schön und erhöht unnötig die tl_spiel.id
      */
     protected function saveFormData()
     {
@@ -127,8 +133,7 @@ class ModuleBegegnungserfassung extends \BackendModule
     /**
      * @param int $id
      */
-    protected
-    function getSpielerName($id)
+    protected function getSpielerName($id)
     {
         $spieler = \SpielerModel::findById($id);
         if (!$spieler) {
@@ -147,8 +152,7 @@ class ModuleBegegnungserfassung extends \BackendModule
     /**
      * @param array $data
      */
-    protected
-    function saveSpiele($data)
+    protected function saveSpiele($data)
     {
         // über $data['spiele'] iterieren und je Eintrag
         // * checken, ob es bereits einen zugehörigen Eintrag in tl_spiel gibt
@@ -183,8 +187,43 @@ class ModuleBegegnungserfassung extends \BackendModule
      * @param int $slot
      * @param array $spielData
      */
-    protected
-    function checkAndSaveEinzel($begegnung, $slot, $spielData)
+    protected function checkAndSaveDoppel($begegnung, $slot, $spielData)
+    {
+        $spiel = \SpielModel::findBy(
+            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?', 'home2=?', 'away2=?'],
+            [
+                $begegnung,
+                $slot,
+                \SpielModel::TYPE_DOPPEL,
+                $spielData['home']['spieler'][1]['id'],
+                $spielData['away']['spieler'][1]['id'],
+                $spielData['home']['spieler'][2]['id'],
+                $spielData['away']['spieler'][2]['id'],
+            ]
+        );
+        if (null === $spiel) {
+            $spiel = new \SpielModel();
+            $spiel->pid = $begegnung;
+            $spiel->slot = $slot;
+            $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
+            $spiel->home = $spielData['home']['spieler'][1]['id'];
+            $spiel->away = $spielData['away']['spieler'][1]['id'];
+            $spiel->home2 = $spielData['home']['spieler'][2]['id'];
+            $spiel->away3 = $spielData['away']['spieler'][2]['id'];
+        }
+
+        $spiel->score_home = $spielData['home']['score'] ?: 0;
+        $spiel->score_away = $spielData['away']['score'] ?: 0;
+
+        $spiel->save();
+    }
+
+    /**
+     * @param int $begegnung
+     * @param int $slot
+     * @param array $spielData
+     */
+    protected function checkAndSaveEinzel($begegnung, $slot, $spielData)
     {
         $spiel = \SpielModel::findBy(
             ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?'],
@@ -212,47 +251,15 @@ class ModuleBegegnungserfassung extends \BackendModule
     }
 
     /**
-     * @param int $begegnung
-     * @param int $slot
-     * @param array $spielData
-     */
-    protected
-    function checkAndSaveDoppel($begegnung, $slot, $spielData)
-    {
-        $spiel = \SpielModel::findBy(
-            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?', 'home2=?', 'away2=?'],
-            [
-                $begegnung,
-                $slot,
-                \SpielModel::TYPE_DOPPEL,
-                $spielData['home']['spieler'][1]['id'],
-                $spielData['away']['spieler'][1]['id'],
-                $spielData['home']['spieler'][2]['id'],
-                $spielData['away']['spieler'][2]['id'],
-            ]
-        );
-        if (null === $spiel) {
-            $spiel = new \SpielModel();
-            $spiel->pid = $begegnung;
-            $spiel->slot = $slot;
-            $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
-            $spiel->home  = $spielData['home']['spieler'][1]['id'];
-            $spiel->away  = $spielData['away']['spieler'][1]['id'];
-            $spiel->home2 = $spielData['home']['spieler'][2]['id'];
-            $spiel->away3 = $spielData['away']['spieler'][2]['id'];
-        }
-
-        $spiel->score_home = $spielData['home']['score'] ?: 0;
-        $spiel->score_away = $spielData['away']['score'] ?: 0;
-
-        $spiel->save();
-    }
-
-    /**
+     * Den Code für das Eingabeformular erstellen. Die Liste der Spieler etc.
+     * dynamisch befüllen und am Ende $this->generatePatchSpielplanCode(); aufrufen,
+     * damit bereits erfasste Ergebnisse wieder anggezeigt werden.
      *
+     * TODO: die Situation erkennen und behandeln, daß sich inzwischen die Voraussetzungen
+     * geändert haben (z.B. verfügbare Spieler gelöscht oder weitere hinzugekommen oder einzelne
+     * Spiele einer bereits erfassten Begegnung manuell gelöscht wurden)!
      */
-    protected
-    function generateForm()
+    protected function generateForm()
     {
         $GLOBALS['TL_CSS'][] = 'system/modules/ligaverwaltung/assets/begegnungserfassung.css|static';
         $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/ligaverwaltung/assets/vue.2.1.6.js|static';
@@ -272,7 +279,8 @@ class ModuleBegegnungserfassung extends \BackendModule
             foreach (['home', 'away'] as $homeaway) {
                 $spieler = \SpielerModel::findBy(
                     ['pid=?'],
-                    [$begegnung->$homeaway]
+                    [$begegnung->$homeaway],
+                    ['order' => 'id ASC']
                 );
                 if ($spieler) {
                     foreach ($spieler as $s) {
@@ -298,6 +306,87 @@ class ModuleBegegnungserfassung extends \BackendModule
             $this->Template->team_home_players = join(',', $team_home);
             $this->Template->team_away_players = join(',', $team_away);
         }
+
+        $this->generatePatchSpielplanCode();
+
+    }
+
+
+    /**
+     * this.$data == (Beispiel)
+     * {
+     * "home":
+     * {
+     * "key":"home",
+     * "name":"Die Superchecker",
+     * "available":
+     * [
+     * {"name":"no player0","id":0}, // Name des Members, id aus tl_spieler
+     * {"name":"no player1","id":-1},
+     * ...
+     * {"name":"no player5","id":-5} // immer bis Index 5 bei (konstamt) 6 Spielern? Nein, nur bei ...players!
+     * ],
+     * "players":
+     * [
+     * {"id":-5}, // id aus tl_spieler wie oben in "available"; hier "vom User gewählte Reihenfolge")
+     * {"id":-4},
+     * {"id":-3},
+     * {"id":-2},
+     * {"id":-1},
+     * {"id":0} // immer genau 6 Einträge!
+     * ]
+     * }, // ende "home"
+     * "away":{ ... genau wie "home" ... }
+     * "spielplan":
+     * [
+     * {"home":[0],"away":[0],"scores":{"home":1,"away":2},"result":"0:1"},
+     * {"home":[1],"away":[1],"scores":{"home":2,"away":3},"result":"0:1"},
+     * ...
+     * {"home":[0,2],"away":[1,3],"scores":{"home":3,"away":2},"result":"1:0"},
+     * {"home":[1,3],"away":[0,2],"scores":{"home":2,"away":3},"result":"0:1"}
+     * ]
+     * }
+     *
+     * Schritte des $data patchens, wenn bereits Daten vorliegen:
+     * (1a) spielplan[i].scores.{home,away} =  ... setzen (integer )
+     * (1b) spielplan[i].result = ... setzen (z.B. "1:0")
+     * (2a) home.available.{name,id} setzen {String,int id aus tl_spieler}
+     * (2b) home.players setzen (id int gemäß home.available.id; d.h. deren Reihenfolge;
+     * .available bleibt immer gleich, in .players wird die gewählte Reihenfolge abgebildet)
+     */
+
+    protected function generatePatchSpielplanCode()
+    {
+
+        $jsCodeLines = [];
+
+        if (!\Input::get('id')) {
+            $jsCodeLines[] = '// ID der Begegnung nicht angegeben';
+        } else {
+
+            $spiele = \SpielModel::findBy(
+                ['pid=?'],
+                [\Input::get('id')],
+                ['order' => 'slot ASC']
+            );
+            if (!$spiele) {
+                $jsCodeLines[] = '// Keine Daten für Begegnung ' . \Input::get('id') . ' gefunden ';
+            } else {
+                foreach ($spiele as $spiel) {
+                    $jsCodeLines[] = sprintf('data.home.players.push({id:%d});', $spiel->home);
+                    $jsCodeLines[] = sprintf('data.away.players.push({id:%d});', $spiel->away);
+                    $jsCodeLines[] = sprintf('data.spielplan[%d].scores={home:%d,away:%d};',
+                        $spiel->slot - 1,
+                        $spiel->score_home,
+                        $spiel->score_away
+                    );
+                    //$jsCodeLines[] = 'data.spielplan[0].result = "0:1";'; // können wir uns sparen, das macht die app selbst
+                }
+            }
+
+        }
+
+        $this->Template->patchSpielplanCode = join("\n", $jsCodeLines) . "\n";
     }
 
 }

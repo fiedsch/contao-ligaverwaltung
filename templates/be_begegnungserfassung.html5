@@ -9,6 +9,7 @@
 <?php else: ?>
 
 <?php // Aufstellung (slots="6" => Ein Team tritt mit max. slots Spielern an) ?>
+ <!-- <pre>{{ showData }}</pre> -->
 <aufstellung :home="home" :away="away" slots="6"></aufstellung>
 
 <?php // Datenerfassung ?>
@@ -49,6 +50,8 @@ var data = {
     },
     spielplan: spielplan
 };
+<?= $this->patchSpielplanCode; ?>
+
 </script>
 
 

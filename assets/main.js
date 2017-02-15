@@ -244,14 +244,29 @@ var app = new Vue({
     data: data,
     created: function() {
         this.spielplan.forEach(function(entry) {
-            entry.scores = { home: null, away: null };
-            entry.result = null;
+            if (typeof entry.scores == "undefined") {
+                console.log("setze scores");
+                entry.scores = {home: null, away: null};
+            }
+            if (typeof entry.result == "undefined") {
+                entry.result = null;
+            }
         });
-        this.home.available.forEach(function(entry) {
-            this.home.players.push({id:entry.id});
-        }, this);
-        this.away.available.forEach(function(entry) {
-            this.away.players.push({id:entry.id});
-        }, this);
+        if (this.home.players.length == 0) {
+            this.home.available.forEach(function (entry) {
+                this.home.players.push({id: entry.id});
+            }, this);
+        }
+        if (this.away.players.length == 0) {
+            this.away.available.forEach(function (entry) {
+                this.away.players.push({id: entry.id});
+            }, this);
+        }
+    },
+    computed: {
+        // für DEBUG {{ showdata }}
+        showData: function() {
+            return JSON.stringify(this.$data, null, 9);
+        }
     }
 });
