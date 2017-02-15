@@ -26,8 +26,5 @@
         "": "system/modules/ligaverwaltung"
       }
     }
-  },
-  "replace": {
-    "fiedsch/ligaverwaltung": "*"
   }
 }
