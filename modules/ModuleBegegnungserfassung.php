@@ -190,27 +190,23 @@ class ModuleBegegnungserfassung extends \BackendModule
     protected function checkAndSaveDoppel($begegnung, $slot, $spielData)
     {
         $spiel = \SpielModel::findBy(
-            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?', 'home2=?', 'away2=?'],
+            ['pid=?', 'slot=?'],
             [
                 $begegnung,
                 $slot,
-                \SpielModel::TYPE_DOPPEL,
-                $spielData['home']['spieler'][1]['id'],
-                $spielData['away']['spieler'][1]['id'],
-                $spielData['home']['spieler'][2]['id'],
-                $spielData['away']['spieler'][2]['id'],
             ]
         );
         if (null === $spiel) {
             $spiel = new \SpielModel();
             $spiel->pid = $begegnung;
             $spiel->slot = $slot;
-            $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
-            $spiel->home = $spielData['home']['spieler'][1]['id'];
-            $spiel->away = $spielData['away']['spieler'][1]['id'];
-            $spiel->home2 = $spielData['home']['spieler'][2]['id'];
-            $spiel->away3 = $spielData['away']['spieler'][2]['id'];
         }
+
+        $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
+        $spiel->home = $spielData['home']['spieler'][1]['id'];
+        $spiel->away = $spielData['away']['spieler'][1]['id'];
+        $spiel->home2 = $spielData['home']['spieler'][2]['id'];
+        $spiel->away3 = $spielData['away']['spieler'][2]['id'];
 
         $spiel->score_home = $spielData['home']['score'] ?: 0;
         $spiel->score_away = $spielData['away']['score'] ?: 0;
@@ -226,23 +222,21 @@ class ModuleBegegnungserfassung extends \BackendModule
     protected function checkAndSaveEinzel($begegnung, $slot, $spielData)
     {
         $spiel = \SpielModel::findBy(
-            ['pid=?', 'spieltype=?', 'slot=?', 'home=?', 'away=?'],
+            ['pid=?', 'slot=?'],
             [
                 $begegnung,
-                \SpielModel::TYPE_EINZEL,
                 $slot,
-                $spielData['home']['spieler']['id'],
-                $spielData['away']['spieler']['id'],
             ]
         );
         if (null === $spiel) {
             $spiel = new \SpielModel();
             $spiel->pid = $begegnung;
             $spiel->slot = $slot;
-            $spiel->spieltype = \SpielModel::TYPE_EINZEL;
-            $spiel->home = $spielData['home']['spieler']['id'];
-            $spiel->away = $spielData['away']['spieler']['id'];
         }
+
+        $spiel->spieltype = \SpielModel::TYPE_EINZEL;
+        $spiel->home = $spielData['home']['spieler']['id'];
+        $spiel->away = $spielData['away']['spieler']['id'];
 
         $spiel->score_home = $spielData['home']['score'] ?: 0;
         $spiel->score_away = $spielData['away']['score'] ?: 0;
