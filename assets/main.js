@@ -34,7 +34,7 @@ Vue.component('aufstellung', {
     </div>\
     <div style="width:45%;float:left">\
       <teamsetup :name="away.name" :available="away.available" :players="away.players" :slots="slots"></teamsetup>\
-    <div>\
+    </div>\
     </div>'
 });
 
@@ -91,12 +91,12 @@ Vue.component('spielerselect', {
     <select \
       v-model="selected"  v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname" tabindex="-1">\
-        <option v-for="player in team.players" :value="player.id">{{ spielername(player.id) }}</option>\
+        <option v-for="player in team.available" :value="player.id">{{ spielername(player.id) }}</option>\
     </select><select\
       v-if="isDouble"\
       v-model="selected2" v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname2" tabindex="-1">\
-        <option v-for="player in team.players" :value="player.id">{{ spielername(player.id) }}</option>\
+        <option v-for="player in team.available" :value="player.id">{{ spielername(player.id) }}</option>\
     </select>\
     </span>',
     methods: {
@@ -269,4 +269,17 @@ var app = new Vue({
             return JSON.stringify(this.$data, null, 9);
         }
     }
+});
+
+
+/**
+ * Für das Contao Backend: auf dieser Seite den "Effekt" von stylect.js
+ * rückgängig machen, da sonst Vue nicht funktioniert
+ */
+
+window.addEvent('domready', function() {
+    $$('.styled_select').each(function(el) { el.remove()});
+    //$$('select').each(function(el) { el.setStyle('opacity', 1)} );
+    // we don't use inline style, so remove it completely
+    $$('select').each(function(el) { el.removeProperty('style')}) ;
 });
