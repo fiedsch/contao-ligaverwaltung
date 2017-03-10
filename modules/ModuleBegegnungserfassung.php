@@ -380,6 +380,10 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         }
 
+        // TODO: fix problem when \SpielModel entries have been created manually in the backend
+        // (only some, but not all that would be created by the form) befor using the form.
+        // Issue: the form will not be usable then, as data.{home,away}.players is incomplete.
+
         $this->Template->patchSpielplanCode = join("\n", $jsCodeLines) . "\n";
     }
 
