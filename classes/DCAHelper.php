@@ -266,7 +266,9 @@ class DCAHelper
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
                 . ' WHERE l.saison=?'
-                . ')';
+                . ')'
+                . ' AND tl_member.disable=\'\''
+                .' ORDER BY tl_member.lastname';
             $member = \Database::getInstance()->prepare($query)->execute($saison);
         } else {
             // Modell II harlekin Modell (weniger restriktiv):
@@ -281,13 +283,15 @@ class DCAHelper
                 . ' SELECT s.member_id FROM tl_spieler s'
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' WHERE m.liga=?'
-                . ')';
+                . ')'
+                . ' AND tl_member.disable=\'\''
+                .' ORDER BY tl_member.lastname';
             $member = \Database::getInstance()->prepare($query)->execute($liga);
         }
 
 
         while ($member->next()) {
-            $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+            $result[$member->id] = sprintf("%s, %s (%s)", $member->lastname, $member->firstname, $member->passnummer);
         }
         return $result;
     }
@@ -349,7 +353,7 @@ class DCAHelper
     public
     static function getHomeSpielerForSelect($dc)
     {
-        $initial = [0=>"Kein Spieler ID 0)"];
+        $initial = [0=>"Kein Spieler (ID 0)"];
 
         if (!$dc->activeRecord->pid) {
             return $initial;
@@ -359,7 +363,7 @@ class DCAHelper
             return $initial;
         }
 
-        $result = $initial;
+        $result = []; // $initial;
         $spieler = \SpielerModel::findByPid($begegnung->home);
         if ($spieler) {
             foreach ($spieler as $sp) {
@@ -367,6 +371,10 @@ class DCAHelper
                 $result[$sp->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
             }
         }
+        // Nach Namen sortieren
+        usort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
+        // Kein Spieler als erstes listen:
+        array_unshift($result, "Kein Spieler (ID 0)");
         return $result;
     }
 
@@ -378,7 +386,7 @@ class DCAHelper
      */
     public static function getAwaySpielerForSelect($dc)
     {
-        $initial = [0=>"Kein Spieler ID 0)"];
+        $initial = [0=>"Kein Spieler (ID 0)"];
 
         if (!$dc->activeRecord->pid) {
             return $initial;
