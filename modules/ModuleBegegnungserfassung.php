@@ -17,7 +17,7 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     /**
      * Anzahl der Spieler pro Mannschaft (inkl. Austauschspieler) wie sie von der
-     * Vue.js App erwartet wird (siehe :slots="6").
+     * Vue.js App erwartet wird (vgl. :slots="6").
      */
     const NUM_PLAYERS = 6;
 
@@ -90,6 +90,7 @@ class ModuleBegegnungserfassung extends \BackendModule
                 case 'id':
                     $data['begegnung'] = $v;
                     $begegnung = \BegegnungModel::findById($v);
+
                     if ($begegnung) {
                         $data['home'] = [
                             'name' => $begegnung->getRelated('home')->name,
@@ -101,6 +102,12 @@ class ModuleBegegnungserfassung extends \BackendModule
                         ];
                     }
                     break;
+                case 'homelineup':
+                    $data['lineup']['home'] = explode(',', $v);
+                    break;
+                case 'awaylineup':
+                    $data['lineup']['away'] =  explode(',', $v);
+                    break;
                 case 'REQUEST_TOKEN':
                 case 'FORM_SUBMIT':
                     // ignorieren
@@ -109,15 +116,17 @@ class ModuleBegegnungserfassung extends \BackendModule
                 default:
                     if (preg_match("/^spieler_(home|away)_(\d+)$/", $k, $matches)) {
                         // Einzel (Spieler)
+                        $mapped_id = $data['lineup'][$matches[1]][$v];
                         $data['spiele'][$matches[2]][$matches[1]]['spieler'] = [
-                            'name' => $this->getSpielerName($v),
-                            'id'   => $v,
+                            'name' => $this->getSpielerName($mapped_id),
+                            'id'   => $mapped_id,
                         ];
                     } else if (preg_match("/^spieler_(home|away)_(\d+)_(\d+)$/", $k, $matches)) {
                         // Doppel (Spieler)
+                        $mapped_id = $data['lineup'][$matches[1]][$v];
                         $data['spiele'][$matches[2]][$matches[1]]['spieler'][$matches[3]] = [
-                            'name' => $this->getSpielerName($v),
-                            'id'   => $v,
+                            'name' => $this->getSpielerName($mapped_id),
+                            'id'   => $mapped_id,
                         ];
                     } else if (preg_match("/^score_(home|away)_(\d+)$/", $k, $matches)) {
                         // Score (Einzel und Doppel)
@@ -156,7 +165,7 @@ class ModuleBegegnungserfassung extends \BackendModule
     {
         // über $data['spiele'] iterieren und je Eintrag
         // * checken, ob es bereits einen zugehörigen Eintrag in tl_spiel gibt
-        //   - falls nein, anlegen
+        //   - falls nein, anlegen1
         //   - falls ja, ändern
         //
         // Dabei mit den "nicht vorhandenen Spielern" (Fülleinträge mit einer ID < 0)
@@ -203,8 +212,9 @@ class ModuleBegegnungserfassung extends \BackendModule
         }
 
         $spiel->spieltype = \SpielModel::TYPE_DOPPEL;
-        $spiel->home = $spielData['home']['spieler'][1]['id'];
-        $spiel->away = $spielData['away']['spieler'][1]['id'];
+
+        $spiel->home  = $spielData['home']['spieler'][1]['id'];
+        $spiel->away  = $spielData['away']['spieler'][1]['id'];
         $spiel->home2 = $spielData['home']['spieler'][2]['id'];
         $spiel->away3 = $spielData['away']['spieler'][2]['id'];
 
@@ -260,6 +270,8 @@ class ModuleBegegnungserfassung extends \BackendModule
         // Wird am Ende des Templates included:
         //$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/ligaverwaltung/assets/main.js|static';
 
+        $this->Template->NUM_PLAYERS = self::NUM_PLAYERS;
+
         // Teams belegen
         $begegnung = \BegegnungModel::findById(\Input::get('id'));
         if (null !== $begegnung) {
@@ -268,6 +280,10 @@ class ModuleBegegnungserfassung extends \BackendModule
             $team_name['away'] = $begegnung->getRelated('away')->name;
             $this->Template->team_home_name = $team_name['home'];
             $this->Template->team_away_name = $team_name['away'];
+
+            $this->Template->team_home_lineup = ''; // TODO
+            $this->Template->team_away_lineup = ''; // TODO
+
             $team_home = [];
             $team_away = [];
             foreach (['home', 'away'] as $homeaway) {
@@ -291,12 +307,22 @@ class ModuleBegegnungserfassung extends \BackendModule
                 }
             }
             // auf mindestens self::NUM_PLAYERS Spieler "auffüllen"
+            /*
             for ($i = count($team_home); $i < self::NUM_PLAYERS; $i++) {
                 $team_home[] = sprintf("{name: '%s',id: -%d}", 'no player' . $i, $i);
             }
             for ($i = count($team_away); $i < self::NUM_PLAYERS; $i++) {
                 $team_away[] = sprintf("{name: '%s',id: -%d}", 'no player' . $i, $i);
             }
+            */
+
+            // Immer noch zusätzlich einen "Spieler", der ausgewählt werden kann,
+            // wenn z.B. zwa6 6 Spieler gemeldet sind, aber am konkreten Spieltag nur
+            // 4 Spieler erschienen sind. Es wäre dann wenig sinnvoll, die nicht
+            // anwensenden Spieler in der liste der verfügbaren Spieler auszuwählen.
+            $team_home[] = sprintf("{name: '%s',id: 0}", 'kein Spieler');
+            $team_away[] = sprintf("{name: '%s',id: 0}", 'kein Spieler');
+
             $this->Template->team_home_players = join(',', $team_home);
             $this->Template->team_away_players = join(',', $team_away);
         }
@@ -305,48 +331,14 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     }
 
-
-    /**
-     * this.$data == (Beispiel)
-     * {
-     * "home":
-     * {
-     * "key":"home",
-     * "name":"Die Superchecker",
-     * "available":
-     * [
-     * {"name":"no player0","id":0}, // Name des Members, id aus tl_spieler
-     * {"name":"no player1","id":-1},
-     * ...
-     * {"name":"no player5","id":-5} // immer bis Index 5 bei (konstamt) 6 Spielern? Nein, nur bei ...players!
-     * ],
-     * "players":
-     * [
-     * {"id":-5}, // id aus tl_spieler wie oben in "available"; hier "vom User gewählte Reihenfolge")
-     * {"id":-4},
-     * {"id":-3},
-     * {"id":-2},
-     * {"id":-1},
-     * {"id":0} // immer genau 6 Einträge!
-     * ]
-     * }, // ende "home"
-     * "away":{ ... genau wie "home" ... }
-     * "spielplan":
-     * [
-     * {"home":[0],"away":[0],"scores":{"home":1,"away":2},"result":"0:1"},
-     * {"home":[1],"away":[1],"scores":{"home":2,"away":3},"result":"0:1"},
-     * ...
-     * {"home":[0,2],"away":[1,3],"scores":{"home":3,"away":2},"result":"1:0"},
-     * {"home":[1,3],"away":[0,2],"scores":{"home":2,"away":3},"result":"0:1"}
-     * ]
-     * }
+    /* TODO: neu implementieren, da sich das zugrundelegende Datenmodell geändert hat
+     * Siehe linup mit den tl_spieler IDs und played mit den Index-Positionen aus lineup
      *
-     * Schritte des $data patchens, wenn bereits Daten vorliegen:
-     * (1a) spielplan[i].scores.{home,away} =  ... setzen (integer )
-     * (1b) spielplan[i].result = ... setzen (z.B. "1:0")
-     * (2a) home.available.{name,id} setzen {String,int id aus tl_spieler}
-     * (2b) home.players setzen (id int gemäß home.available.id; d.h. deren Reihenfolge;
-     * .available bleibt immer gleich, in .players wird die gewählte Reihenfolge abgebildet)
+     * Frage: wie können wir das lineup aus den Ergebnissen aus played rekonstruieren?
+     * Oder: müssen wir den zugehörigen spielplan auch speichern? Dieser ist keine
+     * Konstante (z.B. in der Bezirksliga anders). Dies ist aber ohnehin ein weiteres
+     * TODO, da im Javascript Code die "konstante" spielplan.js eingebunden wird.
+     *
      */
 
     protected function generatePatchSpielplanCode()
@@ -357,26 +349,40 @@ class ModuleBegegnungserfassung extends \BackendModule
         if (!\Input::get('id')) {
             $jsCodeLines[] = '// ID der Begegnung nicht angegeben';
         } else {
+            $message  = '\nDie Funktion \”eine bereits erfasste Begegnung nochmal bearbeiten\" fehlt noch.';
+            $message .= '\nSorry!';
+            $message .= '\nFalls etwas geändert werden muss, am einfachsten unter Begegnungen das zugehörige';
+            $message .= '\neinzelne Spiel bearbeiten';
+            $jsCodeLines[] = "alert(\"$message\")";
 
-            $spiele = \SpielModel::findBy(
-                ['pid=?'],
-                [\Input::get('id')],
-                ['order' => 'slot ASC']
-            );
-            if (!$spiele) {
-                $jsCodeLines[] = '// Keine Daten für Begegnung ' . \Input::get('id') . ' gefunden ';
-            } else {
-                foreach ($spiele as $spiel) {
-                    $jsCodeLines[] = sprintf('data.home.players.push({id:%d});', $spiel->home);
-                    $jsCodeLines[] = sprintf('data.away.players.push({id:%d});', $spiel->away);
-                    $jsCodeLines[] = sprintf('data.spielplan[%d].scores={home:%d,away:%d};',
-                        $spiel->slot - 1,
-                        $spiel->score_home,
-                        $spiel->score_away
-                    );
-                    //$jsCodeLines[] = 'data.spielplan[0].result = "0:1";'; // können wir uns sparen, das macht die app selbst
-                }
-            }
+            // $spiele = \SpielModel::findBy(
+            //     ['pid=?'],
+            //     [\Input::get('id')],
+            //     ['order' => 'slot ASC']
+            // );
+            // if (!$spiele) {
+            //     $jsCodeLines[] = '// Keine Daten für Begegnung ' . \Input::get('id') . ' gefunden ';
+            // } else {
+            //     foreach ($spiele as $spiel) {
+            //         if ($spiel->spieltype==1) {
+            //             // Einzel
+            //             $jsCodeLines[] = sprintf('data.home.players.push({ids:[%d],slot:%d});', $spiel->home, $spiel->slot);
+            //             $jsCodeLines[] = sprintf('data.away.players.push({ids:[%d],slot:%d});', $spiel->away, $spiel->slot);
+            //
+            //         } else {
+            //             // Doppel
+            //             //$jsCodeLines[] = sprintf('/* %s */', print_r($spiel, true));
+            //             $jsCodeLines[] = sprintf('data.home.players.push({ids:[%d,%d],slot:%d});', $spiel->home, $spiel->home2, $spiel->slot);
+            //             $jsCodeLines[] = sprintf('data.away.players.push({ids:[%d,%d],slot:%d});', $spiel->away, $spiel->away2, $spiel->slot);
+            //         }
+            //         $jsCodeLines[] = sprintf('data.spielplan[%d].scores={home:%d,away:%d};',
+            //             $spiel->slot - 1,
+            //             $spiel->score_home,
+            //             $spiel->score_away
+            //         );
+            //         //$jsCodeLines[] = 'data.spielplan[0].result = "0:1";'; // können wir uns sparen, das macht die app selbst
+            //     }
+            // }
 
         }
 

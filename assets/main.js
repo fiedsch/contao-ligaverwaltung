@@ -5,41 +5,82 @@
  */
 
 /**
- * Vue Components
+ * Auswahl eines Spielers in der Aufstellung
  */
-Vue.component('teamsetup', {
-    props: ['name','available','players','slots'],
-    template: '\
-      <div>\
-        <h2>{{ name }}</h2>\
-        <div v-for="i in numSlots">\
-          <select v-model="players[i-1].id">\
+Vue.component('lineupplayerselect', {
+    props: {
+        available: Array, // jeweils ID und Name der verfügbaren Spieler
+        slotNumber: Number,
+    },
+    data: function () {
+            return {
+                selected: 0
+            };
+    },
+    template: '<div>\
+          <select v-model="selected">\
             <option v-for="a in available" :value="a.id">{{ a.name }}</option>\
           </select>\
-        </div>\
-    </div>',
-    computed: {
-        numSlots: function() {
-            return parseInt(this.slots);
+          </div>',
+    watch: {
+        selected: function() {
+            this.$emit("lineupplayerchanged", this.slotNumber, this.selected);
         }
     }
 });
 
-Vue.component('aufstellung', {
-    props: ['home','away','slots'],
+/**
+ * Aufstellung der Spieler für eine Mannschaft
+ */
+Vue.component('teamlineup', {
+    template: '\
+      <div>\
+        <h2>{{ name }}</h2>\
+        <div v-for="i in slots">\
+        <lineupplayerselect :slotNumber="i" :available="available" @lineupplayerchanged="lineupplayerchanged"></lineupplayerselect>\
+    </div></div>',
+    props: {
+        name: String, // Name des Teams
+        available: Array, // jeweils ID und Name der verfügbaren Spieler
+        lineup: Array, // IDs der aufgestellten Spieler
+        slots: Number // Anzahl Spieler, die benannt (aufgestellt) werden können
+    },
+    methods: {
+        lineupplayerchanged: function(slotnumber, selected) {
+            console.log("lineupplayerchanged("+slotnumber + ", " + selected+")");
+            this.lineup[slotnumber-1] = selected;
+            // make change "visible" (this most likely is not the proper way)
+            this.lineup.push('x');
+            this.lineup.pop();
+        }
+    }
+});
+
+/**
+ * Aufstellung der beiden Teams
+ */
+ Vue.component('aufstellung', {
+    props: {
+            home: Object, // Daten zur Heimmanschaft
+            away: Object, // Daten zur Auswärtsmannschaft
+            slots: Number // Anzahl Spieler, die benannt (aufgestellt) werden können
+    },
     template: '\
     <div>\
     <div style="width:45%;float:left">\
-      <teamsetup :name="home.name" :available="home.available" :players="home.players" :slots="slots"></teamsetup>\
+      <teamlineup :name="home.name" :available="home.available" :lineup="home.lineup" :slots="slots"></teamlineup>\
     </div>\
     <div style="width:45%;float:left">\
-      <teamsetup :name="away.name" :available="away.available" :players="away.players" :slots="slots"></teamsetup>\
+      <teamlineup :name="away.name" :available="away.available" :lineup="away.lineup" :slots="slots"></teamlineup>\
     </div>\
     </div>'
 });
 
+/**
+ * Ergebnistabelle
+ */
 Vue.component('resultstable', {
-    props: ['home','away','spielplan'],
+    props: ['home', 'away', 'spielplan'],
     template: '\
     <table>\
       <tableheader :home="home" :away="away"></tableheader>\
@@ -47,8 +88,11 @@ Vue.component('resultstable', {
     </table>'
 });
 
+/**
+ * Tabellenkopf ("Überschriften")
+ */
 Vue.component('tableheader', {
-    props: ['home','away'],
+    props: ['home', 'away'],
     template: '\
     <thead>\
       <tr>\
@@ -63,8 +107,11 @@ Vue.component('tableheader', {
     </thead>'
 });
 
+/**
+ * Tabelle mit den einzelnen Spielen (zwei Spieler gegeneinander) als Zeilen
+ */
 Vue.component('tablebody', {
-    props: ['home','away','spielplan'],
+    props: ['home', 'away', 'spielplan'],
     template: '\
     <tbody>\
         <tr v-for="(spiel,index) in spielplan">\
@@ -85,72 +132,104 @@ Vue.component('tablebody', {
     </tbody>'
 });
 
+/**
+ * Spielerauswahl in der Spiele-/Ergebnisliste
+ */
 Vue.component('spielerselect', {
-    props: ['team','position','index'],
+    props: {
+            team: Object, // Alle Daten zum Team
+            position: Array, // Index (oder Indices bei Doppeln) der Spieler-ID im Array lineup
+            index: Number // (nullbasierter) Zeilenindex (Nummer des Spiels -1)
+    },
     template: '<span>\
     <select \
       v-model="selected"  v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname" tabindex="-1">\
-        <option v-for="player in team.available" :value="player.id">{{ spielername(player.id) }}</option>\
+        <option v-for="lineupindex in team.lineup.length" :value="lineupindex-1">{{ spielername(lineupindex-1) }}</option>\
     </select><select\
       v-if="isDouble"\
       v-model="selected2" v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname2" tabindex="-1">\
-        <option v-for="player in team.available" :value="player.id">{{ spielername(player.id) }}</option>\
+        <option v-for="lineupindex in team.lineup.length" :value="lineupindex-1">{{ spielername(lineupindex-1) }}</option>\
     </select>\
     </span>',
     methods: {
-        spielername: function (id) {
-            return this.team.available.filter(function(v) {
-                return v.id === id;
-            })[0].name;
+        spielername: function (index) {
+            if (undefined == index) { index = 0; }
+            var spielerid = this.team.lineup[index];
+            if (undefined == spielerid) { spielerid = 0; }
+            var player = this.team.available.filter(function (v) {
+                return v.id === spielerid;
+            });
+            if (player.length==0) { return "Kein Name für Pos. "+index; }
+
+            return player[0].name;
         }
     },
     computed: {
         selectname: function () {
-            return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_1':'');
+            return 'spieler_' + this.team.key + '_' + this.index + (this.isDouble ? '_1' : '');
         },
         selectname2: function () {
-            return 'spieler_' + this.team.key + '_' + this.index+(this.isDouble ? '_2':'');
+            return 'spieler_' + this.team.key + '_' + this.index + (this.isDouble ? '_2' : '');
         },
         selected: {
             get: function () {
-                return this.team.players[this.position[0]].id;
+                return this.team.played[this.index].ids[0];
+            },
+            set: function (value) {
+                this.team.played[this.index].ids[0] = value;
             }
         },
         selected2: {
             get: function () {
                 if (this.position[1]) {
-                    return this.team.players[this.position[1]].id;
+                    return this.team.played[this.index].ids[1];
                 } else {
                     return -1;
                 }
+            },
+            set: function (value) {
+                this.team.played[this.index].ids[1] = value;
             }
         },
-        isWinner: function() {
+        isWinner: function () {
             var other = this.team.key == 'home' ? 'away' : 'home';
             var spiel = this.$root.$data.spielplan[this.index];
-            if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) { return false; }
-            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') { return false; }
+            if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) {
+                return false;
+            }
+            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') {
+                return false;
+            }
             return spiel.scores[this.team.key] > spiel.scores[other];
         },
-        isLoser: function() {
+        isLoser: function () {
             var other = this.team.key == 'home' ? 'away' : 'home';
             var spiel = this.$root.$data.spielplan[this.index];
-            if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) { return false; }
-            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') { return false; }
+            if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) {
+                return false;
+            }
+            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') {
+                return false;
+            }
             return spiel.scores[this.team.key] < spiel.scores[other];
         },
-        isDouble: function() {
-            return this.position.length>1;
+        isDouble: function () {
+            return this.position.length > 1;
         }
     }
 });
 
+/**
+ * (Anzeige des) Score eines Spielers
+ */
 Vue.component('spielerscore', {
-    props: ['team','index'],
+    props: ['team', 'index'],
     template: '<input class="form-control" :name="inputname" v-model.number="score" type="number" min="0" max="3" autocomplete="off">',
-    data: function () { return { spielplan: data.spielplan }; },
+    data: function () {
+        return {spielplan: data.spielplan};
+    },
     computed: {
         inputname: {
             get: function () {
@@ -158,7 +237,7 @@ Vue.component('spielerscore', {
             }
         },
         score: {
-            get: function() {
+            get: function () {
                 return this.spielplan[this.index].scores[this.team.key];
             },
             set: function (newValue) {
@@ -184,20 +263,30 @@ Vue.component('spielerscore', {
     }
 });
 
+/**
+ * (Anzeige des) Ergebnis eines Spiels (zwei Spieler gegeneinander oder ein Doppel)
+ */
 Vue.component('spielergebnis', {
     props: ['index'],
-    data: function () { return { spielplan: data.spielplan }; },
+    data: function () {
+        return {spielplan: data.spielplan};
+    },
     template: '<span>{{ this.spielplan[this.index].result }}</span>'
 });
 
+/**
+ * (Anzeige des) Gesamtstands Legs
+ */
 Vue.component('legsstand', {
     props: ['index'],
     template: '<span class="legsstand">{{ legsstand[1] }}:{{ legsstand[2] }}</span>',
-    data: function () { return { spielplan: data.spielplan }; },
+    data: function () {
+        return {spielplan: data.spielplan};
+    },
     computed: {
         legsstand: {
             get: function () {
-                return this.spielplan.reduce(function(acc, currentValue, currentIndex) {
+                return this.spielplan.reduce(function (acc, currentValue, currentIndex) {
                     if (currentIndex <= acc[0]) {
                         if (currentValue.scores && currentValue.scores.home != null && currentValue.scores.away != null) {
                             acc[1] += currentValue.scores.home;
@@ -205,21 +294,25 @@ Vue.component('legsstand', {
                         }
                     }
                     return acc;
-                }, [this.index,0,0]);
+                }, [this.index, 0, 0]);
             }
         }
     }
 });
 
-
+/**
+ * (Anzeige des) Gesamtstands Punkte (Spielstand)
+ */
 Vue.component('spielstand', {
     props: ['index'],
     template: '<span class="spielstand">{{ spielstand[1] }}:{{ spielstand[2] }}</span>',
-    data: function () { return { spielplan: data.spielplan }; },
+    data: function () {
+        return {spielplan: data.spielplan};
+    },
     computed: {
         spielstand: {
             get: function () {
-                return this.spielplan.reduce(function(acc, currentValue, currentIndex) {
+                return this.spielplan.reduce(function (acc, currentValue, currentIndex) {
                     if (currentIndex <= acc[0]) {
                         if (currentValue.scores.home !== null && currentValue.scores.away !== null) {
                             if (currentValue.scores.home > currentValue.scores.away) {
@@ -230,20 +323,26 @@ Vue.component('spielstand', {
                         }
                     }
                     return acc;
-                }, [this.index,0,0]);
+                }, [this.index, 0, 0]);
             }
         }
     }
 });
 
 /**
- * The vuejs app
+ * Die Vue.js App
  */
 var app = new Vue({
     el: '#app',
     data: data,
-    created: function() {
-        this.spielplan.forEach(function(entry) {
+    created: function () {
+        if (this.home.lineup.length == 0) {
+            this.home.lineup = this.make_lineuparray(this.num_players);
+        }
+        if (this.away.lineup.length == 0) {
+            this.away.lineup = this.make_lineuparray(this.num_players);
+        }
+        this.spielplan.forEach(function (entry) {
             if (typeof entry.scores == "undefined") {
                 console.log("setze scores");
                 entry.scores = {home: null, away: null};
@@ -252,21 +351,26 @@ var app = new Vue({
                 entry.result = null;
             }
         });
-        if (this.home.players.length == 0) {
-            this.home.available.forEach(function (entry) {
-                this.home.players.push({id: entry.id});
+        if (this.home.played.length == 0) {
+            this.spielplan.forEach(function (entry, i) {
+                this.home.played.push({ids: entry.home, slot: i + 1});
+                this.away.played.push({ids: entry.away, slot: i + 1});
             }, this);
         }
-        if (this.away.players.length == 0) {
-            this.away.available.forEach(function (entry) {
-                this.away.players.push({id: entry.id});
-            }, this);
-        }
+        console.log(JSON.stringify(this.$data));
     },
     computed: {
         // für DEBUG {{ showdata }}
-        showData: function() {
+        showData: function () {
             return JSON.stringify(this.$data, null, 9);
+        }
+    },
+    methods: {
+        make_lineuparray: function (n) {
+            var arr = Array.apply(null, Array(n));
+            return arr.map(function (x, i) {
+                return 0
+            });
         }
     }
 });
@@ -277,9 +381,13 @@ var app = new Vue({
  * rückgängig machen, da sonst Vue nicht funktioniert
  */
 
-window.addEvent('domready', function() {
-    $$('.styled_select').each(function(el) { el.remove()});
+window.addEvent('domready', function () {
+    $$('.styled_select').each(function (el) {
+        el.remove()
+    });
     //$$('select').each(function(el) { el.setStyle('opacity', 1)} );
     // we don't use inline style, so remove it completely
-    $$('select').each(function(el) { el.removeProperty('style')}) ;
+    $$('select').each(function (el) {
+        el.removeProperty('style')
+    });
 });

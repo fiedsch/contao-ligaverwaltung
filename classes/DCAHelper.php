@@ -349,14 +349,17 @@ class DCAHelper
     public
     static function getHomeSpielerForSelect($dc)
     {
+        $initial = [0=>"Kein Spieler ID 0)"];
+
         if (!$dc->activeRecord->pid) {
-            return [];
+            return $initial;
         }
         $begegnung = \BegegnungModel::findById($dc->activeRecord->pid);
         if (!$begegnung) {
-            return [];
+            return $initial;
         }
-        $result = [];
+
+        $result = $initial;
         $spieler = \SpielerModel::findByPid($begegnung->home);
         if ($spieler) {
             foreach ($spieler as $sp) {
@@ -375,11 +378,17 @@ class DCAHelper
      */
     public static function getAwaySpielerForSelect($dc)
     {
+        $initial = [0=>"Kein Spieler ID 0)"];
+
         if (!$dc->activeRecord->pid) {
-            return [];
+            return $initial;
         }
         $begegnung = \BegegnungModel::findById($dc->activeRecord->pid);
-        $result = [];
+        if (!$begegnung) {
+            return $initial;
+        }
+
+        $result = $initial;
         $spieler = \SpielerModel::findByPid($begegnung->away);
         if ($spieler) {
             $member = $spieler->getRelated('member_id');
@@ -411,12 +420,12 @@ class DCAHelper
                 if ($memberHome) {
                     $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
                 } else {
-                    $memberHomeDisplayname = "Kein Spieler für ID " . $row['home'];
+                    $memberHomeDisplayname = "Kein Spieler (ID " . $row['home'] . ")";
                 }
                 if ($memberAway) {
                     $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
                 } else {
-                    $memberAwayDisplayname = "Kein Spieler für ID " . $row['away'];
+                    $memberAwayDisplayname = "Kein Spieler (ID " . $row['away'] . ")";
                 }
                 return sprintf("(%d) <span class='%s'>%s</span> : <span class='%s'>%s</span> <span class='tl_gray'>%d:%d</span>",
                     $row['slot'],
@@ -441,22 +450,22 @@ class DCAHelper
                 if ($memberHome) {
                     $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
                 } else {
-                    $memberHomeDisplayname = "Kein Spieler für ID " . $row['home'];
+                    $memberHomeDisplayname = "Kein Spieler (ID " . $row['home'] . ")";
                 }
                 if ($memberHome2) {
                     $memberHome2Displayname = sprintf("%s, %s", $memberHome2->lastname, $memberHome2->firstname);
                 } else {
-                    $memberHome2Displayname = "Kein Spieler für ID " . $row['home2'];
+                    $memberHome2Displayname = "Kein Spieler (ID " . $row['home2'] . ")";
                 }
                 if ($memberAway) {
                     $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
                 } else {
-                    $memberAwayDisplayname = "Kein Spieler für ID " . $row['away'];
+                    $memberAwayDisplayname = "Kein Spieler (ID " . $row['away'] . ")";
                 }
                 if ($memberAway2) {
                     $memberAway2Displayname = sprintf("%s, %s", $memberAway2->lastname, $memberAway2->firstname);
                 } else {
-                    $memberAway2Displayname = "Kein Spieler für ID " . $row['away2'];
+                    $memberAway2Displayname = "Kein Spieler (ID " . $row['away2'] . ")";
                 }
                 return sprintf("(%d) <span class='%s'>%s + %s</span> : <span class='%s'>%s + %s</span> <span class='tl_gray'>%d:%d</span>",
                     $row['slot'],
