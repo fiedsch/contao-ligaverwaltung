@@ -8,6 +8,10 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'tables' => ['tl_spielort'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/spielort.gif'
         ],
+        'liga.aufsteller'   => [
+            'tables' => ['tl_aufsteller'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/aufsteller.gif'
+        ],
         'liga.saison'     => [
             'tables' => ['tl_saison'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/saison.gif'

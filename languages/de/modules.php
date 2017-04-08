@@ -13,6 +13,11 @@ $GLOBALS['TL_LANG']['MOD']['liga.spielort'] = [
     'Verwaltung von Spielorten',
 ];
 
+$GLOBALS['TL_LANG']['MOD']['liga.aufsteller'] = [
+    'Aufsteller',
+    'Verwaltung von Aufstellern',
+];
+
 $GLOBALS['TL_LANG']['MOD']['liga.saison'] = [
     'Saisons',
     'Verwaltung von Saisons',

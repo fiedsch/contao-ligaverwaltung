@@ -8,6 +8,8 @@
 
 $GLOBALS['TL_LANG']['tl_spielort']['title_legend'] = 'Titel';
 
+$GLOBALS['TL_LANG']['tl_spielort']['details_legend'] = 'Details';
+
 $GLOBALS['TL_LANG']['tl_spielort']['new'] = [
     'Neuen Spielort erstellen',
     'Einen neuen Spielort erstellen',
@@ -60,4 +62,9 @@ $GLOBALS['TL_LANG']['tl_spielort']['street'] = [
 $GLOBALS['TL_LANG']['tl_spielort']['city'] = [
     'Ort',
     'Ort',
+];
+
+$GLOBALS['TL_LANG']['tl_spielort']['aufsteller'] = [
+    'Aufsteller',
+    'Aufsteller',
 ];

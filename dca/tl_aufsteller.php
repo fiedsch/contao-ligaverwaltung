@@ -6,7 +6,7 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-$GLOBALS['TL_DCA']  ['tl_spielort'] = [
+$GLOBALS['TL_DCA']  ['tl_aufsteller'] = [
     'config' => [
         'dataContainer'    => 'Table',
         'enableVersioning' => true,
@@ -39,23 +39,23 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
         ],
         'operations'        => [
             'edit'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spielort']['edit'],
+                'label' => &$GLOBALS['TL_LANG']['tl_aufsteller']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.gif',
             ],
             'copy'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spielort']['copy'],
+                'label' => &$GLOBALS['TL_LANG']['tl_aufsteller']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
             'delete' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_spielort']['delete'],
+                'label'      => &$GLOBALS['TL_LANG']['tl_aufsteller']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
             'show'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_spielort']['show'],
+                'label' => &$GLOBALS['TL_LANG']['tl_aufsteller']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
@@ -63,18 +63,18 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name;{details_legend},phone,website,street,postal,city,aufsteller',
+        'default' => '{title_legend},name;{details_legend},phone,website,street,postal,city',
     ],
 
     'fields' => [
-        'id'         => [
+        'id'      => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp'     => [
+        'tstamp'  => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'name'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['name'],
+        'name'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['name'],
             'sorting'   => true,
             'search'    => true,
             'exclude'   => true,
@@ -83,8 +83,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
-        'street'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['street'],
+        'street'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['street'],
             'sorting'   => false,
             'search'    => false,
             'exclude'   => true,
@@ -92,8 +92,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 128, 'tl_class' => 'long'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
-        'postal'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['postal'],
+        'postal'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['postal'],
             'sorting'   => false,
             'search'    => false,
             'exclude'   => true,
@@ -101,8 +101,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
             'sql'       => "varchar(32) NOT NULL default ''",
         ],
-        'city'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['city'],
+        'city'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['city'],
             'sorting'   => false,
             'search'    => false,
             'exclude'   => true,
@@ -110,8 +110,8 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'phone'      => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['phone'],
+        'phone'   => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['phone'],
             'sorting'   => false,
             'search'    => false,
             'exclude'   => true,
@@ -119,22 +119,13 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'      => ['maxlength' => 64, 'tl_class' => 'w50', 'rgxp' => 'phone'],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
-        'website'    => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_spielort']['website'],
+        'website' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_aufsteller']['website'],
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
-            'eval'      => ['rgxp' => 'url', 'maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['rgxp' => 'url', 'maxlength' => 255, 'feEditable' => true, 'feViewable' => true, 'feGroup' => 'contact', 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
-        ],
-        'aufsteller' => [
-            'label'      => &$GLOBALS['TL_LANG']['tl_spielort']['aufsteller'],
-            'exclude'    => true,
-            'search'     => true,
-            'inputType'  => 'select',
-            'foreignKey' => 'tl_aufsteller.name',
-            'eval'       => ['tl_class' => 'w50','includeBlankOption'=>true],
-            'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
     ],
 ];
