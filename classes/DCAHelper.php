@@ -368,13 +368,15 @@ class DCAHelper
         if ($spieler) {
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
-                $result[$sp->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+                $result[$sp->id] = sprintf("%s, %s",
+                        $member->lastname,
+                        $member->firstname
+                        );
             }
         }
         // Nach Namen sortieren
-        usort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
-        // Kein Spieler als erstes listen:
-        array_unshift($result, "Kein Spieler (ID 0)");
+        uasort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
+
         return $result;
     }
 
@@ -402,9 +404,15 @@ class DCAHelper
             $member = $spieler->getRelated('member_id');
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
-                $result[$sp->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+                $result[$sp->id] = sprintf("%s, %s",
+                        $member->lastname,
+                        $member->firstname
+                    );
             }
         }
+        // Nach Namen sortieren
+        uasort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
+
         return $result;
     }
 
@@ -569,6 +577,7 @@ class DCAHelper
                 $mannschaft->getRelated('liga')->getRelated('saison')->name
             );
         }
+        $result[0] = "alle Mannschaften";// z.B. für "Spielerranking" einer gesamten Liga
         return $result;
     }
 

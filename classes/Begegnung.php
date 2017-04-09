@@ -18,6 +18,10 @@ namespace Fiedsch\Liga;
 class Begegnung
 {
 
+    const PUNKTE_GEWONNEN      = 3;
+    const PUNKTE_UNENTSCHIEDEN = 1;
+    const PUNKTE_VERLOREN      = 0;
+
     /**
      * @var array
      */
@@ -25,9 +29,6 @@ class Begegnung
 
     /**
      * Begegnung constructor.
-     *
-     * @param int $score_home
-     * @param int $score_away
      */
     public function __construct()
     {
@@ -44,12 +45,12 @@ class Begegnung
     /**
      * @return int
      */
-    public function getScoreHome()
+    public function getLegsHome()
     {
         $result = 0;
         /** @var Spiel $spiel */
         foreach ($this->spiele as $spiel) {
-            $result += $spiel->getScoreHome();
+            $result += $spiel->getLegsHome();
         }
         return $result;
     }
@@ -57,45 +58,93 @@ class Begegnung
     /**
      * @return int
      */
-    public function getScoreAway()
+    public function getLegsAway()
     {
         $result = 0;
         /** @var Spiel $spiel */
         foreach ($this->spiele as $spiel) {
-            $result += $spiel->getScoreAway();
+            $result += $spiel->getLegsAway();
         }
         return $result;
     }
 
     /**
+     * 3 Punkte bei Sieg, 1 bei unentschieden, 0 bei verloren
+     *
      * @return int
      */
     public function getPunkteHome()
     {
-        $score_home = $this->getScoreHome();
-        $score_away = $this->getScoreAway();
-        if ($score_home == $score_away) {
-            return 1;
+        $legs_home = $this->getLegsHome();
+        $legs_away = $this->getLegsAway();
+        if ($legs_home == $legs_away) {
+            return self::PUNKTE_UNENTSCHIEDEN;
         }
-        return $score_home > $score_away ? 3 : 0;
+        return $legs_home > $legs_away ? self::PUNKTE_GEWONNEN : self::PUNKTE_VERLOREN;
+    }
+
+    /**
+     * 3 Punkte bei Sieg, 1 bei unentschieden, 0 bei verloren
+     *
+     * @return int
+     */
+    public function getPunkteAway()
+    {
+        $legs_home = $this->getLegsHome();
+        $legs_away = $this->getLegsAway();
+        if ($legs_home == $legs_away) {
+            return self::PUNKTE_UNENTSCHIEDEN;
+        }
+        return $legs_home > $legs_away ? self::PUNKTE_VERLOREN : self::PUNKTE_GEWONNEN;
     }
 
     /**
      * @return int
      */
-    public function getPunkteAway()
-    {
-        $score_home = $this->getScoreHome();
-        $score_away = $this->getScoreAway();
-        if ($score_home == $score_away) {
-            return 1;
-        }
-        return $score_home > $score_away ? 0 : 3;
-    }
-
     public function getNumSpiele()
     {
         return count($this->spiele);
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isGewonnenHome()
+    {
+        return $this->getPunkteHome() == self::PUNKTE_GEWONNEN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGewonnenAway()
+    {
+        return $this->getPunkteAway() == self::PUNKTE_GEWONNEN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnentschieden()
+    {
+        return $this->getPunkteHome() == self::PUNKTE_UNENTSCHIEDEN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVerlorenHome()
+    {
+        return $this->getPunkteHome() == self::PUNKTE_VERLOREN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVerlorenAway()
+    {
+        return $this->getPunkteAway() == self::PUNKTE_VERLOREN;
     }
 
     /**
@@ -109,10 +158,10 @@ class Begegnung
     public static function compareMannschaftResults($a, $b)
     {
         if ($a['punkte_self'] == $b['punkte_self']) {
-            if ($a['score_self'] == $b['score_self']) {
+            if ($a['legs_self'] == $b['legs_self']) {
                 return 0;
             }
-            return $a['score_self'] < $b['score_self'] ? +1 : -1;
+            return $a['legs_self'] < $b['legs_self'] ? +1 : -1;
         }
         return $a['punkte_self'] < $b['punkte_self'] ? +1 : -1;
     }

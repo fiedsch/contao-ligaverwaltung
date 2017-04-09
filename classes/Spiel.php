@@ -35,46 +35,107 @@ class Spiel
     /**
      * @return int
      */
-    public function getScoreHome()
+    public function getSpieleHome()
     {
-        return $this->data['score_home'];
+        if ($this->data['legs_home'] == $this->data['legs_away']) {
+            return 0;
+        }
+        return $this->data['legs_home'] > $this->data['legs_away'] ? 1 : 0;
     }
 
     /**
      * @return int
      */
-    public function getScoreAway()
+    public function getSpieleAway()
     {
-        return $this->data['score_away'];
+        if ($this->data['legs_home'] == $this->data['legs_away']) {
+            return 0;
+        }
+        return $this->data['legs_home'] > $this->data['legs_away'] ? 0 : 1;
     }
 
     /**
-     * Achtung: $this->data['spieltype'] (Einzel oder Doppel) wird nicht berücksichtigt,
-     * d.h. beide Spielarten werden gleich "bepunktet".
-     *
+     * @return int
+     */
+    public function getLegsHome()
+    {
+        return $this->data['legs_home'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getLegsAway()
+    {
+        return $this->data['legs_away'];
+    }
+
+    /**
      * @return int
      */
     public function getPunkteHome()
     {
-        if ($this->data['score_home'] == $this->data['score_away']) {
-            return 0;
-        }
-        return $this->data['score_home'] > $this->data['score_away'] ? 1 : 0;
+        return $this->getPunkte(sprintf("%d:%d", $this->data['legs_home'], $this->data['legs_away']));
     }
 
     /**
-     * Achtung: $this->data['spieltype'] (Einzel oder Doppel) wird nicht berücksichtigt,
-     * d.h. beide Spielarten werden gleich "bepunktet".
-     *
      * @return int
      */
-    public
-    function getPunkteAway()
+    public function getPunkteAway()
     {
-        if ($this->data['score_home'] == $this->data['score_away']) {
-            return 0;
+        return $this->getPunkte(sprintf("%d:%d", $this->data['legs_away'], $this->data['legs_home']));
+    }
+
+    /**
+     * Das Punktesystem ist abhäng von der Liga, da nicht in allen Ligen die gleiche Anzahl
+     * von Legs gespielt wird (best of X legs).
+     * Hier: Universalmethode, da sich die Spielergebnisse der verschiedenen
+     * Systeme gegenseitig ausschließen!
+     * Bsp.: "3:1" => es wurde best of 5 gespielt, bei best of 3 kann es kein "3:1" geben!
+     *
+     * @param string $score
+     */
+    public function getPunkte($score)
+    {
+        switch ($score) {
+            // mögliche Ergebnisse bei "best of 3"
+            case '2:0':
+                return 3;
+                break;
+            case '2:1':
+                return 2;
+                break;
+            case '1:2':
+                return 1;
+                break;
+            case '0:2':
+                return 0;
+                break;
+
+            // mögliche Ergebnisse bei "best of 5"
+            case '3:0':
+                return 5;
+                break;
+            case '3:1':
+                return 4;
+                break;
+            case '3:2':
+                return 3;
+                break;
+            case '2:3':
+                return 2;
+                break;
+            case '1:3':
+                return 1;
+                break;
+            case '0:3':
+                return 0;
+                break;
+
+            default:
+                \System::log("nicht vorgesehenes Spielergebnis ".$score, __METHOD__, TL_ERROR);
+                return 0;
         }
-        return $this->data['score_home'] > $this->data['score_away'] ? 0 : 1;
     }
 
 
@@ -89,10 +150,20 @@ class Spiel
     public static function compareSpielerResults($a, $b)
     {
         if ($a['punkte_self'] == $b['punkte_self']) {
-            if ($a['score_self'] == $b['score_self']) {
+            if ($a['legs_self'] == $b['legs_self']) {
                 return 0;
             }
-            return $a['score_self'] < $b['score_self'] ? +1 : -1;
+            /*
+             // Leg-Differenz
+            if ($a['legs_self'] - $a['legs_other'] == $b['legs_self'] - $b['legs_other']) {
+                return 0;
+            }
+            */
+            return $a['legs_self'] < $b['legs_self'] ? +1 : -1;
+            /*
+             // Leg-Differenz
+            return $a['legs_self'] - $a['legs_other'] < $b['legs_self'] - $b['legs_other']  ? +1 : -1;
+            */
         }
         return $a['punkte_self'] < $b['punkte_self'] ? +1 : -1;
     }
