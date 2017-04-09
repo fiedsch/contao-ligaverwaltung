@@ -86,8 +86,8 @@ class ContentRanking extends \ContentElement
 
         $spiele = \Database::getInstance()
             ->prepare("SELECT 
-                          s.score_home AS score_home,
-                          s.score_away AS score_away,
+                          s.score_home AS legs_home,
+                          s.score_away AS legs_away,
                           b.home AS team_home,
                           b.away AS team_away
                           FROM tl_spiel s
@@ -113,40 +113,66 @@ class ContentRanking extends \ContentElement
         /** @var \Fiedsch\Liga\Begegnung $begegnung */
         foreach ($begegnungen as $key => $begegnung) {
             list($home, $away) = explode(':', $key);
+
+            // Begegnungen: Mannschaft gegen Mannschaft
+
             $results[$home]['begegnungen'] += 1;
             $results[$away]['begegnungen'] += 1;
-            $results[$home]['spiele'] += $begegnung->getNumSpiele();
-            $results[$away]['spiele'] += $begegnung->getNumSpiele();
 
-            $results[$home]['score_self'] += $begegnung->getScoreHome();
-            $results[$away]['score_self'] += $begegnung->getScoreAway();
-            $results[$home]['score_other'] += $begegnung->getScoreAway();
-            $results[$away]['score_other'] += $begegnung->getScoreHome();
+            // Legs (Ergebnis von Spieler gegen Spieler)
+
+            $results[$home]['legs_self'] += $begegnung->getLegsHome();
+            $results[$away]['legs_self'] += $begegnung->getLegsAway();
+            $results[$home]['legs_other'] += $begegnung->getLegsAway();
+            $results[$away]['legs_other'] += $begegnung->getLegsHome();
+
+            // Punkte für die Begegnung
 
             $results[$home]['punkte_self'] += $begegnung->getPunkteHome();
             $results[$away]['punkte_self'] += $begegnung->getPunkteAway();
+
             $results[$home]['punkte_other'] += $begegnung->getPunkteAway();
             $results[$away]['punkte_other'] += $begegnung->getPunkteHome();
+
+            $results[$home]['gewonnen'] += $begegnung->isGewonnenHome() ? 1 : 0;
+            $results[$home]['unentschieden'] += $begegnung->isUnentschieden() ? 1 : 0;
+            $results[$home]['verloren'] += $begegnung->isVerlorenHome() ? 1 : 0;
+
+            $results[$away]['gewonnen'] += $begegnung->isGewonnenAway() ? 1 : 0;
+            $results[$away]['unentschieden'] += $begegnung->isUnentschieden() ? 1 : 0;
+            $results[$away]['verloren'] += $begegnung->isVerlorenAway() ? 1 : 0;
         }
 
-        usort($results, function($a, $b) {
+        uasort($results, function($a, $b) {
             return \Fiedsch\Liga\Begegnung::compareMannschaftResults($a, $b);
         });
 
         // Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
-        $lastscore = PHP_INT_MAX;
+        $lastlegs = PHP_INT_MAX;
         $rang = 0;
         foreach ($results as $id => $data) {
-            $results[$id]['name'] = \MannschaftModel::findById($id)->name;
+            $mannschaft = \MannschaftModel::findById($id);
+            $mannschaftlabel = $mannschaft->name;
+            if ($mannschaft->teampage) {
+                $teampage = \PageModel::findById($mannschaft->teampage);
+                $mannschaftlabel = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl($teampage->row()),
+                    $mannschaft->name
+                );
+            }
+            $results[$id]['name'] = $mannschaftlabel;
             $results[$id]['rang'] = $rang;
-            if ($results[$id]['punkte_self'] < $lastpunkte || $results[$id]['score_self'] < $lastscore) {
+            if ($results[$id]['punkte_self'] < $lastpunkte
+                || $results[$id]['legs_self'] < $lastlegs
+            ) {
                 $results[$id]['rang'] = ++$rang;
             }
             $lastpunkte = $results[$id]['punkte_self'];
-            $lastscore = $results[$id]['score_self'];
+            $lastlegs = $results[$id]['legs_self'];
         }
 
+        $this->Template->rankingtype = 'mannschaften';
         $this->Template->listitems = $results;
     }
 
@@ -160,14 +186,12 @@ class ContentRanking extends \ContentElement
      */
     protected function compileSpielerranking()
     {
-        $mannschaft = \MannschaftModel::findById($this->mannschaft);
 
-        $this->Template->subject = 'Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
+        // TODO: Unterschiedliche Berechnungsweise in den versch. Ligen
 
-        $spiele = \Database::getInstance()
-            ->prepare("SELECT 
-                          s.score_home AS score_home,
-                          s.score_away AS score_away,
+        $sql = "SELECT 
+                          s.score_home AS legs_home,
+                          s.score_away AS legs_away,
                           s.home AS player_home,
                           s.away AS player_away,
                           b.home AS team_home,
@@ -175,45 +199,120 @@ class ContentRanking extends \ContentElement
                           FROM tl_spiel s
                           LEFT JOIN tl_begegnung b
                           ON (s.pid=b.id)
-                          WHERE 
-                            b.home=? OR b.away=? 
-                              AND s.spieltype=1" // nur "Einzel"
-            )->execute($this->mannschaft, $this->mannschaft);
+                          WHERE s.spieltype=1"; // nur "Einzel"
+
+        if ($this->mannschaft > 0) {
+            // eine bestimmte Mannschaft
+            $mannschaft = \MannschaftModel::findById($this->mannschaft);
+            $this->Template->subject = 'Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
+            $sql .= " AND b.home=? OR b.away=?";
+            $spiele = \Database::getInstance()
+                ->prepare($sql)->execute($this->mannschaft, $this->mannschaft);
+        } else {
+            // alle Mannschaften
+            $this->Template->subject = 'Ranking aller Spieler';
+            $spiele = \Database::getInstance()
+                ->prepare($sql)->execute();
+        }
 
         $results = [];
 
         while ($spiele->next()) {
-            $heimspiel = $spiele->team_home == $this->mannschaft;
-            $spiel = new Spiel($spiele->row());
-            $player = $heimspiel ? $spiele->player_home : $spiele->player_away;
 
-            $results[$player]['begegnungen'][] = sprintf("%s:%s", $spiele->team_home, $spiele->team_away);
-            $results[$player]['spiele'] += 1;
-            $results[$player]['score_self'] += $heimspiel ? $spiel->getScoreHome() : $spiel->getScoreAway();
-            $results[$player]['score_other'] += $heimspiel ? $spiel->getScoreAway() : $spiel->getScoreHome();
-            $results[$player]['punkte_self'] += $heimspiel ? $spiel->getPunkteHome() : $spiel->getPunkteAway();
-            $results[$player]['punkte_other'] += $heimspiel ? $spiel->getPunkteAway() : $spiel->getPunkteHome();
+            $spiel = new Spiel($spiele->row());
+
+            $begegnung = sprintf("%s:%s", $spiele->team_home, $spiele->team_away);
+
+            $results[$spiele->player_home]['name']
+                = \SpielerModel::getMemberNameById($spiele->player_home);
+            $results[$spiele->player_away]['name']
+                = \SpielerModel::getMemberNameById($spiele->player_away);
+
+            $mannschaft_home = \MannschaftModel::findById($spiele->team_home);
+            $mannschaft_away = \MannschaftModel::findById($spiele->team_away);
+
+            $results[$spiele->player_home]['mannschaft_id'] = $spiele->team_home;
+            $results[$spiele->player_home]['mannschaft'] = $mannschaft_home->name;
+
+            if ($mannschaft_home->teampage) {
+                $results[$spiele->player_home]['mannschaft'] = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl(\PageModel::findById($mannschaft_home->teampage)->row()),
+                    $results[$spiele->player_home]['mannschaft']
+                );
+            }
+            if ($mannschaft_away->teampage) {
+                $results[$spiele->player_away]['mannschaft'] = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl(\PageModel::findById($mannschaft_away->teampage)->row()),
+                    $results[$spiele->player_away]['mannschaft']
+                    );
+            }
+
+            $results[$spiele->player_away]['mannschaft_id'] = $spiele->team_away;
+            $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->name;
+
+            $results[$spiele->player_home]['begegnungen'][$begegnung]++;
+            $results[$spiele->player_home]['spiele'] += 1;
+            $results[$spiele->player_home]['spiele_self'] += $spiel->getSpieleHome();
+            $results[$spiele->player_home]['spiele_other'] += $spiel->getSpieleAway();
+            $results[$spiele->player_home]['legs_self'] += $spiel->getLegsHome();
+            $results[$spiele->player_home]['legs_other'] += $spiel->getLegsAway();
+            $results[$spiele->player_home]['punkte_self'] += $spiel->getPunkteHome();
+            $results[$spiele->player_home]['punkte_other'] += $spiel->getPunkteAway();
+
+            $results[$spiele->player_away]['begegnungen'][$begegnung]++;
+            $results[$spiele->player_away]['spiele'] += 1;
+            $results[$spiele->player_away]['spiele_self'] += $spiel->getSpieleAway();
+            $results[$spiele->player_away]['spiele_other'] += $spiel->getSpieleHome();
+            $results[$spiele->player_away]['legs_self'] += $spiel->getLegsAway();
+            $results[$spiele->player_away]['legs_other'] += $spiel->getLegsHome();
+            $results[$spiele->player_away]['punkte_self'] += $spiel->getPunkteAway();
+            $results[$spiele->player_away]['punkte_other'] += $spiel->getPunkteHome();
         }
 
-        usort($results, function($a, $b) {
+        // ID 0 ist der Platzhalter für "kein Spieler" (z.B. bei "nicht angetreten"),
+        // was uns im Ranking nicht interessiert
+        unset($results[0]);
+
+        // Bei mannschaftsinternen Rankings alle Spieler löschen, die nicht
+        // zur betrachteten Mannschaft gehören.
+        if ($this->mannschaft > 0) {
+            foreach ($results as $id => $data) {
+                if ($data['mannschaft_id'] != $this->mannschaft)
+                unset($results[$id]);
+            }
+        }
+
+        uasort($results, function($a, $b) {
             return Spiel::compareSpielerResults($a, $b);
         });
 
         // Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
-        $lastscore = PHP_INT_MAX;
+        $lastlegs = PHP_INT_MAX;
         $rang = 0;
+
         foreach ($results as $id => $data) {
-            $member = \MemberModel::findById($id);
-            $results[$id]['name'] = sprintf("%s, %s", $member->lastname, $member->firstname);
-            // reduce; ein Spieler kann während einer Begegnung mehrere Spiele machen
-            $results[$id]['begegnungen'] = count(array_values(array_unique($results[$id]['begegnungen'])));
+            $results[$id]['anzahl_spiele'] = array_sum($results[$id]['begegnungen']);
+            $results[$id]['anzahl_begegnungen'] = count($results[$id]['begegnungen']);
+
             $results[$id]['rang'] = $rang;
-            if ($results[$id]['punkte_self'] < $lastpunkte || $results[$id]['score_self'] < $lastscore) {
+            if ($results[$id]['punkte_self'] < $lastpunkte
+                || $results[$id]['legs_self'] < $lastlegs
+            ) {
                 $results[$id]['rang'] = ++$rang;
             }
+
             $lastpunkte = $results[$id]['punkte_self'];
-            $lastscore = $results[$id]['score_self'];
+            $lastlegs = $results[$id]['legs_self'];
+        }
+
+        //print "<pre>".print_r($results, true)."</pre>";
+
+        $this->Template->rankingtype = 'spieler';
+        if ($this->mannschaft > 0) {
+            $this->Template->rankingsubtype = 'mannschaft';
+        } else {
+            $this->Template->rankingsubtype = 'alle';
         }
 
         $this->Template->listitems = $results;

@@ -53,9 +53,9 @@ class ContentSpielplan extends \ContentElement
             $liga->name,
             $saison->name
         );
-        $suffix =sprintf("%s %s", $ligalabel, $filter);
+        $suffix = sprintf("%s %s", $ligalabel, $filter);
         $objTemplate->title = $this->headline;
-        $objTemplate->wildcard = "### ".$GLOBALS['TL_LANG']['CTE']['spielplan'][0]." $suffix ###";
+        $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['spielplan'][0] . " $suffix ###";
         // $objTemplate->id = $this->id;
         // $objTemplate->link = 'the text that will be linked with href';
         // $objTemplate->href = 'contao/main.php?do=article&amp;table=tl_content&amp;act=edit&amp;id=' . $this->id;
@@ -94,26 +94,52 @@ class ContentSpielplan extends \ContentElement
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
             $spielort = $home->getRelated('spielort');
-            $listitem = sprintf("%s : %s (%d. Spieltag %s; %s)",
-                $home->name,
-                $away->name,
-                $begegnung->spiel_tag,
-                \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am),
-                $spielort->name
-            );
-            if ($this->filtermannschaft) {
-                $listitem = sprintf("<span class='%s'>%s</span>",
-                    $home->id === $this->filtermannschaft
-                            ? 'home'
-                            : $away->id === $this->filtermannschaft ? 'away' : '',
-                    $listitem
+
+            $homelabel = $home->name;
+            if ($home->teampage) {
+                $teampage = \PageModel::findById($home->teampage);
+                $homelabel = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl($teampage->row()),
+                    $home->name
+                );
+            }
+            $awaylabel = $away->name;
+            if ($away->teampage) {
+                $teampage = \PageModel::findById($away->teampage);
+                $awayabel = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl($teampage->row()),
+                    $away->name
+                );
+            }
+            $spielortlabel = $spielort->name;
+            if ($spielort->spielortpage) {
+                $spielortpage = \PageModel::findById($spielort->spielortpage);
+                $spielortlabel = sprintf("<a href='%s'>%s</a>",
+                    \Controller::generateFrontendUrl($spielortpage->row()),
+                    $spielort->name
                 );
             }
 
-            $listitems[] = $listitem;
+            $spiel = [
+                'home' => $homelabel,
+                'away' => $awaylabel,
+                'am'   => sprintf("%s. %s",
+                        \Date::parse('D', $begegnung->spiel_am),
+                        \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
+                    ),
+                'um'   => \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
+                'im'   => $spielortlabel,
+            ];
+            if ($this->filtermannschaft) {
+                $spiel['heimspiel'] = $home->id == $this->filtermannschaft;
+            }
+
+            $spiele[$begegnung->spiel_tag][] = $spiel;
         }
 
-        $this->Template->listitems = $listitems;
+        $this->Template->filtermannschaft = $this->filtermannschaft;
+
+        $this->Template->spiele = $spiele;
 
     }
 

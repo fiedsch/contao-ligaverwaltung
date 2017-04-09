@@ -64,6 +64,11 @@ $GLOBALS['TL_LANG']['tl_spielort']['city'] = [
     'Ort',
 ];
 
+$GLOBALS['TL_LANG']['tl_spielort']['spielortpage'] = [
+    'Spielort-Seite',
+    'Optionale Seite mit Informationen zu diesem Spielort'
+];
+
 $GLOBALS['TL_LANG']['tl_spielort']['aufsteller'] = [
     'Aufsteller',
     'Aufsteller',

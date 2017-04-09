@@ -63,7 +63,7 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name;{details_legend},phone,website,street,postal,city,aufsteller',
+        'default' => '{title_legend},name;{details_legend},phone,website,street,postal,city,spielortpage,aufsteller',
     ],
 
     'fields' => [
@@ -136,5 +136,15 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'eval'       => ['tl_class' => 'w50','includeBlankOption'=>true],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
+        'spielortpage' => [
+            'label'      => &$GLOBALS['TL_LANG']['tl_spielort']['spielortpage'],
+            'inputType'  => 'pageTree',
+            'exclude'    => true,
+            'search'     => false,
+            'filter'     => false,
+            'sorting'    => false,
+            'eval'       => ['mandatory' => false, 'multiple'=>false, 'fieldType'=>'radio'],
+            'sql'        => "blob NULL",
+        ]
     ],
 ];

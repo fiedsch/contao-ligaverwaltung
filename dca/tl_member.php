@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['passnummer'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_member']['passnummer'],
     'inputType' => 'text',
     'search'    => true,
-    'eval'      => ['rgxp'=>'alnum','tl_class'=>'w50','maxlength'=>32],
+    'eval'      => ['rgxp'=>'alnum','tl_class'=>'w50','maxlength'=>32, 'unique'=>true],
     'sql'       => "varchar(32) NOT NULL default ''",
 ];
 

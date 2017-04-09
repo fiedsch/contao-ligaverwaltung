@@ -2,13 +2,89 @@
 
 <?php $this->block('content'); ?>
 
-<?php if ($this->listitems): ?>
-  <ul>
-    <?php foreach ($this->listitems as $listitem): ?>
-      <li><?= $listitem ?></li>
+<?php if ($this->spiele): ?>
+
+<?php
+  preg_match("/h(\d+)/", $this->hl, $matches);
+  $sublevel = 1 + $matches[1]; // ein Level "unter" der Überschrift des Content Elements
+?>
+
+    <?php if ($this->filtermannschaft): // nur eine langer Block ?>
+      <table class="spielplan table table-hover">
+      <tbody>
+    <?php endif; ?>
+
+    <?php foreach ($this->spiele as $spieltag => $spiele): ?>
+        <?php if ($this->filtermannschaft): ?>
+          <?php // keine Zwischenüberschriften bei Spielplan einer Mannschaft ?>
+        <?php else: ?>
+          <h<?= $sublevel ?>><?= $spieltag ?>. Spieltag</h<?= $sublevel ?>>
+          <table class="spielplan table table-hover"> <?php // ein Block je Spieltag ?>
+          <tbody>
+        <?php endif; ?>
+        <?php foreach ($spiele as $spiel): ?>
+            <tr class="spiel">
+            <?php if ($this->filtermannschaft): ?>
+            <?php printf("
+            <td class='spiel am'>%s, %s</td>
+            <td class='spiel where'>%s</td>
+            <td class='spiel against'>%s</td>
+            <td class='spiel ort'>%s</td>",
+                            $spiel['am'],
+                            $spiel['um'],
+                            $spiel['heimspiel'] ? 'zuhause' :'auswärts',
+                            $spiel['heimspiel'] ? $spiel['away'] : $spiel['home'],
+                            $spiel['im']
+                            );
+                          ?>
+            <?php else: ?>
+              <?php printf("
+              <td class='spiel am'>%s, %s</td>
+              <td class='spiel home'>%s</td>
+              <td class='spiel away'>%s</td>
+              <td class='spiel ort'>%s</td>",
+                    $spiel['am'],
+                    $spiel['um'],
+                    $spiel['home'],
+                    $spiel['away'],
+                    $spiel['im']
+                );
+              ?>
+            <?php endif; ?>
+            </tr>
+        <?php endforeach; ?>
+        <?php if ($this->filtermannschaft): ?>
+        <?php else: ?>
+        </tbody>
+        </table>
+        <?php endif; ?>
     <?php endforeach; ?>
-  </ul>
+
+    <?php if ($this->filtermannschaft): ?>
+      </tbody>
+      </table>
+    <?php endif; ?>
+
 <?php endif; ?>
+
+<style>
+td.spiel.am      {  width: 12em; }
+td.spiel.home,
+td.spiel.away,
+td.spiel.against { width: 8em; }
+td.spiel.ort     { width: 20em; }
+td.spiel.where   { width: 10em; }
+
+.table > tbody > tr:last-child > td {
+    border-bottom: 1px solid #ddd;
+}
+
+/*
+td.spiel.home { background-color: green;}
+td.spiel.away { background-color: red;}
+td.spiel.against { background-color: red; }
+*/
+</style>
 
 <?php $this->endblock(); ?>
 

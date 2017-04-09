@@ -95,6 +95,7 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] = '{type_legend},type,he
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'rankingtype';
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['rankingtype_2'] = 'mannschaft';
 // liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
+
 $GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_content']['rankingtype'],
     'exclude'    => true,
