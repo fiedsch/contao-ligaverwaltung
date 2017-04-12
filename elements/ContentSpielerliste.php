@@ -25,22 +25,24 @@ class ContentSpielerliste extends \ContentElement
      */
     public function compile()
     {
-        $mannschaftsspieler = \SpielerModel::findAll([
-            'column' => ['pid=?'],
-            'value'  => [$this->mannschaft],
-            'order'  => 'teamcaptain DESC, co_teamcaptain DESC, lastname ASC, firstname ASC',
-        ]);
-        if ($mannschaftsspieler === null) {
+            $allespieler = \SpielerModel::findAll([
+                'column' => ['pid=?'],
+                'value'  => [$this->mannschaft],
+                'order'  => 'teamcaptain DESC, co_teamcaptain DESC, lastname ASC, firstname ASC',
+            ]);
+
+        if ($allespieler === null) {
             return;
         }
 
         $listitems = [];
-        foreach ($mannschaftsspieler as $spieler) {
+        foreach ($allespieler as $spieler) {
             $member = $spieler->getRelated('member_id');
             $listitems[] = ['member' => $member, 'spieler' => $spieler];
         }
 
-        $this->Template->listitems = $listitems;
+        $this->Template->mannschaft  = $this->mannschaft;
+        $this->Template->listitems   = $listitems;
         $this->Template->showdetails = $this->showdetails;
     }
 

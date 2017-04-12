@@ -43,8 +43,8 @@ class ContentSpielplan extends \ContentElement
 
         $liga = \LigaModel::findById($this->liga);
         $filter = '';
-        if ($this->filtermannschaft) {
-            $mannschaft = \MannschaftModel::findById($this->filtermannschaft);
+        if ($this->mannschaft) {
+            $mannschaft = \MannschaftModel::findById($this->mannschaft);
             $filter = ' (nur Begegnungen von "' . $mannschaft->name . '"")';
         }
         $saison = \SaisonModel::findById($liga->saison);
@@ -73,15 +73,15 @@ class ContentSpielplan extends \ContentElement
         }
         $columns = ['pid=?'];
         $conditions = [$this->liga];
-        if ($this->filtermannschaft) {
+        if ($this->mannschaft) {
             $columns[] = 'home=? OR away=?';
-            $conditions[] = $this->filtermannschaft;
-            $conditions[] = $this->filtermannschaft;
+            $conditions[] = $this->mannschaft;
+            $conditions[] = $this->mannschaft;
         }
         $begegnungen = \BegegnungModel::findBy(
             $columns,
             $conditions,
-            ['order' => 'spiel_tag ASC']
+            ['order' => 'spiel_tag ASC, spiel_am ASC']
         );
 
         if ($begegnungen === null) {
@@ -106,7 +106,7 @@ class ContentSpielplan extends \ContentElement
             $awaylabel = $away->name;
             if ($away->teampage) {
                 $teampage = \PageModel::findById($away->teampage);
-                $awayabel = sprintf("<a href='%s'>%s</a>",
+                $awaylabel = sprintf("<a href='%s'>%s</a>",
                     \Controller::generateFrontendUrl($teampage->row()),
                     $away->name
                 );
@@ -130,14 +130,14 @@ class ContentSpielplan extends \ContentElement
                 'um'   => \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
                 'im'   => $spielortlabel,
             ];
-            if ($this->filtermannschaft) {
-                $spiel['heimspiel'] = $home->id == $this->filtermannschaft;
+            if ($this->mannschaft) {
+                $spiel['heimspiel'] = $home->id == $this->mannschaft;
             }
 
             $spiele[$begegnung->spiel_tag][] = $spiel;
         }
 
-        $this->Template->filtermannschaft = $this->filtermannschaft;
+        $this->Template->mannschaft = $this->mannschaft;
 
         $this->Template->spiele = $spiele;
 

@@ -561,6 +561,7 @@ class DCAHelper
      */
     public static function getAlleMannschaftenForSelect(\DataContainer $dc)
     {
+
         $result = [];
         if ($dc->activeRecord->liga) {
             $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga, ['order' => 'name ASC']);
@@ -577,7 +578,11 @@ class DCAHelper
                 $mannschaft->getRelated('liga')->getRelated('saison')->name
             );
         }
-        $result[0] = "alle Mannschaften";// z.B. für "Spielerranking" einer gesamten Liga
+        // nicht bei der Spielerliste, da wir dort zusätzlich eine Auswahl der
+        // Liga bräuchten, damit "alle Mannschaften" Sinn ergibt
+        if ($dc->activeRecord->type !== 'spielerliste') {
+            $result[0] = "alle Mannschaften";// z.B. für "Spielerranking" einer gesamten Liga
+        }
         return $result;
     }
 

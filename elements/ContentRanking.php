@@ -234,6 +234,9 @@ class ContentRanking extends \ContentElement
             $results[$spiele->player_home]['mannschaft_id'] = $spiele->team_home;
             $results[$spiele->player_home]['mannschaft'] = $mannschaft_home->name;
 
+            $results[$spiele->player_away]['mannschaft_id'] = $spiele->team_away;
+            $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->name;
+
             if ($mannschaft_home->teampage) {
                 $results[$spiele->player_home]['mannschaft'] = sprintf("<a href='%s'>%s</a>",
                     \Controller::generateFrontendUrl(\PageModel::findById($mannschaft_home->teampage)->row()),
@@ -246,9 +249,6 @@ class ContentRanking extends \ContentElement
                     $results[$spiele->player_away]['mannschaft']
                     );
             }
-
-            $results[$spiele->player_away]['mannschaft_id'] = $spiele->team_away;
-            $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->name;
 
             $results[$spiele->player_home]['begegnungen'][$begegnung]++;
             $results[$spiele->player_home]['spiele'] += 1;
