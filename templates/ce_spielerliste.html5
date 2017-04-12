@@ -3,9 +3,10 @@
 <?php $this->block('content'); ?>
 
 <?php if ($this->listitems): ?>
-  <ul>
+  <table class="table table-hover table-condensed">
+  <tbody>
     <?php foreach ($this->listitems as $listitem): ?>
-      <li>
+      <tr>
       <?php
       $details = '';
       if ($this->showdetails) {
@@ -23,17 +24,16 @@
         }
       }
       $teamcaptain_suffix = '';
-      if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= " (TC$details)";    }
-      if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= " (Co-TC$details)"; }
-
-      printf("%s, %s%s",
-                                $listitem['member']->lastname,
-                                $listitem['member']->firstname,
-                                $teamcaptain_suffix
-                                );
-      ?></li>
+      if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= " TC$details";    }
+      if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= " Co-TC$details"; }
+      ?>
+        <td><?= $listitem['member']->lastname ?>, <?= $listitem['member']->firstname ?></td>
+        <td>Spielerpass: <?= $listitem['member']->passnummer ?></td>
+        <td><?= $teamcaptain_suffix ?></td>
+      </tr>
     <?php endforeach; ?>
-  </ul>
+    </tbody>
+  </table>
 <?php endif; ?>
 
 <?php $this->endblock(); ?>
