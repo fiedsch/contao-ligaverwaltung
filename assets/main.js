@@ -199,7 +199,7 @@ Vue.component('spielerselect', {
             if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) {
                 return false;
             }
-            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') {
+            if (spiel.scores[this.team.key] === '' || spiel.scores[other] === '') {
                 return false;
             }
             return spiel.scores[this.team.key] > spiel.scores[other];
@@ -210,7 +210,7 @@ Vue.component('spielerselect', {
             if (spiel.scores[this.team.key] == null || spiel.scores[other] == null) {
                 return false;
             }
-            if (spiel.scores[this.team.key] == '' || spiel.scores[other] == '') {
+            if (spiel.scores[this.team.key] === '' || spiel.scores[other] === '') {
                 return false;
             }
             return spiel.scores[this.team.key] < spiel.scores[other];
@@ -242,7 +242,7 @@ Vue.component('spielerscore', {
             },
             set: function (newValue) {
                 var current = this.spielplan[this.index];
-                current.scores[this.team.key] = newValue == '' ? null : newValue;
+                current.scores[this.team.key] = newValue === '' ? null : newValue;
                 // Wenn beide Ergebnisse vorliegen gibt es das Gesamtergebnis (Seiteneffekt: result setzen)
                 var result = null;
                 if (current.scores['home'] != null && current.scores['away'] != null) {
