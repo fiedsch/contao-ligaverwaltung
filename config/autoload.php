@@ -21,20 +21,20 @@ ClassLoader::addClasses([
     'ContentSpielplan'            => 'system/modules/ligaverwaltung/elements/ContentSpielplan.php',
     'ContentSpielortinfo'         => 'system/modules/ligaverwaltung/elements/ContentSpielortinfo.php',
     'ContentRanking'              => 'system/modules/ligaverwaltung/elements/ContentRanking.php',
+    'ContentMannschaftsseite'     => 'system/modules/ligaverwaltung/elements/ContentMannschaftsseite.php',
 
     // Models
     'SpielerModel'                => 'system/modules/ligaverwaltung/models/SpielerModel.php',
     'SpielortModel'               => 'system/modules/ligaverwaltung/models/SpielortModel.php',
-    'MannschaftModel'             => 'system/modules/ligaverwaltung/models/MannschaftModel.php',
-    'LigaModel'                   => 'system/modules/ligaverwaltung/models/LigaModel.php',
-    'SaisonModel'                 => 'system/modules/ligaverwaltung/models/SaisonModel.php',
-    'BegegnungModel'              => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
-    'SpielModel'                  => 'system/modules/ligaverwaltung/models/SpielModel.php',
-    'VerbandModel'                => 'system/modules/ligaverwaltung/models/VerbandModel.php',
+    'MannschaftModel'           => 'system/modules/ligaverwaltung/models/MannschaftModel.php',
+    'LigaModel'                 => 'system/modules/ligaverwaltung/models/LigaModel.php',
+    'SaisonModel'               => 'system/modules/ligaverwaltung/models/SaisonModel.php',
+    'BegegnungModel'            => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
+    'SpielModel'                => 'system/modules/ligaverwaltung/models/SpielModel.php',
+    'VerbandModel'              => 'system/modules/ligaverwaltung/models/VerbandModel.php',
 
     // Modules
-    'ModuleMannschaftsseite'      => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseite.php',
-    'ModuleBegegnungserfassung'   => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',
+    'ModuleBegegnungserfassung' => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',
 ]);
 
 TemplateLoader::addFiles([
@@ -44,6 +44,6 @@ TemplateLoader::addFiles([
     'ce_spielplan'           => 'system/modules/ligaverwaltung/templates',
     'ce_spielortinfo'        => 'system/modules/ligaverwaltung/templates',
     'ce_ranking'             => 'system/modules/ligaverwaltung/templates',
-    'mod_mannschaftsseite'   => 'system/modules/ligaverwaltung/templates',
+    'ce_mannschaftsseite'    => 'system/modules/ligaverwaltung/templates',
     'be_begegnungserfassung' => 'system/modules/ligaverwaltung/templates',
 ]);

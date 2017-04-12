@@ -65,17 +65,9 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['showdetails'] = [
     'sql'       => "char(1) NOT NULL default ''",
 ];
 /* Spielplan */
-$GLOBALS['TL_DCA']['tl_content']['palettes']['spielplan'] = '{type_legend},type,headline;{filter_legend},liga,filtermannschaft;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
-// $GLOBALS['TL_DCA']['tl_content']['fields']['liga'] = [ ... ]; // bereits bei der Mannschaftsliste definiert!
-$GLOBALS['TL_DCA']['tl_content']['fields']['filtermannschaft'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_content']['filtermannschaft'],
-    'exclude'          => true,
-    'foreignKey'       => '',
-    'inputType'        => 'select',
-    'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
-    'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAlleMannschaftenForSelect'],
-    'sql'              => "int(10) unsigned NOT NULL default '0'",
-];
+$GLOBALS['TL_DCA']['tl_content']['palettes']['spielplan'] = '{type_legend},type,headline;{filter_legend},liga,mannschaft;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+// liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
+
 
 /* Spielortinfo */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['spielortinfo'] = '{type_legend},type,headline,spielort;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
@@ -104,3 +96,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
     'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'submitOnChange'=>true],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];
+
+/* Mannschaftsseite */
+$GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{title_legend},type,headline,name,mannschaft';
+// mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert

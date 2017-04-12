@@ -36,7 +36,7 @@ $GLOBALS['TL_LANG']['CTE']['spielplan'] = [
     'Spielplan aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
 ];
 
-$GLOBALS['TL_LANG']['FMD']['mannschaftsseite'] = [
+$GLOBALS['TL_LANG']['CTE']['mannschaftsseite'] = [
     'Mannschaftsseite',
     'Mannschaftsseite bündelt mehrere Contentelemente (Spielortinfo, Spielerliste, ...)',
 ];

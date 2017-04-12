@@ -7,18 +7,18 @@
  */
 
 /**
- * Module "Mannschaftsseite".
+ * Content Element "Mannschaftsseite".
  *
  * @author Andreas Fieger <https://github.com/fiedsch>
  */
-class ModuleMannschaftsseite extends \Module
+class ContentMannschaftsseite extends \ContentElement
 {
     /**
      * Template
      *
      * @var string
      */
-    protected $strTemplate = 'mod_mannschaftsseite';
+    protected $strTemplate = 'ce_mannschaftsseite';
 
     /**
      * @return string
@@ -29,11 +29,9 @@ class ModuleMannschaftsseite extends \Module
             /** @var \BackendTemplate|object $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['mannschaftsseite'][0]) . ' ###';
-            $objTemplate->title = $this->headline;
+            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['CTE']['mannschaftsseite'][0]) . ' ###';
             $objTemplate->id = $this->id;
-            $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->link = $this->headline;
 
             return $objTemplate->parse();
         }
@@ -72,7 +70,7 @@ class ModuleMannschaftsseite extends \Module
         $contentModel = new \ContentModel();
         $contentModel->type = 'spielplan';
         $contentModel->liga = $mannschaftModel->liga;
-        $contentModel->filtermannschaft = $mannschaftModel->id;
+        $contentModel->mannschaft = $mannschaftModel->id;
         $contentModel->headline = [
             'value' => 'Spielplan ' . $mannschaftModel->name,
             'unit'  => 'h2',
