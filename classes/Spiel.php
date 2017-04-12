@@ -133,7 +133,7 @@ class Spiel
                 break;
 
             default:
-                \System::log("nicht vorgesehenes Spielergebnis ".$score, __METHOD__, TL_ERROR);
+                //\System::log("nicht vorgesehenes Spielergebnis ".$score, __METHOD__, TL_ERROR);
                 return 0;
         }
     }
