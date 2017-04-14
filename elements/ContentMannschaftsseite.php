@@ -39,9 +39,33 @@ class ContentMannschaftsseite extends \ContentElement
         return parent::generate();
     }
 
+    /**
+     * Add the following to fe_page.html5 or (if using Bootsrap for Contao) to fe_bootstrap_xx.html5:
+     * ```
+     * <?php if (!strpos($head, "description") === false): ?>
+     * <meta name="description" content="<?php echo $this->description; ?>">
+     * <?php endif; ?>
+     * ```
+     *
+     * @param string $content
+     */
+    protected function addDescriptionToTlHead($content)
+    {
+        if ($GLOBALS['TL_HEAD']) {
+            foreach ($GLOBALS['TL_HEAD'] as $i => $entry) {
+                if (preg_match("/description/", $entry)) {
+                    unset($GLOBALS['TL_HEAD'][$i]);
+                }
+            }
+        }
+        $GLOBALS['TL_HEAD'][] = sprintf('<meta name="description" content="%s">', $content);
+    }
+
     public function compile()
     {
         $mannschaftModel = \MannschaftModel::findById($this->mannschaft);
+
+        $this->addDescriptionToTlHead("Alles zur Mannschaft " . $mannschaftModel->name);
 
         // Spielortinfo
         $contentModel = new \ContentModel();
