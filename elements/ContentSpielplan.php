@@ -121,14 +121,15 @@ class ContentSpielplan extends \ContentElement
             }
 
             $spiel = [
-                'home' => $homelabel,
-                'away' => $awaylabel,
-                'am'   => sprintf("%s. %s",
-                        \Date::parse('D', $begegnung->spiel_am),
-                        \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
-                    ),
-                'um'   => \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
-                'im'   => $spielortlabel,
+                'home'  => $homelabel,
+                'away'  => $awaylabel,
+                'am'    => sprintf("%s. %s",
+                    \Date::parse('D', $begegnung->spiel_am),
+                    \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
+                ),
+                'um'    => \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
+                'im'    => $spielortlabel,
+                'score' => $begegnung->getScore(),
             ];
             if ($this->mannschaft) {
                 $spiel['heimspiel'] = $home->id == $this->mannschaft;
