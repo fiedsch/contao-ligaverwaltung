@@ -28,7 +28,9 @@
             <?php printf("
             <td class='spiel am'>%s, %s</td>
             <td class='spiel where'>%s</td>
-            <td class='spiel against'>%s</td>
+            <td class='spiel home'>%s</td>
+            <td class='spiel away'>%s</td>
+            <!-- <td class='spiel against'>%s</td> -->
             <td class='spiel ort'>%s</td>
             <td class='spiel score'>%s</td>",
                             $spiel['am'],
@@ -36,6 +38,8 @@
                             $spiel['heimspiel']
                                 ? '<i class="fa fa-lg fa-home" aria-hidden="true" title="zuhause"></i><span class="sr-only">zuhause</span>'
                                 :' <i class="fa fa-car" aria-hidden="true" title="auswärts"></i><span class="sr-only">auswärts</span>',
+                            $spiel['home'],
+                            $spiel['away'],
                             $spiel['heimspiel'] ? $spiel['away'] : $spiel['home'],
                             $spiel['im'],
                             $spiel['score']
@@ -82,14 +86,11 @@ td.spiel.against { width: 8em; }
 td.spiel.ort     { width: 20em; }
 td.spiel.where   { width: 10em; }
 
+/* endweder scoped (nur für Spielplan) oder in zentraler (S)CSS-Datei */
+/*
 .table > tbody > tr:last-child > td {
     border-bottom: 1px solid #ddd;
 }
-
-/*
-td.spiel.home { background-color: green;}
-td.spiel.away { background-color: red;}
-td.spiel.against { background-color: red; }
 */
 </style>
 

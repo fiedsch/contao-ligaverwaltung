@@ -5,30 +5,45 @@
 <?php if ($this->listitems): ?>
   <table class="table table-hover table-condensed">
   <tbody>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Spielerpass</th>
+        <?php if ($this->showdetails) { ?>
+        <th>Kontakt</th>
+        <?php } ?>
+    </tr>
+    </thead>
+    <tbody>
     <?php foreach ($this->listitems as $listitem): ?>
       <tr>
       <?php
-      $details = '';
-      if ($this->showdetails) {
-        if ($listitem['member']->mobile) {
-            $details .= sprintf(" <a href='tel:%s'>%s</a>",
-                $listitem['member']->mobile,
-                $listitem['member']->mobile
-                );
-        }
-        if ($listitem['member']->email) {
-            $details .= sprintf(" <a href='%s'>%s</a>",
-                \StringUtil::encodeEmail('mailto:'.$listitem['member']->email),
-                \StringUtil::encodeEmail($listitem['member']->email)
-            );
-        }
-      }
       $teamcaptain_suffix = '';
-      if ($listitem['spieler']->teamcaptain)    { $teamcaptain_suffix .= " TC$details";    }
-      if ($listitem['spieler']->co_teamcaptain) { $teamcaptain_suffix .= " Co-TC$details"; }
+      if (
+            $this->showdetails
+            &&
+            ($listitem['spieler']->teamcaptain || $listitem['spieler']->co_teamcaptain)
+         ) {
+            $details = [];
+            if ($listitem['spieler']->teamcaptain)    { $details[] = "TC";    }
+            if ($listitem['spieler']->co_teamcaptain) { $details[] = "Co-TC"; }
+            if ($listitem['member']->mobile) {
+                $details[] = sprintf("<a href='tel:%s'>%s</a>",
+                    $listitem['member']->mobile,
+                    $listitem['member']->mobile
+                    );
+            }
+            if ($listitem['member']->email) {
+                $details[] = sprintf("<a href='%s'>%s</a>",
+                    \StringUtil::encodeEmail('mailto:'.$listitem['member']->email),
+                    \StringUtil::encodeEmail($listitem['member']->email)
+                );
+            }
+            $teamcaptain_suffix = join(", ", $details);
+      }
       ?>
         <td><?= $listitem['member']->lastname ?>, <?= $listitem['member']->firstname ?></td>
-        <td>Spielerpass: <?= $listitem['member']->passnummer ?></td>
+        <td><?= $listitem['member']->passnummer ?></td>
         <td><?= $teamcaptain_suffix ?></td>
       </tr>
     <?php endforeach; ?>
