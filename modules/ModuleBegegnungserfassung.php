@@ -349,7 +349,8 @@ class ModuleBegegnungserfassung extends \BackendModule
         if (!\Input::get('id')) {
             $jsCodeLines[] = '// ID der Begegnung nicht angegeben';
         } else {
-            $message  = '\nDie Funktion \”eine bereits erfasste Begegnung nochmal bearbeiten\" fehlt noch.';
+            $message  = '\nFalls Du bereits Daten erfasst haben solltest:';
+            $message .= '\ndie Funktion \”eine bereits erfasste Begegnung nochmal bearbeiten\" fehlt noch.';
             $message .= '\nSorry!';
             $message .= '\nFalls etwas geändert werden muss, am einfachsten unter Begegnungen das zugehörige';
             $message .= '\neinzelne Spiel bearbeiten';
