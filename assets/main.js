@@ -179,6 +179,8 @@ Vue.component('spielerselect', {
             },
             set: function (value) {
                 this.team.played[this.index].ids[0] = value;
+                // force update:
+                this.team.played.push(this.team.played.pop());
             }
         },
         selected2: {
@@ -191,6 +193,8 @@ Vue.component('spielerselect', {
             },
             set: function (value) {
                 this.team.played[this.index].ids[1] = value;
+                // force update:
+                this.team.played.push(this.team.played.pop());
             }
         },
         isWinner: function () {
