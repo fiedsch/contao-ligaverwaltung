@@ -10,7 +10,9 @@
 Vue.component('lineupplayerselect', {
     props: {
         available: Array, // jeweils ID und Name der verfügbaren Spieler
+        lineup: Array, // IDs der Aufgestellten Spieler in der Reihenfolge der Aufstellung
         slotNumber: Number,
+        suffix: String,
     },
     data: function () {
             return {
@@ -18,13 +20,22 @@ Vue.component('lineupplayerselect', {
             };
     },
     template: '<div>\
+          <span class="slot">{{ suffix}}{{ slotNumber}}</span>\
           <select v-model="selected">\
-            <option v-for="a in available" :value="a.id">{{ a.name }}</option>\
+            <option \
+            :class="{ isNotAvailable: !isAvailable(a.id) }"\
+            :disabled="!isAvailable(a.id)"\
+            v-for="a in available" :value="a.id">{{ a.name }}</option>\
           </select>\
           </div>',
     watch: {
         selected: function() {
             this.$emit("lineupplayerchanged", this.slotNumber, this.selected);
+        }
+    },
+    methods: {
+        isAvailable: function(id) {
+            return id == 0 || !this.lineup.contains(id);
         }
     }
 });
@@ -37,21 +48,20 @@ Vue.component('teamlineup', {
       <div>\
         <h2>{{ name }}</h2>\
         <div v-for="i in slots">\
-        <lineupplayerselect :slotNumber="i" :available="available" @lineupplayerchanged="lineupplayerchanged"></lineupplayerselect>\
+        <lineupplayerselect :suffix="suffix" :slotNumber="i" :available="available" :lineup="lineup" @lineupplayerchanged="lineupplayerchanged"></lineupplayerselect>\
     </div></div>',
     props: {
         name: String, // Name des Teams
+        suffix: String,
         available: Array, // jeweils ID und Name der verfügbaren Spieler
         lineup: Array, // IDs der aufgestellten Spieler
         slots: Number // Anzahl Spieler, die benannt (aufgestellt) werden können
     },
     methods: {
         lineupplayerchanged: function(slotnumber, selected) {
-            console.log("lineupplayerchanged("+slotnumber + ", " + selected+")");
             this.lineup[slotnumber-1] = selected;
             // make change "visible" (this most likely is not the proper way)
-            this.lineup.push('x');
-            this.lineup.pop();
+            this.lineup.push(this.lineup.pop());
         }
     }
 });
@@ -68,10 +78,10 @@ Vue.component('teamlineup', {
     template: '\
     <div>\
     <div style="width:45%;float:left">\
-      <teamlineup :name="home.name" :available="home.available" :lineup="home.lineup" :slots="slots"></teamlineup>\
+      <teamlineup :name="home.name" suffix="H" :available="home.available" :lineup="home.lineup" :slots="slots"></teamlineup>\
     </div>\
     <div style="width:45%;float:left">\
-      <teamlineup :name="away.name" :available="away.available" :lineup="away.lineup" :slots="slots"></teamlineup>\
+      <teamlineup :name="away.name" suffix="G" :available="away.available" :lineup="away.lineup" :slots="slots"></teamlineup>\
     </div>\
     </div>'
 });
@@ -115,7 +125,7 @@ Vue.component('tablebody', {
     template: '\
     <tbody>\
         <tr v-for="(spiel,index) in spielplan">\
-            <td>{{ index+1 }}</td>\
+            <td><span class="slot">{{ index+1 }}</span></td>\
             <td><spielerselect :team="home" :position="spiel.home" :index="index"></spielerselect></td>\
             <td><spielerselect :team="away" :position="spiel.away" :index="index"></spielerselect></td>\
             <td><spielerscore :team="home" :index="index"></spielerscore></td>\
@@ -145,7 +155,9 @@ Vue.component('spielerselect', {
     <select \
       v-model="selected"  v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
       :name="selectname" tabindex="-1">\
-        <option v-for="lineupindex in team.lineup.length" :value="lineupindex-1">{{ spielername(lineupindex-1) }}</option>\
+        <option \
+            v-for="lineupindex in team.lineup.length" \
+            :value="lineupindex-1">{{ spielername(lineupindex-1) }}</option>\
     </select><select\
       v-if="isDouble"\
       v-model="selected2" v-bind:class="{ double: isDouble, winner: isWinner, loser: isLoser }"\
@@ -162,8 +174,8 @@ Vue.component('spielerselect', {
                 return v.id === spielerid;
             });
             if (player.length==0) { return "Kein Name für Pos. "+index; }
-
-            return player[0].name;
+            var suffix = this.team.key == 'home' ? "H" : "G";
+            return "("+suffix+(index+1)+") " + player[0].name;
         }
     },
     computed: {
@@ -348,7 +360,7 @@ var app = new Vue({
         }
         this.spielplan.forEach(function (entry) {
             if (typeof entry.scores == "undefined") {
-                console.log("setze scores");
+                //console.log("setze scores");
                 entry.scores = {home: null, away: null};
             }
             if (typeof entry.result == "undefined") {
@@ -361,7 +373,7 @@ var app = new Vue({
                 this.away.played.push({ids: entry.away, slot: i + 1});
             }, this);
         }
-        console.log(JSON.stringify(this.$data));
+        //console.log(JSON.stringify(this.$data));
     },
     computed: {
         // für DEBUG {{ showdata }}
