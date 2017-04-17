@@ -22,7 +22,9 @@ input::-webkit-inner-spin-button {
 }
 input[type='number'] {
     -moz-appearance:textfield;
+    width: 2em;
 }
+
 
 select.winner { background-color: #dff0d8; color: #3c763d; }
 /*select.loser  { background-color: #f2dede; color: #a94442; }*/
@@ -30,3 +32,10 @@ select.winner { background-color: #dff0d8; color: #3c763d; }
 /* Contaos Einstellungen (die auf ein oder Zweispalter abzielen) überschreiben */
 .styled_select { width: 150px; }
 .styled_select.double { width: 75px; }
+
+/* Ein Spieler kann nur an einer Position spielen. Sobald er gewählt wurde
+ist er nicht mehr verfügbar (Note: does not work with macOS-webkit Browsers!) */
+select option.isNotAvailable {
+    color: #ccc;
+    text-decoration: line-through;
+}
