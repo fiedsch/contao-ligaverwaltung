@@ -252,8 +252,8 @@ class ContentRanking extends \ContentElement
 
             $results[$spiele->player_home]['begegnungen'][$begegnung]++;
             $results[$spiele->player_home]['spiele'] += 1;
-            $results[$spiele->player_home]['spiele_self'] += $spiel->getSpieleHome();
-            $results[$spiele->player_home]['spiele_other'] += $spiel->getSpieleAway();
+            $results[$spiele->player_home]['spiele_self'] += $spiel->getScoreHome();
+            $results[$spiele->player_home]['spiele_other'] += $spiel->getScoreAway();
             $results[$spiele->player_home]['legs_self'] += $spiel->getLegsHome();
             $results[$spiele->player_home]['legs_other'] += $spiel->getLegsAway();
             $results[$spiele->player_home]['punkte_self'] += $spiel->getPunkteHome();
@@ -261,8 +261,8 @@ class ContentRanking extends \ContentElement
 
             $results[$spiele->player_away]['begegnungen'][$begegnung]++;
             $results[$spiele->player_away]['spiele'] += 1;
-            $results[$spiele->player_away]['spiele_self'] += $spiel->getSpieleAway();
-            $results[$spiele->player_away]['spiele_other'] += $spiel->getSpieleHome();
+            $results[$spiele->player_away]['spiele_self'] += $spiel->getScoreAway();
+            $results[$spiele->player_away]['spiele_other'] += $spiel->getScoreHome();
             $results[$spiele->player_away]['legs_self'] += $spiel->getLegsAway();
             $results[$spiele->player_away]['legs_other'] += $spiel->getLegsHome();
             $results[$spiele->player_away]['punkte_self'] += $spiel->getPunkteAway();

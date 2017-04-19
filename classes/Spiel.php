@@ -33,9 +33,11 @@ class Spiel
     }
 
     /**
+     * Vgl. auch \SpielModel::getScore()
+     *
      * @return int
      */
-    public function getSpieleHome()
+    public function getScoreHome()
     {
         if ($this->data['legs_home'] == $this->data['legs_away']) {
             return 0;
@@ -44,9 +46,11 @@ class Spiel
     }
 
     /**
+     * Vgl. auch \SpielModel::getScore()
+     *
      * @return int
      */
-    public function getSpieleAway()
+    public function getScoreAway()
     {
         if ($this->data['legs_home'] == $this->data['legs_away']) {
             return 0;
@@ -79,6 +83,8 @@ class Spiel
     }
 
     /**
+     * Punkte für die Rangliste
+     *
      * @return int
      */
     public function getPunkteAway()
