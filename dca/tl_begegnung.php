@@ -132,6 +132,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'foreignKey'       => 'tl_liga.name',
             'eval'             => ['submitOnChange' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAktiveLigenForSelect'],
+            'relation'         => ['type' => 'belongsTo'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'home'      => [

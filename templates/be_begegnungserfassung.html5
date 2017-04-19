@@ -32,7 +32,20 @@
 </pre>
 </div>
 
-<script src="system/modules/ligaverwaltung/assets/spielplan.js"></script>
+<?php
+switch($this->spielplan) {
+  case \LigaModel::SPIELPLAN_16E2D:
+    $sp = '16E2D';
+    break;
+  case \LigaModel::SPIELPLAN_16E4D:
+    $sp = '16E4D';
+    break;
+  default:
+    $sp = '16E2D';
+}
+?>
+<script src="system/modules/ligaverwaltung/assets/spielplan.<?= $sp ?>.js"></script>
+
 <script>
 /**
  * Global data objects

@@ -272,9 +272,14 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         $this->Template->NUM_PLAYERS = self::NUM_PLAYERS;
 
+        $spielplan = \LigaModel::SPIELPLAN_16E2D; // default
+
         // Teams belegen
         $begegnung = \BegegnungModel::findById(\Input::get('id'));
         if (null !== $begegnung) {
+
+            $spielplan = $begegnung->getRelated('pid')->spielplan;
+
             $this->Template->begegnung = $begegnung->id;
             $team_name['home'] = $begegnung->getRelated('home')->name;
             $team_name['away'] = $begegnung->getRelated('away')->name;
@@ -327,6 +332,7 @@ class ModuleBegegnungserfassung extends \BackendModule
             $this->Template->team_away_players = join(',', $team_away);
         }
 
+        $this->Template->spielplan = $spielplan;
         $this->generatePatchSpielplanCode();
 
     }
@@ -337,7 +343,7 @@ class ModuleBegegnungserfassung extends \BackendModule
      * Frage: wie können wir das lineup aus den Ergebnissen aus played rekonstruieren?
      * Oder: müssen wir den zugehörigen spielplan auch speichern? Dieser ist keine
      * Konstante (z.B. in der Bezirksliga anders). Dies ist aber ohnehin ein weiteres
-     * TODO, da im Javascript Code die "konstante" spielplan.js eingebunden wird.
+     * TODO, da im Javascript Code die "konstante" spielplan.16E2D.js eingebunden wird.
      *
      */
 

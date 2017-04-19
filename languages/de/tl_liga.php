@@ -68,3 +68,8 @@ $GLOBALS['TL_LANG']['tl_liga']['spielstaerke'] = [
     'Spielstärke',
     'Die Spielstärke wird verwendet, um ggf. Ligen zu sortieren. (1=höchste Spielstärke).'
 ];
+
+$GLOBALS['TL_LANG']['tl_liga']['spielplan'] = [
+    'Spielplan',
+    'Der Spielplan bestimmt, welche Spieler wann gegeneinander spielen'
+];

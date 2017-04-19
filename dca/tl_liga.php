@@ -94,22 +94,22 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name,saison,aktiv,spielstaerke',
+        'default' => '{title_legend},name,saison,aktiv,spielstaerke,spielplan',
     ],
 
     'fields' => [
-        'id'     => [
+        'id'           => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp' => [
+        'tstamp'       => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'pid'    => [
+        'pid'          => [
             'foreignKey' => 'tl_verband.name',
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
-        'name'   => [
+        'name'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_liga']['name'],
             'sorting'   => true,
             'flag'      => 11, // sort ascending
@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
-        'saison' => [
+        'saison'       => [
             'label'      => &$GLOBALS['TL_LANG']['tl_liga']['saison'],
             'inputType'  => 'select',
             'filter'     => true,
@@ -128,7 +128,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
-        'aktiv'  => [
+        'aktiv'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_liga']['aktiv'],
             'inputType' => 'checkbox',
             'filter'    => true,
@@ -141,8 +141,16 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'inputType' => 'text',
             'filter'    => true,
             'exclude'   => true,
-            'eval'      => ['tl_class' => 'w50','rgxp'=>'digit','tl_class'=>'w50 clr'],
+            'eval'      => ['tl_class' => 'w50', 'rgxp' => 'digit', 'tl_class' => 'w50 clr'],
             'sql'       => "int(10) NOT NULL default '0'",
-        ]
+        ],
+        'spielplan'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_liga']['spielplan'],
+            'inputType' => 'select',
+            'exclude'   => true,
+            'options'   => [\LigaModel::SPIELPLAN_16E2D => '16E,2D', \LigaModel::SPIELPLAN_16E4D => '16E,4D'],
+            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'tl_class' => 'w50'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
+        ],
     ],
 ];
