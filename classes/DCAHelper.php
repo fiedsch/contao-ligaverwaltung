@@ -363,7 +363,7 @@ class DCAHelper
             return $initial;
         }
 
-        $result = []; // $initial;
+        $result = []; //$initial;
         $spieler = \SpielerModel::findByPid($begegnung->home);
         if ($spieler) {
             foreach ($spieler as $sp) {
@@ -398,7 +398,7 @@ class DCAHelper
             return $initial;
         }
 
-        $result = $initial;
+        $result = []; // $initial;
         $spieler = \SpielerModel::findByPid($begegnung->away);
         if ($spieler) {
             $member = $spieler->getRelated('member_id');
