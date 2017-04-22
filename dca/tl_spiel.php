@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'flag'             => 11, // sort ascending
             'inputType'        => 'select',
             'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'mandatory' => false, 'includeBlankOption' => true],
-            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_spieler', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getHomeSpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'flag'             => 11, // sort ascending
             'inputType'        => 'select',
             'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'mandatory' => false, 'includeBlankOption' => true],
-            'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
+            'relation'         => ['type' => 'hasOne', 'table' => 'tl_spieler', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAwaySpielerForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
         ],
