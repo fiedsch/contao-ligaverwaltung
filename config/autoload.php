@@ -17,6 +17,7 @@ ClassLoader::addClasses([
     // Elements
     'ContentLigenliste'           => 'system/modules/ligaverwaltung/elements/ContentLigenliste.php',
     'ContentMannschaftsliste'     => 'system/modules/ligaverwaltung/elements/ContentMannschaftsliste.php',
+    'ContentSpielbericht'         => 'system/modules/ligaverwaltung/elements/ContentSpielbericht.php',
     'ContentSpielerliste'         => 'system/modules/ligaverwaltung/elements/ContentSpielerliste.php',
     'ContentSpielplan'            => 'system/modules/ligaverwaltung/elements/ContentSpielplan.php',
     'ContentSpielortinfo'         => 'system/modules/ligaverwaltung/elements/ContentSpielortinfo.php',
@@ -40,6 +41,7 @@ ClassLoader::addClasses([
 TemplateLoader::addFiles([
     'ce_ligenliste'          => 'system/modules/ligaverwaltung/templates',
     'ce_mannschaftsliste'    => 'system/modules/ligaverwaltung/templates',
+    'ce_spielbericht'        => 'system/modules/ligaverwaltung/templates',
     'ce_spielerliste'        => 'system/modules/ligaverwaltung/templates',
     'ce_spielplan'           => 'system/modules/ligaverwaltung/templates',
     'ce_spielortinfo'        => 'system/modules/ligaverwaltung/templates',

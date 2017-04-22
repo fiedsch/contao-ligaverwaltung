@@ -79,9 +79,19 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['spielort'] = [
     'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
     'foreignKey' => 'tl_spielort.name',
     'sql'        => "int(10) unsigned NOT NULL default '0'",
-    //'sql'              => "blob NULL",
 ];
-
+/* Spielbericht */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['spielbericht'] = '{type_legend},type,headline,begegnung;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['fields']['begegnung'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_content']['begegnung'],
+    'exclude'    => true,
+    'foreignKey' => '',
+    'inputType'  => 'select',
+    'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    'foreignKey' => 'tl_begegnung.id',
+    'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAlleBegegnungen'],
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
+];
 /* Ranking/Tabelle */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] = '{type_legend},type,headline,liga,rankingtype;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'rankingtype';

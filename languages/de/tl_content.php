@@ -51,3 +51,8 @@ $GLOBALS['TL_LANG']['tl_content']['rankingtype'] = [
     'Art des Rankings',
     'Mannschaftsranking: Ranking aller Mannschaften der Liga, Spielerranking: Ranking der Spieler einer Mannschaft.'
 ];
+
+$GLOBALS['TL_LANG']['tl_content']['begegnung'] = [
+    'Begegnung',
+    'Begegnung (Spiel zwischen zwei Mannschaften).'
+];

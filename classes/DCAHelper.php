@@ -586,4 +586,21 @@ class DCAHelper
         return $result;
     }
 
+    /**
+     * Einträge für ein Dropdown in dem die Begegnung ausgewählt werden kann, für die
+     * ein Spielbericht erstellt werden soll.
+     *
+     * @return array
+     */
+    public function getAlleBegegnungen()
+    {
+        $result = [];
+        $begegnungen = \BegegnungModel::findAll(['order'=>'spiel_am ASC']);
+        if ($begegnungen) {
+            foreach ($begegnungen as $begegnung) {
+                $result[$begegnung->id] = $begegnung->getLabel('full');
+            }
+        }
+        return $result;
+    }
 }
