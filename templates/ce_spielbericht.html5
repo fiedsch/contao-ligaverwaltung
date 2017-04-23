@@ -5,13 +5,12 @@
 <h2><?= $this->begegnunglabel ?></h2>
 
 <?php if ($this->spielergebnisse): ?>
-<h2>Spiele</h2>
 
 <table class="table table-hover spielbericht">
 <thead>
 <tr>
-<th>Home (<?= $this->home ?>)</th>
-<th>Away (<?= $this->away ?>)</th>
+<th><?= $this->home ?></th>
+<th><?= $this->away ?></th>
 <th></th>
 </tr>
 </thead>
@@ -26,12 +25,6 @@
 </tbody>
 </table>
 <?php endif; ?>
-
-<style>
-table.spielbericht span.winner {
-  font-weight: bold;
-}
-</style>
 
 <?php $this->endblock(); ?>
 

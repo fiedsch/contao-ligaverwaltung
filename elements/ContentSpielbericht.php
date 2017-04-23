@@ -27,7 +27,7 @@ class ContentSpielbericht extends \ContentElement
             /** @var \BackendTemplate $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
             $objTemplate->title = $this->headline;
-            $begegnunglabel = \BegegnungModel::findById($this->begegnung)->getLabel('medium');
+            $begegnunglabel = \BegegnungModel::findById($this->begegnung)->getLabel('full');
             $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['spielbericht'][0] . " $begegnunglabel ###";
             // $objTemplate->id = $this->id;
             // $objTemplate->link = 'the text that will be linked with href';
@@ -51,8 +51,8 @@ class ContentSpielbericht extends \ContentElement
 
         $this->Template->begegnunglabel = $begegnung->getLabel('full');
 
-        $this->Template->home = 'Home/TODO';
-        $this->Template->away = 'Away/TODO';
+        $this->Template->home = $begegnung->getRelated('home')->name;
+        $this->Template->away = $begegnung->getRelated('away')->name;
 
         $this->Template->spielergebnisse = [];
 

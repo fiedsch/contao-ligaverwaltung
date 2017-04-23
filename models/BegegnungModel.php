@@ -40,12 +40,12 @@ class BegegnungModel extends \Model
     {
         switch ($mode) {
             case 'full':
-                return sprintf("%s:%s (%s; %s %s)",
+                return sprintf("%s:%s (%s %s, %s)",
                     $this->getRelated('home')->name,
                     $this->getRelated('away')->name,
-                    \Date::parse(\Config::get('dateFormat'), $this->spiel_am),
                     $this->getRelated('pid')->name,
-                    $this->getRelated('pid')->getRelated('saison')->name
+                    $this->getRelated('pid')->getRelated('saison')->name,
+                    \Date::parse(\Config::get('dateFormat'), $this->spiel_am)
                 );
                 break;
             case 'medium':
