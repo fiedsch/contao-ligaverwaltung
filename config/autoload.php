@@ -33,6 +33,7 @@ ClassLoader::addClasses([
     'BegegnungModel'            => 'system/modules/ligaverwaltung/models/BegegnungModel.php',
     'SpielModel'                => 'system/modules/ligaverwaltung/models/SpielModel.php',
     'VerbandModel'              => 'system/modules/ligaverwaltung/models/VerbandModel.php',
+    'HighlightModel'            => 'system/modules/ligaverwaltung/models/HighlightModel.php',
 
     // Modules
     'ModuleBegegnungserfassung' => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',

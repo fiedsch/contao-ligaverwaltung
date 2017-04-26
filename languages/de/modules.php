@@ -46,3 +46,8 @@ $GLOBALS['TL_LANG']['MOD']['liga.begegnungserfassung'] = [
     'Ergebniseingabe',
     'Eingabe von mehreren Spielen einer Begegnung auf ein Mal.',
 ];
+
+$GLOBALS['TL_LANG']['MOD']['liga.highlight'] = [
+    'Highlights',
+    'Eingabe Highlights.',
+];

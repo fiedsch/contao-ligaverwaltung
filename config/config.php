@@ -37,6 +37,10 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'callback' => 'ModuleBegegnungserfassung',
             //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
         ],
+        'liga.highlight'  => [
+            'tables' => ['tl_highlight'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/highlights.gif'
+        ],
     ],
 ]);
 

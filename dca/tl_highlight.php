@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @package Ligaverwaltung
+ * @link https://github.com/fiedsch/contao-ligaverwaltung/
+ * @license https://opensource.org/licenses/MIT
+ */
+
+$GLOBALS['TL_DCA']  ['tl_highlight'] = [
+    'config' => [
+        'dataContainer'    => 'Table',
+        'enableVersioning' => true,
+        'sql'              => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+
+    'list' => [
+        'sorting'           => [
+            'mode'         => 2, // Records are sorted by a switchable field
+            'flag'         => 11, // sort ascending
+            'fields'       => ['spieler_id'],
+            'panelLayout'  => 'sort,filter;search,limit',
+            'headerFields' => ['name'],
+        ],
+        'label'             => [
+            'fields'         => ['spieler_id'],
+            'format'         => '%s',
+            'label_callback' => function($row) {
+                $options = \HighlightModel::getOptionsArray();
+                $begegnung = \BegegnungModel::findById($row['begegnung_id']);
+                $result = sprintf("%s: %s", $options[$row['type']], $row['value']);
+                if ($begegnung) {
+                    $result .= ' (in der Begegnung ' . $begegnung->getLabel('short').')';
+                }
+                //$result .= '<br>[Daten: ' . json_encode(func_get_args()) . ' ]';
+                return $result;
+            },
+
+        ],
+        'global_operations' => [
+            'all' => [
+                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href'       => 'act=select',
+                'class'      => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
+        ],
+        'operations'        => [
+            'edit'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_highlight']['edit'],
+                'href'  => 'act=edit',
+                'icon'  => 'edit.gif',
+            ],
+            'copy'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_highlight']['copy'],
+                'href'  => 'act=copy',
+                'icon'  => 'copy.gif',
+            ],
+            'delete' => [
+                'label'      => &$GLOBALS['TL_LANG']['tl_highlight']['delete'],
+                'href'       => 'act=delete',
+                'icon'       => 'delete.gif',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+            ],
+            'show'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_highlight']['show'],
+                'href'  => 'act=show',
+                'icon'  => 'show.gif',
+            ],
+        ],
+    ],
+
+    'palettes' => [
+        'default' => '{details_legend},begegnung_id,spieler_id,type,value',
+    ],
+
+    'fields' => [
+        'id'         => [
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+        ],
+        'tstamp'     => [
+            'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'begegnung_id' => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['begegnung_id'],
+            'inputType'        => 'select',
+            'foreignKey'       => 'tl_begegnung.id',
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getBegegnungenForHighlight'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'tl_class' => 'w50'],
+            // TODO: eval mit submitOnChange, damit bei der spieler_id im callback
+            // bereits eingegrenzt werden kann und nur noch die Spieler der
+            // beiden Mannschaften angeboten werden.
+            'sql'              => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'spieler_id' => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['spieler_id'],
+            'inputType'        => 'select',
+            'foreignKey'       => 'tl_spieler.id',
+            'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForHighlight'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'tl_class' => 'w50'],
+            'sql'              => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'type'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['typ'],
+            'inputType' => 'select',
+            'options'   => \HighlightModel::getOptionsArray(),
+            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'value'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['value'],
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
+            'sql'       => "varchar(64) NOT NULL default ''",
+        ],
+    ],
+];

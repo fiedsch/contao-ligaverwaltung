@@ -603,4 +603,32 @@ class DCAHelper
         }
         return $result;
     }
+
+    /**
+     * @return array
+     */
+    public function getSpielerForHighlight()
+    {
+        $result = [];
+        $spieler = \SpielerModel::findAll();
+        foreach ($spieler as $s) {
+            $result[$s->id] = $s->getFullMemberName();
+        }
+        asort($result);
+        return $result;
+    }
+
+    /**
+     *
+     */
+    public function getBegegnungenForHighlight()
+    {
+        $result = [];
+        $begegnungen = \BegegnungModel::findAll();
+        foreach ($begegnungen as $begegnung) {
+            $result[$begegnung->id] = $begegnung->getLabel($mode = 'full');
+        }
+        asort($result);
+        return $result;
+    }
 }
