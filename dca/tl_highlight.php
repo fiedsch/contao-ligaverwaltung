@@ -33,7 +33,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
                 $begegnung = \BegegnungModel::findById($row['begegnung_id']);
                 $result = sprintf("%s: %s", $options[$row['type']], $row['value']);
                 if ($begegnung) {
-                    $result .= ' (in der Begegnung ' . $begegnung->getLabel('short').')';
+                    $result .= ' (in der Begegnung ' . $begegnung->getLabel('short') . ')';
                 }
                 //$result .= '<br>[Daten: ' . json_encode(func_get_args()) . ' ]';
                 return $result;
@@ -73,15 +73,14 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         ],
     ],
 
-    'palettes' => [
-        'default' => '{details_legend},begegnung_id,spieler_id,type,value',
+    'palettes'    => [
+        'default'      => '{details_legend},begegnung_id,spieler_id;{score_legend},type,value',
     ],
-
-    'fields' => [
-        'id'         => [
+    'fields'      => [
+        'id'           => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp'     => [
+        'tstamp'       => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'begegnung_id' => [
@@ -89,28 +88,28 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'inputType'        => 'select',
             'foreignKey'       => 'tl_begegnung.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getBegegnungenForHighlight'],
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'tl_class' => 'w50'],
+            'eval'             => ['submitOnChange' => true, 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
             // TODO: eval mit submitOnChange, damit bei der spieler_id im callback
             // bereits eingegrenzt werden kann und nur noch die Spieler der
             // beiden Mannschaften angeboten werden.
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
-        'spieler_id' => [
+        'spieler_id'   => [
             'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['spieler_id'],
             'inputType'        => 'select',
             'foreignKey'       => 'tl_spieler.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForHighlight'],
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => true, 'tl_class' => 'w50'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
-        'type'       => [
+        'type'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['typ'],
             'inputType' => 'select',
             'options'   => \HighlightModel::getOptionsArray(),
-            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
-        'value'      => [
+        'value'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['value'],
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],

@@ -7,6 +7,7 @@
  */
 
 $GLOBALS['TL_LANG']['tl_highlight']['details_legend'] = 'Details';
+$GLOBALS['TL_LANG']['tl_highlight']['score_legend'] = 'Score';
 
 $GLOBALS['TL_LANG']['tl_highlight']['new'] = [
     'Neues Highlight erstellen',

@@ -607,12 +607,20 @@ class DCAHelper
     /**
      * @return array
      */
-    public function getSpielerForHighlight()
+    public function getSpielerForHighlight($dc)
     {
         $result = [];
-        $spieler = \SpielerModel::findAll();
-        foreach ($spieler as $s) {
-            $result[$s->id] = $s->getFullMemberName();
+        if ($dc && $dc->activeRecord) {
+            $begegnung = \BegegnungModel::findById($dc->activeRecord->begegnung_id);
+            $spieler = \SpielerModel::findBy(
+                ['tl_spieler.pid=? OR tl_spieler.pid=?'],
+                [$begegnung->home, $begegnung->away]
+            );
+        }
+        if ($spieler) {
+            foreach ($spieler as $s) {
+                $result[$s->id] = $s->getFullMemberName();
+            }
         }
         asort($result);
         return $result;
