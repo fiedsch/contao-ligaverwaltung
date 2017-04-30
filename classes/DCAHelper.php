@@ -561,9 +561,8 @@ class DCAHelper
      */
     public static function getAlleMannschaftenForSelect(\DataContainer $dc)
     {
-
         $result = [];
-        if ($dc->activeRecord->liga) {
+        if ($dc && $dc->activeRecord->liga) {
             $mannschaften = \MannschaftModel::findByLiga($dc->activeRecord->liga, ['order' => 'name ASC']);
         } else {
             $mannschaften = \MannschaftModel::findAll(['order' => 'name ASC']);
