@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         'sorting'           => [
             'mode'         => 2, // Records are sorted by a switchable field
             'flag'         => 11, // sort ascending
-            'fields'       => ['spieler_id'],
+            'fields'       => ['spieler_id', 'type'],
             'panelLayout'  => 'sort,filter;search,limit',
             'headerFields' => ['name'],
         ],
@@ -31,9 +31,15 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'label_callback' => function($row) {
                 $options = \HighlightModel::getOptionsArray();
                 $begegnung = \BegegnungModel::findById($row['begegnung_id']);
-                $result = sprintf("%s: %s", $options[$row['type']], $row['value']);
+                $spieler = \SpielerModel::findById($row['spieler_id']);
+
+                $result = sprintf("<strong>%s: %s</strong>", $options[$row['type']], $row['value']);
+                if ($spieler) {
+                    $result .= ' von ' . $spieler->getFullMemberName();
+                }
+
                 if ($begegnung) {
-                    $result .= ' (in der Begegnung ' . $begegnung->getLabel('short') . ')';
+                    $result .= ' in der Begegnung ' . $begegnung->getLabel('short');
                 }
                 //$result .= '<br>[Daten: ' . json_encode(func_get_args()) . ' ]';
                 return $result;
@@ -73,10 +79,10 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         ],
     ],
 
-    'palettes'    => [
-        'default'      => '{details_legend},begegnung_id,spieler_id;{score_legend},type,value',
+    'palettes' => [
+        'default' => '{details_legend},begegnung_id,spieler_id;{score_legend},type,value',
     ],
-    'fields'      => [
+    'fields'   => [
         'id'           => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
@@ -97,14 +103,17 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         'spieler_id'   => [
             'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['spieler_id'],
             'inputType'        => 'select',
+            'sorting'          => true,
             'foreignKey'       => 'tl_spieler.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForHighlight'],
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
+            //'relation'         => ['type' => 'belongsTo', 'table' => 'tl_spieler', 'field' => 'id'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'type'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['typ'],
             'inputType' => 'select',
+            'sorting'   => true,
             'options'   => \HighlightModel::getOptionsArray(),
             'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
