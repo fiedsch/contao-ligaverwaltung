@@ -110,3 +110,11 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
 /* Mannschaftsseite */
 $GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{title_legend},type,headline,name,mannschaft';
 // mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
+
+
+/* Ranking/Tabelle der Highlights */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['highlightranking'] = '{type_legend},type,headline,liga,rankingtype;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+//$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'rankingtype';
+//$GLOBALS['TL_DCA']['tl_content']['subpalettes']['rankingtype_2'] = 'mannschaft';
+// ^^^ bereits durch $GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] gesetzt
+//     liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert

@@ -1,0 +1,75 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->rankingtype === 'mannschaften'): ?>
+
+<?php if ($this->listitems): ?>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Platz</th>
+        <th>Mannschaft</th>
+        <th>171</th>
+        <th>180</th>
+        <th>Highfinish</th>
+        <th>Shortleg</th>
+        <th>Punkte</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->listitems as $listitem): ?>
+      <tr>
+          <td><?= $listitem['rang'] ?></td>
+          <td><?= $listitem['name'] ?></td>
+          <td><?= $listitem['hl_171'] ?></td>
+          <td><?= $listitem['hl_180'] ?></td>
+          <td><?= $listitem['hl_highfinish'] ?></td>
+          <td><?= $listitem['hl_shortleg'] ?></td>
+          <td><?= $listitem['hl_punkte'] ?></td>
+      </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
+<?php endif; ?>
+
+<?php endif; ?>
+
+
+<?php if ($this->rankingtype === 'spieler'): ?>
+
+<?php if ($this->listitems): ?>
+  <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Name</th>
+          <th>Mannschaft</th>
+          <th>171</th>
+          <th>180</th>
+          <th>Highfinish</th>
+          <th>Shortleg</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($this->listitems as $listitem): ?>
+          <tr>
+            <td><?= $listitem['datum'] ?></td>
+            <td><?= $listitem['name'] ?></td>
+            <td><?= $listitem['mannschaft'] ?></td>
+            <td><?= $listitem['hl_171'] ?></td>
+            <td><?= $listitem['hl_180'] ?></td>
+            <td><?= $listitem['hl_highfinish'] ?></td>
+            <td><?= $listitem['hl_shortleg'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+  </table>
+<?php endif; ?>
+
+<?php endif; ?>
+
+<?php $this->endblock(); ?>
+
+
+

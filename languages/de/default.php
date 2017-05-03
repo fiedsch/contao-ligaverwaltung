@@ -21,6 +21,11 @@ $GLOBALS['TL_LANG']['CTE']['ranking'] = [
     'Ranking (Tabelle) der Mannaschaften einer Liga oder der Spieler einer Mannschaft',
 ];
 
+$GLOBALS['TL_LANG']['CTE']['highlightranking'] = [
+    'Ranking von Highlights',
+    'Highlight-Ranking (Tabelle) der Mannaschaften einer Liga oder der Spieler einer Mannschaft',
+];
+
 $GLOBALS['TL_LANG']['CTE']['spielerliste'] = [
     'Spielerliste',
     'Spielerliste aus den Daten, die im Backend in der Ligaverwaltung erfasst werden',
