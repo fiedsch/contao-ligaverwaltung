@@ -8,25 +8,23 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Platz</th>
+        <th>Datum</th>
         <th>Mannschaft</th>
         <th>171</th>
         <th>180</th>
         <th>Highfinish</th>
         <th>Shortleg</th>
-        <th>Punkte</th>
       </tr>
     </thead>
     <tbody>
     <?php foreach ($this->listitems as $listitem): ?>
       <tr>
-          <td><?= $listitem['rang'] ?></td>
-          <td><?= $listitem['name'] ?></td>
+          <td><?= $listitem['datum'] ?></td>
+          <td><?= $listitem['mannschaft'] ?></td>
           <td><?= $listitem['hl_171'] ?></td>
           <td><?= $listitem['hl_180'] ?></td>
           <td><?= $listitem['hl_highfinish'] ?></td>
           <td><?= $listitem['hl_shortleg'] ?></td>
-          <td><?= $listitem['hl_punkte'] ?></td>
       </tr>
     <?php endforeach; ?>
     </tbody>

@@ -83,26 +83,34 @@ class ContentHighlightRanking extends \ContentElement
 
         $highlights = \Database::getInstance()
             ->prepare("SELECT 
-                          *
-                          FROM tl_highlight
-                          WHERE l.id=?")
+                          h.*, b.spiel_am, ma.name as mannschaft
+                          FROM tl_highlight h
+                          LEFT JOIN tl_begegnung b
+                          ON (h.begegnung_id = b.id)
+                          LEFT JOIN tl_spieler s
+                          ON (h.spieler_id=s.id)
+                          LEFT JOIN tl_member me
+                          ON (s.member_id=me.id)
+                          LEFT JOIN tl_mannschaft ma
+                          ON (s.pid=ma.id)
+                          WHERE b.pid=?")
             ->execute($this->liga);
 
+        $results = [];
+
         while ($highlights->next()) {
-            print "<pre>".print_r($highlights, true)."</pre>";  // TODO
+            //print "<pre>".print_r($highlights->row(), true)."</pre>";
+            $results[] = [
+                'datum'         => \Date::parse(\Config::get('dateFormat'), $highlights->spiel_am),
+                'mannschaft'    => $highlights->mannschaft,
+                'hl_171'        => $highlights->type == \HighlightModel::TYPE_171 ? $highlights->value : '',
+                'hl_180'        => $highlights->type == \HighlightModel::TYPE_180 ? $highlights->value : '',
+                'hl_highfinish' => $highlights->type == \HighlightModel::TYPE_HIGHFINISH ? $highlights->value : '',
+                'hl_shortleg'   => $highlights->type == \HighlightModel::TYPE_SHORTLEG ? $highlights->value : '',
+            ];
         }
 
-        $results = [];
-        // ...
-
-        //uasort($results, function($a, $b) {
-        //    return \Fiedsch\Liga\Begegnung::compareMannschaftResults($a, $b);
-        //});
-
-        // Berechnung Rang (Tabellenplatz) und Label
-        $lastpunkte = PHP_INT_MAX;
-        $lastlegs = PHP_INT_MAX;
-        $rang = 0;
+        // TODO ... (analog compileSpielerranking() aufbereiten)
 
         $this->Template->rankingtype = 'mannschaften';
         $this->Template->listitems = $results;
@@ -126,18 +134,19 @@ class ContentHighlightRanking extends \ContentElement
                           ON (s.member_id=me.id)
                           LEFT JOIN tl_mannschaft ma
                           ON (s.pid=ma.id)
-                          WHERE b.pid=?
-                          ORDER BY spiel_am DESC";
+                          WHERE b.pid=?";
 
         if ($this->mannschaft > 0) {
             // eine bestimmte Mannschaft
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
             $this->Template->subject = 'Highlight-Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
             $sql .= " AND b.home=? OR b.away=?";
+            $sql .= " ORDER BY spiel_am DESC";
             $highlights = \Database::getInstance()
                 ->prepare($sql)->execute($this->liga, $this->mannschaft, $this->mannschaft);
         } else {
             // alle Mannschaften
+            $sql .= " ORDER BY spiel_am DESC";
             $this->Template->subject = 'Highlight-Ranking aller Spieler';
             $highlights = \Database::getInstance()
                 ->prepare($sql)->execute($this->liga);
@@ -146,7 +155,7 @@ class ContentHighlightRanking extends \ContentElement
         $results = [];
 
         while ($highlights->next()) {
-            print "<pre>".print_r($highlights->row(), true)."</pre>";
+            //print "<pre>".print_r($highlights->row(), true)."</pre>";
             $results[] = [
                 'datum'         => \Date::parse(\Config::get('dateFormat'), $highlights->spiel_am),
                 'name'          => sprintf('%s, %s', $highlights->lastname, $highlights->firstname),
@@ -158,19 +167,14 @@ class ContentHighlightRanking extends \ContentElement
             ];
         }
 
-        uasort($results, function($a, $b) {
-            return $a['hl_punkte'] <=> $b['hl_punkte'];
-        });
+        //uasort($results, function($a, $b) {
+        //    return $a['hl_punkte'] <=> $b['hl_punkte'];
+        //});
 
         // Berechnung Rang (Tabellenplatz) und Label
-        $lastpunkte = PHP_INT_MAX;
-        $lastlegs = PHP_INT_MAX;
-        $rang = 0;
-
-        //foreach ($results as $id => $data) {
-
-        //}
-
+        //$lastpunkte = PHP_INT_MAX;
+        //$lastlegs = PHP_INT_MAX;
+        //$rang = 0;
 
         $this->Template->rankingtype = 'spieler';
         if ($this->mannschaft > 0) {
