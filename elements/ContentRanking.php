@@ -38,7 +38,7 @@ class ContentRanking extends \ContentElement
             } else {
                 $suffix = 'Spieler';
                 $mannschaft = \MannschaftModel::findById($this->mannschaft);
-                $subject = 'Mannschaft ' . $mannschaft->name;
+                $subject = 'Mannschaft ' . ($mannschaft->name ?: 'alle');
             }
             $objTemplate->title = $this->headline;
             $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['ranking'][0] . " $suffix $subject ###";
@@ -182,7 +182,7 @@ class ContentRanking extends \ContentElement
      * Achtung: Spiele vom spieltype "Doppel" gehen *nicht* mit in die Berechnung
      * ein -- gezählt werden nur die "Einzel".
      *
-     * TODO: ohne ausgewählte Mannschaft => Ranking aller Spieler der Liga
+     * ohne ausgewählte Mannschaft => Ranking aller Spieler der Liga
      */
     protected function compileSpielerranking()
     {
