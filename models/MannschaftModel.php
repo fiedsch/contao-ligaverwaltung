@@ -27,4 +27,22 @@ class MannschaftModel extends \Model
         return Model::createCollectionFromDbResult($result, 'tl_mannschaft');
     }
 
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        $result = $this->name;
+        $liga = $this->getRelated('liga');
+        if ($liga) {
+            $result .= ' ' . $liga->name;
+            $saison = $liga->getRelated('saison');
+            if ($saison) {
+                $result .= ', ' . $saison->name;
+            }
+            return $result;
+        }
+
+    }
 }
