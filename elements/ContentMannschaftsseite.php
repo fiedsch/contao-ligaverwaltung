@@ -29,9 +29,15 @@ class ContentMannschaftsseite extends \ContentElement
             /** @var \BackendTemplate|object $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
 
+            $headline = $this->headline;
+            if (!$headline) {
+                $mannschaftModel = \MannschaftModel::findById($this->mannschaft);
+                $headline = $mannschaftModel->getFullName();
+            }
+
             $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['CTE']['mannschaftsseite'][0]) . ' ###';
             $objTemplate->id = $this->id;
-            $objTemplate->link = $this->headline;
+            $objTemplate->link = $headline;
 
             return $objTemplate->parse();
         }
