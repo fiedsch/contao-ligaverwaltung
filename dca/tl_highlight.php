@@ -35,7 +35,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
 
                 $result = sprintf("<strong>%s: %s</strong>", $options[$row['type']], $row['value']);
                 if ($spieler) {
-                    $result .= ' von ' . $spieler->getFullMemberName();
+                    $result .= ' von ' . $spieler->getFullName();
                 }
 
                 if ($begegnung) {

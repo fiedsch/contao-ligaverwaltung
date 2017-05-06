@@ -35,7 +35,7 @@ class SpielerModel extends \Model
      * @param int $id
      * @ return string
      */
-    public static function getMemberNameById($id) {
+    public static function getNameById($id) {
         $spieler = self::findById($id);
         if ($spieler) {
             $member = $spieler->getRelated('member_id');
@@ -47,7 +47,7 @@ class SpielerModel extends \Model
     /**
      * @return string
      */
-    public function getMemberName() {
+    public function getName() {
         $member = $this->getRelated('member_id');
         self::getFullNameFor($member);
     }
@@ -55,7 +55,7 @@ class SpielerModel extends \Model
     /**
      * @return string
      */
-    public function getFullMemberName() {
+    public function getFullName() {
         $member = $this->getRelated('member_id');
         $membername = self::getFullNameFor($member);
 
@@ -73,10 +73,6 @@ class SpielerModel extends \Model
         } else {
             $mannschaftsname = "Mannschaft ex. nicht (mehr)";
         }
-
-
-
         return $membername . ', ' . $mannschaftsname;
-
     }
 }

@@ -618,7 +618,7 @@ class DCAHelper
         }
         if ($spieler) {
             foreach ($spieler as $s) {
-                $result[$s->id] = $s->getFullMemberName();
+                $result[$s->id] = $s->getFullName();
             }
         }
         asort($result);

@@ -224,9 +224,9 @@ class ContentRanking extends \ContentElement
             $begegnung = sprintf("%s:%s", $spiele->team_home, $spiele->team_away);
 
             $results[$spiele->player_home]['name']
-                = \SpielerModel::getMemberNameById($spiele->player_home);
+                = \SpielerModel::getNameById($spiele->player_home);
             $results[$spiele->player_away]['name']
-                = \SpielerModel::getMemberNameById($spiele->player_away);
+                = \SpielerModel::getNameById($spiele->player_away);
 
             $mannschaft_home = \MannschaftModel::findById($spiele->team_home);
             $mannschaft_away = \MannschaftModel::findById($spiele->team_away);
