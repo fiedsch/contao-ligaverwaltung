@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
 ];
 
 /* Mannschaftsseite */
-$GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{title_legend},type,headline,name,mannschaft';
+$GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{config_legend},type'/*.',headline'*/.',name,mannschaft';
 // mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
 
 

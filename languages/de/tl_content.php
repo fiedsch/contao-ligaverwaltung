@@ -6,7 +6,7 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-$GLOBALS['TL_LANG']['tl_content']['title_legend'] = 'Titel';
+$GLOBALS['TL_LANG']['tl_content']['config_legend'] = 'Konfiguration';
 $GLOBALS['TL_LANG']['tl_content']['auswahl_legend'] = 'Auswahl';
 $GLOBALS['TL_LANG']['tl_content']['liga_legend'] = 'Liga';
 $GLOBALS['TL_LANG']['tl_content']['filter_legend'] = 'Filter';
