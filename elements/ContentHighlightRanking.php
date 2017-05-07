@@ -110,7 +110,7 @@ class ContentHighlightRanking extends \ContentElement
             ];
         }
 
-        // TODO ... (analog compileSpielerranking() aufbereiten)
+        // TODO analog compileSpielerranking() aufbereiten
 
         $this->Template->rankingtype = 'mannschaften';
         $this->Template->listitems = $results;
@@ -124,7 +124,7 @@ class ContentHighlightRanking extends \ContentElement
     protected function compileSpielerranking()
     {
         $sql = "SELECT 
-                          h.*, s.pid, me.firstname, me.lastname, b.spiel_am, ma.name as mannschaft 
+                          h.*, s.id as spieler_id, s.pid, me.firstname, me.lastname, b.spiel_am, ma.name as mannschaft 
                           FROM tl_highlight h
                           LEFT JOIN tl_begegnung b
                           ON (h.begegnung_id = b.id)
@@ -155,23 +155,42 @@ class ContentHighlightRanking extends \ContentElement
         $results = [];
 
         while ($highlights->next()) {
-            //print "<pre>".print_r($highlights->row(), true)."</pre>";
-            $results[] = [
-                'datum'         => \Date::parse(\Config::get('dateFormat'), $highlights->spiel_am),
-                'name'          => sprintf('%s, %s', $highlights->lastname, $highlights->firstname),
-                'mannschaft'    => $highlights->mannschaft,
-                'hl_171'        => $highlights->type == \HighlightModel::TYPE_171 ? $highlights->value : '',
-                'hl_180'        => $highlights->type == \HighlightModel::TYPE_180 ? $highlights->value : '',
-                'hl_highfinish' => $highlights->type == \HighlightModel::TYPE_HIGHFINISH ? $highlights->value : '',
-                'hl_shortleg'   => $highlights->type == \HighlightModel::TYPE_SHORTLEG ? $highlights->value : '',
-            ];
+            if (!isset($results[$highlights->spieler_id])) {
+                $results[$highlights->spieler_id] = [
+                    'name'          => sprintf('%s, %s', $highlights->lastname, $highlights->firstname),
+                    'mannschaft'    => $highlights->mannschaft,
+                    'hl_171'        => 0, // Anzahl
+                    'hl_180'        => 0, // Anzahl
+                    'hl_highfinish' => [], // Liste der einzelnen Finisches
+                    'hl_shortleg'   => [], // Liste der einzelnen Shortlegs
+                    'hl_punkte'        => 0,
+                ];
+            }
+
+            switch ($highlights->type) {
+                case \HighlightModel::TYPE_171:
+                    $results[$highlights->spieler_id]['hl_171'] += $highlights->value;
+                    break;
+                case \HighlightModel::TYPE_180:
+                    $results[$highlights->spieler_id]['hl_180'] += $highlights->value;
+                    break;
+                case \HighlightModel::TYPE_HIGHFINISH:
+                    $results[$highlights->spieler_id]['hl_highfinish'][] = $highlights->value;
+                    break;
+                case \HighlightModel::TYPE_SHORTLEG:
+                    $results[$highlights->spieler_id]['hl_shortleg'][] =$highlights->value;
+                    break;
+            }
+
         }
 
-        //uasort($results, function($a, $b) {
-        //    return $a['hl_punkte'] <=> $b['hl_punkte'];
-        //});
+        uasort($results, function($a, $b) {
+            //return $a['hl_punkte'] <=> $b['hl_punkte'];
+            // solange wir keine Punkte vergeben haben: alphabetisch nach Spielernamen sortieren
+            return $a['name'] <=> $b['name'];
+        });
 
-        // Berechnung Rang (Tabellenplatz) und Label
+        // TODO: Berechnung Rang (Tabellenplatz) und Label
         //$lastpunkte = PHP_INT_MAX;
         //$lastlegs = PHP_INT_MAX;
         //$rang = 0;

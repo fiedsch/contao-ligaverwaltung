@@ -40,7 +40,6 @@
   <table class="table table-hover">
       <thead>
         <tr>
-          <th>Datum</th>
           <th>Name</th>
           <th>Mannschaft</th>
           <th>171</th>
@@ -52,13 +51,12 @@
       <tbody>
         <?php foreach ($this->listitems as $listitem): ?>
           <tr>
-            <td><?= $listitem['datum'] ?></td>
             <td><?= $listitem['name'] ?></td>
             <td><?= $listitem['mannschaft'] ?></td>
-            <td><?= $listitem['hl_171'] ?></td>
-            <td><?= $listitem['hl_180'] ?></td>
-            <td><?= $listitem['hl_highfinish'] ?></td>
-            <td><?= $listitem['hl_shortleg'] ?></td>
+            <td><?= $listitem['hl_171'] ?: '' ?></td>
+            <td><?= $listitem['hl_180'] ?: '' ?></td>
+            <td><?= implode(',', $listitem['hl_highfinish']) ?></td>
+            <td><?= implode(',', $listitem['hl_shortleg']) ?></td>
           </tr>
         <?php endforeach; ?>
       </tbody>
@@ -66,6 +64,8 @@
 <?php endif; ?>
 
 <?php endif; ?>
+
+<?php // $this->showTemplateVars(); ?>
 
 <?php $this->endblock(); ?>
 
