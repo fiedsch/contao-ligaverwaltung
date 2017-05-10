@@ -15,6 +15,11 @@ use Fiedsch\Liga\Spiel;
  */
 class ContentHighlightRanking extends \ContentElement
 {
+
+    /**
+     * alles bis inkl. 20 Darts ist ein Shortleg
+     */
+    const MAX_SHORTLEG_DARTS = 20;
     /**
      * Template
      *
@@ -168,32 +173,42 @@ class ContentHighlightRanking extends \ContentElement
                     'hl_180'        => 0, // Anzahl
                     'hl_highfinish' => [], // Liste der einzelnen Finisches
                     'hl_shortleg'   => [], // Liste der einzelnen Shortlegs
-                    'hl_punkte'        => 0,
+                    'hl_punkte'     => 0,
                 ];
             }
 
             switch ($highlights->type) {
                 case \HighlightModel::TYPE_171:
                     $results[$highlights->spieler_id]['hl_171'] += $highlights->value;
+                    $results[$highlights->spieler_id]['hl_punkte'] += 1;
                     break;
                 case \HighlightModel::TYPE_180:
                     $results[$highlights->spieler_id]['hl_180'] += $highlights->value;
+                    $results[$highlights->spieler_id]['hl_punkte'] += 1;
                     break;
                 case \HighlightModel::TYPE_HIGHFINISH:
                     $results[$highlights->spieler_id]['hl_highfinish'][] = $highlights->value;
+                    $results[$highlights->spieler_id]['hl_punkte'] += $highlights->value;
                     break;
                 case \HighlightModel::TYPE_SHORTLEG:
-                    $results[$highlights->spieler_id]['hl_shortleg'][] =$highlights->value;
+                    $results[$highlights->spieler_id]['hl_shortleg'][] = $highlights->value;
+                    $results[$highlights->spieler_id]['hl_punkte'] += (self::MAX_SHORTLEG_DARTS + 1 - $highlights->value);
                     break;
             }
 
         }
 
-        uasort($results, function($a, $b) {
-            //return $a['hl_punkte'] <=> $b['hl_punkte'];
-            // solange wir keine Punkte vergeben haben: alphabetisch nach Spielernamen sortieren
-            return $a['name'] <=> $b['name'];
-        });
+        if ($this->rankingfield == \HighlightModel::TYPE_ALL) {
+            uasort($results, function($a, $b) {
+                // ohne spezielle Punkteregel: nach Namen sortieren
+                return $a['name'] <=> $b['name'];
+            });
+        } else {
+            uasort($results, function($a, $b) {
+                //return $a['hl_punkte'] <=> $b['hl_punkte']; // ASC
+                return $b['hl_punkte'] <=> $a['hl_punkte']; // DESC
+            });
+        }
 
         // TODO: Berechnung Rang (Tabellenplatz) und Label
         //$lastpunkte = PHP_INT_MAX;
