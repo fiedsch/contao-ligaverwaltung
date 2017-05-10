@@ -83,14 +83,14 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['spielort'] = [
 /* Spielbericht */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['spielbericht'] = '{type_legend},type,headline,begegnung;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 $GLOBALS['TL_DCA']['tl_content']['fields']['begegnung'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_content']['begegnung'],
-    'exclude'    => true,
-    'foreignKey' => '',
-    'inputType'  => 'select',
-    'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
-    'foreignKey' => 'tl_begegnung.id',
+    'label'            => &$GLOBALS['TL_LANG']['tl_content']['begegnung'],
+    'exclude'          => true,
+    'foreignKey'       => '',
+    'inputType'        => 'select',
+    'eval'             => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+    'foreignKey'       => 'tl_begegnung.id',
     'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getAlleBegegnungen'],
-    'sql'        => "int(10) unsigned NOT NULL default '0'",
+    'sql'              => "int(10) unsigned NOT NULL default '0'",
 ];
 /* Ranking/Tabelle */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] = '{type_legend},type,headline,liga,rankingtype;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
@@ -99,22 +99,36 @@ $GLOBALS['TL_DCA']['tl_content']['subpalettes']['rankingtype_2'] = 'mannschaft';
 // liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['rankingtype'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_content']['rankingtype'],
-    'exclude'    => true,
-    'options'    => [1 => 'Mannschaften', 2 => 'Spieler'],
-    'inputType'  => 'select',
-    'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'submitOnChange'=>true],
-    'sql'        => "int(10) unsigned NOT NULL default '0'",
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['rankingtype'],
+    'exclude'   => true,
+    'options'   => [1 => 'Mannschaften', 2 => 'Spieler'],
+    'inputType' => 'select',
+    'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
+    'sql'       => "int(10) unsigned NOT NULL default '0'",
 ];
 
 /* Mannschaftsseite */
-$GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{config_legend},type'/*.',headline'*/.',name,mannschaft';
+$GLOBALS['TL_DCA']  ['tl_content']['palettes']['mannschaftsseite'] = '{config_legend},type'/*.',headline'*/ . ',name,mannschaft';
 // mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
 
 
 /* Ranking/Tabelle der Highlights */
-$GLOBALS['TL_DCA']['tl_content']['palettes']['highlightranking'] = '{type_legend},type,headline,liga,rankingtype;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['highlightranking'] = '{type_legend},type,headline,liga,rankingtype,rankingfield;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 //$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'rankingtype';
 //$GLOBALS['TL_DCA']['tl_content']['subpalettes']['rankingtype_2'] = 'mannschaft';
 // ^^^ bereits durch $GLOBALS['TL_DCA']['tl_content']['palettes']['ranking'] gesetzt
 //     liga und mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert
+$GLOBALS['TL_DCA']['tl_content']['fields']['rankingfield'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_content']['rankingfield'],
+    'exclude'   => true,
+    'options'   => [
+        \HighlightModel::TYPE_ALL        => 'Alle zusammen',
+        //\HighlightModel::TYPE_171 => '180+171',
+        \HighlightModel::TYPE_180 => '180+171',
+        \HighlightModel::TYPE_SHORTLEG   => 'Shortleg',
+        \HighlightModel::TYPE_HIGHFINISH => 'Highfinish',
+    ],
+    'inputType' => 'select',
+    'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
+    'sql'       => "int(10) unsigned NOT NULL default '0'",
+];

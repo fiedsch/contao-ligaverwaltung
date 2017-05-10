@@ -66,6 +66,7 @@ class ContentHighlightRanking extends \ContentElement
             default:
                 $this->Template->subject = 'Undefined ' . $this->rankingtype;
         }
+        $this->Template->rankingfield = $this->rankingfield;
     }
 
     /**
@@ -95,6 +96,8 @@ class ContentHighlightRanking extends \ContentElement
                           ON (s.pid=ma.id)
                           WHERE b.pid=?")
             ->execute($this->liga);
+
+        // TODO $this->rankingfield berücksichtigen!
 
         $results = [];
 
@@ -141,11 +144,13 @@ class ContentHighlightRanking extends \ContentElement
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
             $this->Template->subject = 'Highlight-Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
             $sql .= " AND b.home=? OR b.away=?";
+            $sql .= " AND " . $this->getRankingTypeFilter('h');
             $sql .= " ORDER BY spiel_am DESC";
             $highlights = \Database::getInstance()
                 ->prepare($sql)->execute($this->liga, $this->mannschaft, $this->mannschaft);
         } else {
             // alle Mannschaften
+            $sql .= " AND " . $this->getRankingTypeFilter('h');
             $sql .= " ORDER BY spiel_am DESC";
             $this->Template->subject = 'Highlight-Ranking aller Spieler';
             $highlights = \Database::getInstance()
@@ -203,5 +208,35 @@ class ContentHighlightRanking extends \ContentElement
         }
 
         $this->Template->listitems = $results;
+    }
+
+
+    protected function getRankingTypeFilter($tablealias)
+    {
+        $result = '';
+        switch ($this->rankingfield) {
+            case \HighlightModel::TYPE_171:
+            case \HighlightModel::TYPE_180:
+                $result = sprintf('%s.type IN (%d,%d)',
+                    $tablealias,
+                    \HighlightModel::TYPE_171, \HighlightModel::TYPE_180
+                );
+                break;
+            case \HighlightModel::TYPE_HIGHFINISH:
+                $result = sprintf('%s.type=%d',
+                    $tablealias,
+                    \HighlightModel::TYPE_HIGHFINISH
+                );
+                break;
+            case \HighlightModel::TYPE_SHORTLEG:
+                $result = sprintf('%s.type=%d',
+                    $tablealias,
+                    \HighlightModel::TYPE_SHORTLEG
+                );
+                break;
+            default:
+                $result = '1=1'; // alle Records, aber zusammen mit AND ... sinnvolles SQL
+        }
+        return $result;
     }
 }

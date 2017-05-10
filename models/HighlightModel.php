@@ -12,6 +12,7 @@ class HighlightModel extends \Model
     const TYPE_SHORTLEG = 2;
     const TYPE_HIGHFINISH = 3;
     const TYPE_171 = 4;
+    const TYPE_ALL = 99;
 
     /**
      * Table name

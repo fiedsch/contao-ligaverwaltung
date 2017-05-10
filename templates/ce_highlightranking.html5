@@ -10,10 +10,20 @@
       <tr>
         <th>Datum</th>
         <th>Mannschaft</th>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+        || $this->rankingfield == \HighlightModel::TYPE_171
+        || $this->rankingfield == \HighlightModel::TYPE_180): ?>
         <th>171</th>
         <th>180</th>
+        <?php endif; ?>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+        || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH): ?>
         <th>Highfinish</th>
+        <?php endif; ?>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+                || $this->rankingfield == \HighlightModel::TYPE_SHORTLEG): ?>
         <th>Shortleg</th>
+        <?php endif; ?>
       </tr>
     </thead>
     <tbody>
@@ -21,10 +31,20 @@
       <tr>
           <td><?= $listitem['datum'] ?></td>
           <td><?= $listitem['mannschaft'] ?></td>
+          <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+          || $this->rankingfield == \HighlightModel::TYPE_171
+          || $this->rankingfield == \HighlightModel::TYPE_180): ?>
           <td><?= $listitem['hl_171'] ?></td>
           <td><?= $listitem['hl_180'] ?></td>
+          <?php endif; ?>
+          <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+          || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH): ?>
           <td><?= $listitem['hl_highfinish'] ?></td>
+          <?php endif; ?>
+          <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+          || $this->rankingfield == \HighlightModel::TYPE_SHORTLEG): ?>
           <td><?= $listitem['hl_shortleg'] ?></td>
+          <?php endif; ?>
       </tr>
     <?php endforeach; ?>
     </tbody>
@@ -41,11 +61,21 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Mannschaft</th>
-          <th>171</th>
-          <th>180</th>
-          <th>Highfinish</th>
-          <th>Shortleg</th>
+          <th>Mannschaft <?= $this->rankingfield?></th>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+        || $this->rankingfield == \HighlightModel::TYPE_171
+        || $this->rankingfield == \HighlightModel::TYPE_180): ?>
+        <th>171</th>
+        <th>180</th>
+        <?php endif; ?>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+        || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH): ?>
+        <th>Highfinish</th>
+        <?php endif; ?>
+        <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+        || $this->rankingfield == \HighlightModel::TYPE_SHORTLEG): ?>
+        <th>Shortleg</th>
+        <?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -53,10 +83,20 @@
           <tr>
             <td><?= $listitem['name'] ?></td>
             <td><?= $listitem['mannschaft'] ?></td>
+            <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+            || $this->rankingfield == \HighlightModel::TYPE_171
+            || $this->rankingfield == \HighlightModel::TYPE_180): ?>
             <td><?= $listitem['hl_171'] ?: '' ?></td>
             <td><?= $listitem['hl_180'] ?: '' ?></td>
+            <?php endif; ?>
+            <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+            || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH): ?>
             <td><?= implode(',', $listitem['hl_highfinish']) ?></td>
+            <?php endif; ?>
+            <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
+            || $this->rankingfield == \HighlightModel::TYPE_SHORTLEG): ?>
             <td><?= implode(',', $listitem['hl_shortleg']) ?></td>
+            <?php endif; ?>
           </tr>
         <?php endforeach; ?>
       </tbody>

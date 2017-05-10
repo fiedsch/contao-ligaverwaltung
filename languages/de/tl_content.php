@@ -57,3 +57,8 @@ $GLOBALS['TL_LANG']['tl_content']['begegnung'] = [
     'Begegnung',
     'Begegnung (Spiel zwischen zwei Mannschaften).'
 ];
+
+$GLOBALS['TL_LANG']['tl_content']['rankingfield'] = [
+    'Highlight anzeigen',
+    'Typ des Highlights für das das Ranking erstellt werden soll'
+];
