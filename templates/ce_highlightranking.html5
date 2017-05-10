@@ -8,7 +8,6 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Datum</th>
         <th>Mannschaft</th>
         <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
         || $this->rankingfield == \HighlightModel::TYPE_171
@@ -29,7 +28,6 @@
     <tbody>
     <?php foreach ($this->listitems as $listitem): ?>
       <tr>
-          <td><?= $listitem['datum'] ?></td>
           <td><?= $listitem['mannschaft'] ?></td>
           <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
           || $this->rankingfield == \HighlightModel::TYPE_171
