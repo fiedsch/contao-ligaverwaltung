@@ -115,6 +115,8 @@ class ContentHighlightRanking extends \ContentElement
                 'hl_180'        => $highlights->type == \HighlightModel::TYPE_180 ? $highlights->value : '',
                 'hl_highfinish' => $highlights->type == \HighlightModel::TYPE_HIGHFINISH ? $highlights->value : '',
                 'hl_shortleg'   => $highlights->type == \HighlightModel::TYPE_SHORTLEG ? $highlights->value : '',
+                'hl_punkte'     => 0,
+                'hl_rang'       => 0,
             ];
         }
 
@@ -174,6 +176,7 @@ class ContentHighlightRanking extends \ContentElement
                     'hl_highfinish' => [], // Liste der einzelnen Finisches
                     'hl_shortleg'   => [], // Liste der einzelnen Shortlegs
                     'hl_punkte'     => 0,
+                    'hl_rang'       => 0,
                 ];
             }
 
@@ -188,11 +191,19 @@ class ContentHighlightRanking extends \ContentElement
                     break;
                 case \HighlightModel::TYPE_HIGHFINISH:
                     $results[$highlights->spieler_id]['hl_highfinish'][] = $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'] += $highlights->value;
+                    // höchstes Highfinish zählt für die Punkte
+                    // TODO: bei Gleichheit -> Anzahl
+                    if ($highlights->value > $results[$highlights->spieler_id]['hl_punkte']) {
+                        $results[$highlights->spieler_id]['hl_punkte'] = $highlights->value;
+                    }
                     break;
                 case \HighlightModel::TYPE_SHORTLEG:
                     $results[$highlights->spieler_id]['hl_shortleg'][] = $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'] += (self::MAX_SHORTLEG_DARTS + 1 - $highlights->value);
+                    // kürzester Shortleg zählt für die Punkte
+                    // TODO: bei Gleichheit -> Anzahl
+                    if ((self::MAX_SHORTLEG_DARTS + 1 - $highlights->value) > $results[$highlights->spieler_id]['hl_punkte']) {
+                        $results[$highlights->spieler_id]['hl_punkte'] = (self::MAX_SHORTLEG_DARTS + 1 - $highlights->value);
+                    }
                     break;
             }
 
@@ -211,9 +222,22 @@ class ContentHighlightRanking extends \ContentElement
         }
 
         // TODO: Berechnung Rang (Tabellenplatz) und Label
-        //$lastpunkte = PHP_INT_MAX;
-        //$lastlegs = PHP_INT_MAX;
-        //$rang = 0;
+        $lastpunkte = PHP_INT_MAX;
+        $rang = 0;
+        $rang_skip = 0;
+
+        foreach($results as &$result) {
+            $result['hl_rang'] = $rang;
+            if ($result['hl_punkte'] < $lastpunkte) {
+                $result['hl_rang'] = ++$rang;
+                $rang_skip = 0;
+            } else {
+                $rang_skip += 1;
+            }
+            $rang += $rang_skip;
+
+            $lastpunkte = $result['hl_punkte'];
+        }
 
         $this->Template->rankingtype = 'spieler';
         if ($this->mannschaft > 0) {

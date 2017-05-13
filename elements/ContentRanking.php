@@ -290,6 +290,7 @@ class ContentRanking extends \ContentElement
         $lastpunkte = PHP_INT_MAX;
         $lastlegs = PHP_INT_MAX;
         $rang = 0;
+        $rang_skip = 0;
 
         foreach ($results as $id => $data) {
             $results[$id]['anzahl_spiele'] = array_sum($results[$id]['begegnungen']);
@@ -300,7 +301,11 @@ class ContentRanking extends \ContentElement
                 || $results[$id]['legs_self'] < $lastlegs
             ) {
                 $results[$id]['rang'] = ++$rang;
+                $rang_skip = 0;
+            } else {
+                $rang_skip += 1;
             }
+            $rang += $rang_skip;
 
             $lastpunkte = $results[$id]['punkte_self'];
             $lastlegs = $results[$id]['legs_self'];
