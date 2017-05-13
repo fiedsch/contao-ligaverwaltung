@@ -93,6 +93,15 @@ class ContentSpielplan extends \ContentElement
 
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
+
+            if (!$home || !$away) {
+                // "falsch" angelegte Begegnung: mind. eine der
+                // beteigigten Mannschaften nicht eingetragen
+                // Ist aktuell (vgl. dca/tl_begegnung.php noch
+                // möglich (TODO: klären, warum)
+                continue;
+            }
+
             $spielort = $home->getRelated('spielort');
 
             $homelabel = $home->name;
