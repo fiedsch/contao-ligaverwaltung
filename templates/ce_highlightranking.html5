@@ -58,6 +58,7 @@
   <table class="table table-hover">
       <thead>
         <tr>
+        <th>&nbsp;</th><!-- Rangplatz -->
           <th>Name</th>
           <th>Mannschaft <?= $this->rankingfield?></th>
         <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
@@ -78,7 +79,12 @@
       </thead>
       <tbody>
         <?php foreach ($this->listitems as $listitem): ?>
+          <?php
+            asort($listitem['hl_shortleg']);
+            arsort($listitem['hl_highfinish']);
+          ?>
           <tr>
+            <td><?= $listitem['hl_rang'] ?></td>
             <td><?= $listitem['name'] ?></td>
             <td><?= $listitem['mannschaft'] ?></td>
             <?php if ($this->rankingfield == \HighlightModel::TYPE_ALL
