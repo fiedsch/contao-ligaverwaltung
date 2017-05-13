@@ -50,6 +50,6 @@ $GLOBALS['TL_LANG']['tl_highlight']['typ'] = [
 
 $GLOBALS['TL_LANG']['tl_highlight']['value'] = [
     'Wert',
-    'Wert. Z.B. Anzahl der 180er, Anzahl der Darts bei Shortleg, Wert des Highfinishes.',
+    'Wert. Z.B. Anzahl der 180er, Anzahl der Darts bei Shortleg, Wert des Highfinishes (mehrere Werte durch Komma getrennt).',
 ];
 

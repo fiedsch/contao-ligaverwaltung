@@ -268,7 +268,7 @@ class DCAHelper
                 . ' WHERE l.saison=?'
                 . ')'
                 . ' AND tl_member.disable=\'\''
-                .' ORDER BY tl_member.lastname';
+                . ' ORDER BY tl_member.lastname';
             $member = \Database::getInstance()->prepare($query)->execute($saison);
         } else {
             // Modell II harlekin Modell (weniger restriktiv):
@@ -285,7 +285,7 @@ class DCAHelper
                 . ' WHERE m.liga=?'
                 . ')'
                 . ' AND tl_member.disable=\'\''
-                .' ORDER BY tl_member.lastname';
+                . ' ORDER BY tl_member.lastname';
             $member = \Database::getInstance()->prepare($query)->execute($liga);
         }
 
@@ -353,7 +353,7 @@ class DCAHelper
     public
     static function getHomeSpielerForSelect($dc)
     {
-        $initial = [0=>"Kein Spieler (ID 0)"];
+        $initial = [0 => "Kein Spieler (ID 0)"];
 
         if (!$dc->activeRecord->pid) {
             return $initial;
@@ -369,13 +369,15 @@ class DCAHelper
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
                 $result[$sp->id] = sprintf("%s, %s",
-                        $member->lastname,
-                        $member->firstname
-                        );
+                    $member->lastname,
+                    $member->firstname
+                );
             }
         }
         // Nach Namen sortieren
-        uasort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
+        uasort($result, function($a, $b) {
+            return $a < $b ? -1 : ($a > $b ? +1 : 0);
+        });
 
         return $result;
     }
@@ -388,7 +390,7 @@ class DCAHelper
      */
     public static function getAwaySpielerForSelect($dc)
     {
-        $initial = [0=>"Kein Spieler (ID 0)"];
+        $initial = [0 => "Kein Spieler (ID 0)"];
 
         if (!$dc->activeRecord->pid) {
             return $initial;
@@ -405,13 +407,15 @@ class DCAHelper
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
                 $result[$sp->id] = sprintf("%s, %s",
-                        $member->lastname,
-                        $member->firstname
-                    );
+                    $member->lastname,
+                    $member->firstname
+                );
             }
         }
         // Nach Namen sortieren
-        uasort ($result, function($a, $b) { return $a<$b ? -1 : ($a>$b ? +1 : 0); });
+        uasort($result, function($a, $b) {
+            return $a < $b ? -1 : ($a > $b ? +1 : 0);
+        });
 
         return $result;
     }
@@ -594,7 +598,7 @@ class DCAHelper
     public function getAlleBegegnungen()
     {
         $result = [];
-        $begegnungen = \BegegnungModel::findAll(['order'=>'spiel_am ASC']);
+        $begegnungen = \BegegnungModel::findAll(['order' => 'spiel_am ASC']);
         if ($begegnungen) {
             foreach ($begegnungen as $begegnung) {
                 $result[$begegnung->id] = $begegnung->getLabel('full');
@@ -638,4 +642,62 @@ class DCAHelper
         asort($result);
         return $result;
     }
+
+    /**
+     *
+     */
+    public function addCustomRegexp($strRegexp, $varValue, \Widget $objWidget)
+    {
+        $varValue = str_replace(' ', '', $varValue);
+        if ($strRegexp == 'csvdigit') {
+            // if (!preg_match('/^(\d+(,(?=\d)){0,1})+$/', $varValue)) {
+            // Überflüssige Kommata werden im save_callback entfernt, wir prüfen
+            // hier nicht darauf um den User nicht zu "überfordern"
+            if (!preg_match('/^(\d+,{0,1})+$/', $varValue)) {
+                $objWidget->addError('Eingabe muss eine Zahl oder eine eine durch Komma getrennte Liste von Zahlen sein!');
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Eine kommaseparierte Liste von Zahlen aufbereiten:
+     * - Leerzeichen entfernen
+     * - leere Zellen (entstanden durch überflüssige Kommata) entfernen
+     *   (Bsp.: "1,2,"  Ohne Bereinigung => [1,2,''], Soll => [1,2]
+     *
+     * @param string $value
+     * @param \DataContainer $dc
+     * @return string
+     */
+    function cleanCsvDigitList($value, $dc)
+    {
+        $entries = explode(',', str_replace(' ', '', $value));
+        $entries = array_filter($entries, function($entry) {
+            return '' !== $entry;
+        });
+        sort($entries);
+        switch ($dc->activeRecord->type) {
+            case \HighlightModel::TYPE_180:
+            case \HighlightModel::TYPE_171:
+                if (count($entries)>1) {
+                    throw new \RuntimeException("Bitte nur die Anzahl eingeben!");
+                }
+                break;
+            case \HighlightModel::TYPE_SHORTLEG:
+                if (array_filter($entries, function($el) { return $el > 20; })) {
+                    throw new \RuntimeException("Bitte nur Werte kleiner/gleich 20 eingeben!");
+                }
+                break;
+            case \HighlightModel::TYPE_HIGHFINISH:
+                if (array_filter($entries, function($el) { return $el < 100; })) {
+                    throw new \RuntimeException("Bitte nur Werte größer/gleich 100 eingeben!");
+                }
+                break;
+        }
+        //throw new \RuntimeException("TEST".print_r($dc->activeRecord->row(), true));
+        return implode(',', $entries);
+    }
+
 }

@@ -119,10 +119,11 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'value'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['value'],
-            'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
-            'sql'       => "varchar(64) NOT NULL default ''",
+            'label'         => &$GLOBALS['TL_LANG']['tl_highlight']['value'],
+            'inputType'     => 'text',
+            'eval'          => ['mandatory' => true, 'tl_class' => 'w50', 'rgxp' => 'csvdigit'],
+            'save_callback' =>[['\Fiedsch\Liga\DCAHelper', 'cleanCsvDigitList']],
+            'sql'           => "varchar(64) NOT NULL default ''",
         ],
     ],
 ];
