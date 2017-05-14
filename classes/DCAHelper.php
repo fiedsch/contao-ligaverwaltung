@@ -135,11 +135,17 @@ class DCAHelper
     public static function listBegegnungCallback($arrRow)
     {
         $home = \MannschaftModel::findById($arrRow['home']);
-        $away = \MannschaftModel::findById($arrRow['away']);
+        if ($arrRow['away']) {
+            $away = \MannschaftModel::findById($arrRow['away']);
+        } else {
+            // kein Eintrag bei away === kein Gegner === "Spielfrei"
+            $away = null;
+        }
 
-        return sprintf("%s vs %s",
+        return sprintf("%s %s %s",
             $home->name,
-            $away->name
+            $away ? 'vs' : 'hat',
+            $away ? $away->name : 'Spielfrei'
         );
     }
 
@@ -156,7 +162,12 @@ class DCAHelper
         $liga = \LigaModel::findById($row['pid']);
         $verband = \VerbandModel::findById($liga->pid);
         $home = \MannschaftModel::findById($row['home']);
-        $away = \MannschaftModel::findById($row['away']);
+        if ($row['away']) {
+            $away = \MannschaftModel::findById($row['away']);
+        } else {
+            // kein Eintrag bei away === kein Gegner === "Spielfrei"
+            $away = null;
+        }
         $spiele = \SpielModel::findByPid($row['id']);
         $spieleHinterlegt = count($spiele) > 0 ? sprintf('(%d Spiele)', count($spiele)) : '';
         $score_home = $score_away = 0;
@@ -168,7 +179,7 @@ class DCAHelper
         }
         $final_score = $punkte_home + $punkte_away > 0 ? sprintf('%d:%d', $punkte_home, $punkte_away) : '';
         return sprintf("<span class='tl_gray'>%s %s %s %d. Spieltag:</span> 
-                        <span class='tl_blue'>%s vs %s</span> 
+                        <span class='tl_blue'>%s %s %s</span> 
                         <span class='tl_green'>%s</span> 
                         <span class='tl_gray'>%s</span>",
             $verband->name,
@@ -176,7 +187,8 @@ class DCAHelper
             $liga->getRelated('saison')->name,
             $row['spiel_tag'],
             $home->name,
-            $away->name,
+            $away ? 'vs' : 'hat',
+            $away ? $away->name : 'Spielfrei',
             $final_score,
             $spieleHinterlegt
         );
