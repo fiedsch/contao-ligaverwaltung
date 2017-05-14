@@ -151,6 +151,7 @@ class ContentRanking extends \ContentElement
         $lastpunkte = PHP_INT_MAX;
         $lastlegs = PHP_INT_MAX;
         $rang = 0;
+        $rang_skip = 1;
         foreach ($results as $id => $data) {
             $mannschaft = \MannschaftModel::findById($id);
             $mannschaftlabel = $mannschaft->name;
@@ -162,12 +163,16 @@ class ContentRanking extends \ContentElement
                 );
             }
             $results[$id]['name'] = $mannschaftlabel;
-            $results[$id]['rang'] = $rang;
-            if ($results[$id]['punkte_self'] < $lastpunkte
-                || $results[$id]['legs_self'] < $lastlegs
+            if ($results[$id]['punkte_self'] == $lastpunkte
+                && $results[$id]['legs_self'] == $lastlegs
             ) {
-                $results[$id]['rang'] = ++$rang;
+                // we have a "tie"
+                $rang_skip++;
+            } else {
+                $rang += $rang_skip;
+                $rang_skip = 1;
             }
+            $results[$id]['rang'] = $rang;
             $lastpunkte = $results[$id]['punkte_self'];
             $lastlegs = $results[$id]['legs_self'];
         }
@@ -288,30 +293,33 @@ class ContentRanking extends \ContentElement
 
         // Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
-        $lastlegs = PHP_INT_MAX;
+        $lastlegs_self = PHP_INT_MAX;
+        $lastlegs_other = PHP_INT_MAX;
         $rang = 0;
-        $rang_skip = 0;
+        $rang_skip = 1;
 
         foreach ($results as $id => $data) {
             $results[$id]['anzahl_spiele'] = array_sum($results[$id]['begegnungen']);
             $results[$id]['anzahl_begegnungen'] = count($results[$id]['begegnungen']);
 
-            $results[$id]['rang'] = $rang;
-            if ($results[$id]['punkte_self'] < $lastpunkte
-                || $results[$id]['legs_self'] < $lastlegs
+            if ($results[$id]['punkte_self'] == $lastpunkte
+                && $results[$id]['legs_self'] == $lastlegs_self
+                && $results[$id]['legs_other'] == $lastlegs_other
             ) {
-                $results[$id]['rang'] = ++$rang;
-                $rang_skip = 0;
+                // we have a "tie", gleicher Rang und beim nächsten einen Rang mehr auslassen
+                $rang_skip++;
+
             } else {
-                $rang_skip += 1;
+                // ein Rang weiter und keinen folgenden auslassen,
+                // aber die ggf. vorherige Auslassung berücksichtigen)
+                $rang += $rang_skip;
+                $rang_skip = 1;
             }
-            $rang += $rang_skip;
-
+            $results[$id]['rang'] = $rang;
             $lastpunkte = $results[$id]['punkte_self'];
-            $lastlegs = $results[$id]['legs_self'];
+            $lastlegs_self = $results[$id]['legs_self'];
+            $lastlegs_other = $results[$id]['legs_other'];
         }
-
-        //print "<pre>".print_r($results, true)."</pre>";
 
         $this->Template->rankingtype = 'spieler';
         if ($this->mannschaft > 0) {

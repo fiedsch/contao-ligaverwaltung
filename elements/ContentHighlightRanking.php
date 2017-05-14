@@ -87,8 +87,7 @@ class ContentHighlightRanking extends \ContentElement
             $liga->getRelated('saison')->name
         );
 
-        $highlights = \Database::getInstance()
-            ->prepare("SELECT 
+        $sql = "SELECT 
                           h.*, b.spiel_am, ma.name as mannschaft
                           FROM tl_highlight h
                           LEFT JOIN tl_begegnung b
@@ -99,7 +98,12 @@ class ContentHighlightRanking extends \ContentElement
                           ON (s.member_id=me.id)
                           LEFT JOIN tl_mannschaft ma
                           ON (s.pid=ma.id)
-                          WHERE b.pid=?")
+                          WHERE b.pid=?";
+
+        $sql .= " AND " . $this->getRankingTypeFilter('h');
+
+        $highlights = \Database::getInstance()
+            ->prepare($sql)
             ->execute($this->liga);
 
         // TODO $this->rankingfield berücksichtigen!
@@ -115,7 +119,7 @@ class ContentHighlightRanking extends \ContentElement
                 'hl_180'        => $highlights->type == \HighlightModel::TYPE_180 ? $highlights->value : '',
                 'hl_highfinish' => $highlights->type == \HighlightModel::TYPE_HIGHFINISH ? $highlights->value : '',
                 'hl_shortleg'   => $highlights->type == \HighlightModel::TYPE_SHORTLEG ? $highlights->value : '',
-                'hl_punkte'     => 0,
+                'hl_punkte'     => [],
                 'hl_rang'       => 0,
             ];
         }
@@ -150,11 +154,11 @@ class ContentHighlightRanking extends \ContentElement
             // eine bestimmte Mannschaft
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
             $this->Template->subject = 'Highlight-Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
-            $sql .= " AND b.home=? OR b.away=?";
+            $sql .= " AND s.pid=?";
             $sql .= " AND " . $this->getRankingTypeFilter('h');
             $sql .= " ORDER BY spiel_am DESC";
             $highlights = \Database::getInstance()
-                ->prepare($sql)->execute($this->liga, $this->mannschaft, $this->mannschaft);
+                ->prepare($sql)->execute($this->liga, $this->mannschaft);
         } else {
             // alle Mannschaften
             $sql .= " AND " . $this->getRankingTypeFilter('h');
@@ -171,43 +175,72 @@ class ContentHighlightRanking extends \ContentElement
                 $results[$highlights->spieler_id] = [
                     'name'          => sprintf('%s, %s', $highlights->lastname, $highlights->firstname),
                     'mannschaft'    => $highlights->mannschaft,
-                    'hl_171'        => 0, // Anzahl
-                    'hl_180'        => 0, // Anzahl
-                    'hl_highfinish' => [], // Liste der einzelnen Finisches
-                    'hl_shortleg'   => [], // Liste der einzelnen Shortlegs
-                    'hl_punkte'     => 0,
+                    'hl_171'        => 0,  // Anzahl
+                    'hl_180'        => 0,  // dito
+                    'hl_highfinish' => [], // Liste der Highfinishes
+                    'hl_shortleg'   => [], // dito
+                    'hl_punkte'     => [], // List der einzelnen Punkte
                     'hl_rang'       => 0,
                 ];
             }
-
             switch ($highlights->type) {
                 case \HighlightModel::TYPE_171:
                     $results[$highlights->spieler_id]['hl_171'] += $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'] += 1;
+                    $results[$highlights->spieler_id]['hl_punkte'][] = $highlights->value;
                     break;
                 case \HighlightModel::TYPE_180:
                     $results[$highlights->spieler_id]['hl_180'] += $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'] += 1;
+                    $results[$highlights->spieler_id]['hl_punkte'][] = $highlights->value;
                     break;
                 case \HighlightModel::TYPE_HIGHFINISH:
                     $results[$highlights->spieler_id]['hl_highfinish'][] = $highlights->value;
-                    // höchstes Highfinish zählt für die Punkte
-                    // TODO: bei Gleichheit -> Anzahl
-                    if ($highlights->value > $results[$highlights->spieler_id]['hl_punkte']) {
-                        $results[$highlights->spieler_id]['hl_punkte'] = $highlights->value;
-                    }
+                    $results[$highlights->spieler_id]['hl_punkte'][] = explode(',', $highlights->value);
                     break;
                 case \HighlightModel::TYPE_SHORTLEG:
                     $results[$highlights->spieler_id]['hl_shortleg'][] = $highlights->value;
-                    // kürzester Shortleg zählt für die Punkte
-                    // TODO: bei Gleichheit -> Anzahl
-                    if ((self::MAX_SHORTLEG_DARTS + 1 - $highlights->value) > $results[$highlights->spieler_id]['hl_punkte']) {
-                        $results[$highlights->spieler_id]['hl_punkte'] = (self::MAX_SHORTLEG_DARTS + 1 - $highlights->value);
-                    }
+                    $results[$highlights->spieler_id]['hl_punkte'][] = explode(',', $highlights->value);
                     break;
             }
-
         }
+
+        // Daten "normieren" und Punkte berechnen
+
+        foreach ($results as $id => $data) {
+            switch ($this->rankingfield) {
+                case \HighlightModel::TYPE_171:
+                case \HighlightModel::TYPE_180:
+                    $results[$id]['hl_punkte'] = [ array_sum($results[$id]['hl_punkte']) ];
+                    break;
+                case \HighlightModel::TYPE_HIGHFINISH:
+                    $results[$id]['hl_punkte'] = static::flattenToIntArray($results[$id]['hl_punkte']);
+                    $results[$id]['hl_highfinish'] = static::prettyPrintSorted($results[$id]['hl_highfinish'], 'DESC');
+                    // höchstes Finish zuerst
+                    rsort($results[$id]['hl_punkte']);
+                    break;
+                case \HighlightModel::TYPE_SHORTLEG:
+                    $results[$id]['hl_punkte'] = static::flattenToIntArray($results[$id]['hl_punkte']);
+                    $results[$id]['hl_shortleg'] = static::prettyPrintSorted($results[$id]['hl_shortleg'], 'ASC');
+                    // Mapping
+                    $results[$id]['hl_punkte'] = array_map(function($val) {
+                        // Wert > self::MAX_SHORTLEG_DARTS via 0 Punkte nicht berücksichtigen
+                        if (self::MAX_SHORTLEG_DARTS < $val) { return 0; }
+                        // mapping: kürzeres es Leg === besser
+                        return self::MAX_SHORTLEG_DARTS - $val + 1;
+                    }, $results[$id]['hl_punkte']);
+
+                    // kürzester Shortleg zuerst (nach Mapping => höchster Wert zuerst!)
+                    rsort($results[$id]['hl_punkte']);
+                    break;
+                case \HighlightModel::TYPE_ALL:
+                    $results[$id]['hl_punkte'] = [ ]; // wir sortieren hier nach Namen, brauchen also die Punkte nicht
+                    $results[$id]['hl_shortleg'] = static::prettyPrintSorted($results[$id]['hl_shortleg'], 'ASC');
+                    $results[$id]['hl_highfinish'] = static::prettyPrintSorted($results[$id]['hl_highfinish'], 'DESC');
+            }
+        }
+
+        // Sortieren
+
+        // print '<pre>'.print_r(['rankingtype'=>$this->rankingtype, $results], true) .'</pre>';
 
         if ($this->rankingfield == \HighlightModel::TYPE_ALL) {
             uasort($results, function($a, $b) {
@@ -216,27 +249,36 @@ class ContentHighlightRanking extends \ContentElement
             });
         } else {
             uasort($results, function($a, $b) {
-                //return $a['hl_punkte'] <=> $b['hl_punkte']; // ASC
-                return $b['hl_punkte'] <=> $a['hl_punkte']; // DESC
+                $i = 0;
+                while (isset($a['hl_punkte'][$i]) && isset($b['hl_punkte'][$i])) {
+                    if ($a['hl_punkte'][$i] != $b['hl_punkte'][$i]) {
+                        return $b['hl_punkte'][$i] <=> $a['hl_punkte'][$i]; // $b <=> $a sort DESC
+                    }
+                    $i++;
+                }
+                return 0;
             });
         }
 
         // TODO: Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
         $rang = 0;
-        $rang_skip = 0;
+        $rang_skip = 1;
 
-        foreach($results as &$result) {
-            $result['hl_rang'] = $rang;
-            if ($result['hl_punkte'] < $lastpunkte) {
-                $result['hl_rang'] = ++$rang;
-                $rang_skip = 0;
+        foreach ($results as $i => $data) {
+            // die Konkatenierten Punktwerte als "Prüfstring" für die Feststellung,
+            // ob ein Tie vorliegt. Denn: nur, wenn zwei aufeinanderfolgende Prüfstrings
+            // identisch sind haben wir bei der Rangvergabe einen "Tie"!
+            $punkte = implode('', $results[$i]['hl_punkte']);
+            if ($punkte == $lastpunkte) {
+                // we have a "tie"
+                $rang_skip++;
             } else {
-                $rang_skip += 1;
+                $rang += $rang_skip;
+                $rang_skip = 1;
             }
-            $rang += $rang_skip;
-
-            $lastpunkte = $result['hl_punkte'];
+            $results[$i]['hl_rang'] = $rang;
+            $lastpunkte = $punkte;
         }
 
         $this->Template->rankingtype = 'spieler';
@@ -249,7 +291,10 @@ class ContentHighlightRanking extends \ContentElement
         $this->Template->listitems = $results;
     }
 
-
+    /**
+     * @param string $tablealias
+     * @return string
+     */
     protected function getRankingTypeFilter($tablealias)
     {
         $result = '';
@@ -278,4 +323,46 @@ class ContentHighlightRanking extends \ContentElement
         }
         return $result;
     }
+
+    /**
+     * flatten an array. E.g. [1,2,[3,4],5] becomes [1,2,3,4,5].
+     * additionally the array elements will be casted to integers.
+     *
+     * @param array $a
+     * @return array (of integers)
+     */
+    protected static function flattenToIntArray(array $a)
+    {
+        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($a));
+        $result = [];
+        foreach ($it as $v) {
+            $result[] = (int) $v;
+        }
+        return $result;
+    }
+
+    /**
+     * @param string|array $value
+     * @param string $order
+     * @return string
+     */
+    protected static function prettyPrintSorted($value, $order)
+    {
+        if (is_array($value)) {
+            $data = $value;
+        } else {
+            $data = explode(',', $value);
+        }
+        // prepare ['1','2','3,4',5'] for sort,
+        // i.e. make it ['1','2','3','4',5']
+        // i.e. split '3,4' into '3','4'
+        $data = explode(',', implode(',', $data));
+        if ($order === 'ASC') {
+            asort($data);
+        } else {
+            arsort($data);
+        }
+        return implode(',', $data);
+    }
+
 }

@@ -69,6 +69,8 @@
         <?php endforeach; ?>
       </tbody>
   </table>
+<?php else: ?>
+  <code>Für dieses Ranking gibt es noch keine Ergebnise.</code>
 <?php endif; ?>
 
 <?php endif; ?>
