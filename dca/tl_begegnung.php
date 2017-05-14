@@ -143,7 +143,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             //'flag'             => 11, // sort ascending
             'inputType'        => 'select',
             'foreignKey'       => 'tl_mannschaft.name',
-            'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'includeBlankOption' => true],
+            'eval'             => ['mandatory' => true, 'tl_class' => 'w50 clr', 'chosen' => true, 'includeBlankOption' => true],
             'relation'         => ['type' => 'hasOne', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
@@ -156,7 +156,8 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'flag'             => 11, // sort ascending
             'foreignKey'       => 'tl_mannschaft.name',
             'inputType'        => 'select',
-            'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
+            // 'mandatory' => false da "kein Gegner angegeben === Spielfrei"
+            'eval'             => ['mandatory' => false, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
             'relation'         => ['type' => 'hasOne', 'load' => 'eager'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getMannschaftenForSelect'],
             'sql'              => "int(10) NOT NULL default '0'",
@@ -167,7 +168,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'sorting'   => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'digit', 'minval'=>1, 'mandatory'=> true, 'tl_class' => 'w50'],
-            'sql'       => "int(10) unsigned NOT NULL default '0'",
+            'sql'       => "int(10) unsigned NOT NULL default '1'",
         ],
         'spiel_am'  => [
             'label'     => &$GLOBALS['TL_LANG']['tl_begegnung']['spiel_am'],

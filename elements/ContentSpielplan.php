@@ -94,14 +94,6 @@ class ContentSpielplan extends \ContentElement
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
 
-            if (!$home || !$away) {
-                // "falsch" angelegte Begegnung: mind. eine der
-                // beteigigten Mannschaften nicht eingetragen
-                // Ist aktuell (vgl. dca/tl_begegnung.php noch
-                // möglich (TODO: klären, warum)
-                continue;
-            }
-
             $spielort = $home->getRelated('spielort');
 
             $homelabel = $home->name;
@@ -112,14 +104,20 @@ class ContentSpielplan extends \ContentElement
                     $home->name
                 );
             }
-            $awaylabel = $away->name;
-            if ($away->teampage) {
-                $teampage = \PageModel::findById($away->teampage);
-                $awaylabel = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl($teampage->row()),
-                    $away->name
-                );
+            if ($away) {
+                $awaylabel = $away->name;
+                if ($away->teampage) {
+                    $teampage = \PageModel::findById($away->teampage);
+                    $awaylabel = sprintf("<a href='%s'>%s</a>",
+                        \Controller::generateFrontendUrl($teampage->row()),
+                        $away->name
+                    );
+                }
+            } else {
+                // $away == null => $home hat "Spielfrei"
+                $awaylabel = "Spielfrei";
             }
+
             $spielortlabel = $spielort->name;
             if ($spielort->spielortpage) {
                 $spielortpage = \PageModel::findById($spielort->spielortpage);
@@ -132,12 +130,13 @@ class ContentSpielplan extends \ContentElement
             $spiel = [
                 'home'  => $homelabel,
                 'away'  => $awaylabel,
-                'am'    => sprintf("%s. %s",
+                // es interessiert nicht, wann und wo "Spielfei" stattfindet:
+                'am'    => $away ? sprintf("%s. %s",
                     \Date::parse('D', $begegnung->spiel_am),
                     \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
-                ),
-                'um'    => \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
-                'im'    => $spielortlabel,
+                ): '',
+                'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
+                'im'    => $away ? $spielortlabel : '',
                 'score' => $begegnung->getScore(),
             ];
             if ($this->mannschaft) {
