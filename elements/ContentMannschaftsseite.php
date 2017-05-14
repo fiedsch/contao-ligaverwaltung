@@ -107,6 +107,36 @@ class ContentMannschaftsseite extends \ContentElement
         ];
         $contentElement = new \ContentSpielplan($contentModel);
         $this->Template->spielplan = $contentElement->generate();
+
+        // Einzelspielerrangliste
+        $contentModel = new \ContentModel();
+        $contentModel->type = 'ranking';
+        $contentModel->liga = $mannschaftModel->liga;
+        $contentModel->mannschaft = $mannschaftModel->id;
+        $contentModel->rankingtype = 2; // 'Spieler'
+        $contentModel->headline = [
+            'value' => 'Einzelspieler Ranking ' . $mannschaftModel->name,
+            'unit'  => 'h2',
+        ];
+        $contentElement = new \ContentRanking($contentModel);
+        $this->Template->ranking = $contentElement->generate();
+
+        // Highlights
+        $contentModel = new \ContentModel();
+        $contentModel->type = 'highlightranking';
+        $contentModel->liga = $mannschaftModel->liga;
+        $contentModel->rankingtype = 2; // 'Spieler'
+        $contentModel->rankingfield = 99; // alle zusammen
+        $contentModel->mannschaft = $mannschaftModel->id;
+        $contentModel->headline = [
+            'value' => 'Highlights ' . $mannschaftModel->name,
+            'unit'  => 'h2',
+        ];
+        $contentElement = new \ContentHighlightRanking($contentModel);
+        $this->Template->highlightranking = $contentElement->generate();
+
+        $this->Template->mannschaft_name = $mannschaftModel->name;
+
     }
 
 }
