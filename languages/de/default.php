@@ -50,3 +50,8 @@ $GLOBALS['TL_LANG']['CTE']['mannschaftsseite'] = [
     'Mannschaftsseite',
     'Mannschaftsseite bündelt mehrere Contentelemente (Spielortinfo, Spielerliste, ...)',
 ];
+
+$GLOBALS['TL_LANG']['FMD']['mannschaftsseitenreader'] = [
+    'Mannschaftsseiten Reader',
+    'Reader, der eine Mannschaftsseite darstellt. ID der Mannschaft aus der URL.',
+];

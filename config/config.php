@@ -58,6 +58,11 @@ $GLOBALS['TL_CTE']['texts']['highlightranking'] = 'ContentHighlightRanking';
 $GLOBALS['TL_CTE']['texts']['mannschaftsseite'] = 'ContentMannschaftsseite';
 
 /**
+ * Module
+ */
+$GLOBALS['FE_MOD']['ligaverwaltung']['mannschaftsseitenreader'] = 'ModuleMannschaftsseitenReader';
+
+/**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('\Fiedsch\Liga\DCAHelper', 'addCustomRegexp');

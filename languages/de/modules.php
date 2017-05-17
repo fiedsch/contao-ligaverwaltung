@@ -51,3 +51,9 @@ $GLOBALS['TL_LANG']['MOD']['liga.highlight'] = [
     'Highlights',
     'Eingabe Highlights.',
 ];
+
+$GLOBALS['TL_LANG']['FMD']['ligaverwaltung'] = [
+    'Ligaverwaltung',
+    'Ligaverwaltung',
+];
+
