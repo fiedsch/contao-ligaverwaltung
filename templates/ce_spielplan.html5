@@ -49,14 +49,13 @@
 
             <?php else: ?>
               <?php printf("
-              <td class='spiel am'>%s %s %s</td>
+              <td class='spiel am'>%s %s</td>
               <td class='spiel home'>%s</td>
               <td class='spiel away'>%s</td>
               <td class='spiel ort'>%s</td>
               <td class='spiel score'>%s</td>",
                     $spiel['am'],
                     $spiel['um']  ? $spiel['um'] : '',
-                    $spiel['um'],
                     $spiel['home'],
                     $spiel['away'],
                     $spiel['im'],
