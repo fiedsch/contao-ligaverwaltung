@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
     ],
 
     'palettes' => [
-        'default' => '{title_legend},name,spielort,liga;{details_legend},teampage',
+        'default' => '{title_legend},name,spielort,liga;{details_legend}', /*,teampage',*/
     ],
 
     'fields' => [
@@ -123,7 +123,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'foreignKey' => 'tl_spielort.name',
             'relation'   => ['type' => 'hasOne', 'load' => 'eager'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
-        ],
+        ]/*,
         'teampage' => [
             'label'      => &$GLOBALS['TL_LANG']['tl_mannschaft']['teampage'],
             'inputType'  => 'pageTree',
@@ -134,6 +134,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'eval'       => ['mandatory' => false, 'multiple'=>false, 'fieldType'=>'radio'],
             'sql'        => "blob NULL",
         ]
+        */
     ],
 ];
 

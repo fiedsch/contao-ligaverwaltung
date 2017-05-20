@@ -13,3 +13,7 @@ $GLOBALS['TL_LANG']['tl_settings']['ligaverwaltung_exclusive_model'] = [
     'Diese Einstellung regelt, ob und wie ein Spieler gleichzeitig in verschiedenen Mannschaften spielen darf. Siehe Definitionen in der "Ligaverwaltung".',
 ];
 
+$GLOBALS['TL_LANG']['tl_settings']['teampage'] = [
+    'Mannschaftsseite',
+    'Die Seite, auf der das Mannschaftsseiten Reader Modul eingebunden ist.',
+];

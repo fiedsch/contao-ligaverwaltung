@@ -96,6 +96,7 @@ class ContentSpielplan extends \ContentElement
 
             $spielort = $home->getRelated('spielort');
 
+            /*
             $homelabel = $home->name;
             if ($home->teampage) {
                 $teampage = \PageModel::findById($home->teampage);
@@ -104,6 +105,9 @@ class ContentSpielplan extends \ContentElement
                     $home->name
                 );
             }
+            */
+            $homelabel = $home->getLinkedName();
+            /*
             if ($away) {
                 $awaylabel = $away->name;
                 if ($away->teampage) {
@@ -115,6 +119,12 @@ class ContentSpielplan extends \ContentElement
                 }
             } else {
                 // $away == null => $home hat "Spielfrei"
+                $awaylabel = "Spielfrei";
+            }
+            */
+            if ($away) {
+                $awaylabel = $away->getLinkedName();
+            } else {
                 $awaylabel = "Spielfrei";
             }
 

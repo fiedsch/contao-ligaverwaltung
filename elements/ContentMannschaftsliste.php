@@ -28,13 +28,14 @@ class ContentMannschaftsliste extends \ContentElement
         if ($this->liga == '') {
             return;
         }
-        $mannschaften = \MannschaftModel::findByLiga($this->liga, ['order'=>'name ASC']);
+        $mannschaften = \MannschaftModel::findByLiga($this->liga, ['order' => 'name ASC']);
         if ($mannschaften === null) {
             return;
         }
 
         $listitems = [];
         foreach ($mannschaften as $mannschaft) {
+            /*
             if ($mannschaft->teampage) {
                 $teampage = \PageModel::findById($mannschaft->teampage);
                 $listitem = sprintf("<a href='%s'>%s</a>",
@@ -44,6 +45,9 @@ class ContentMannschaftsliste extends \ContentElement
             } else {
                 $listitem = $mannschaft->name;
             }
+            */
+            $listitem = $mannschaft->getLinkedName();
+
             $listitems[] = $listitem;
         }
 
