@@ -61,10 +61,9 @@ $GLOBALS['TL_CTE']['texts']['mannschaftsseite'] = 'ContentMannschaftsseite';
  * Module
  */
 $GLOBALS['FE_MOD']['ligaverwaltung']['mannschaftsseitenreader'] = 'ModuleMannschaftsseitenReader';
+$GLOBALS['FE_MOD']['ligaverwaltung']['spielberichtreader'] = 'ModuleSpielberichtReader';
 
 /**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('\Fiedsch\Liga\DCAHelper', 'addCustomRegexp');
-
-

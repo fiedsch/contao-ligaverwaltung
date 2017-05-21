@@ -39,6 +39,7 @@ ClassLoader::addClasses([
     // Modules
     'ModuleBegegnungserfassung'     => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',
     'ModuleMannschaftsseitenReader' => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseitenReader.php',
+    'ModuleSpielberichtReader'      => 'system/modules/ligaverwaltung/modules/ModuleSpielberichtReader.php',
 ]);
 
 TemplateLoader::addFiles([
@@ -53,4 +54,5 @@ TemplateLoader::addFiles([
     'be_begegnungserfassung'      => 'system/modules/ligaverwaltung/templates',
     'ce_highlightranking'         => 'system/modules/ligaverwaltung/templates',
     'mod_mannschaftsseitenreader' => 'system/modules/ligaverwaltung/templates',
+    'mod_spielberichtreader'      => 'system/modules/ligaverwaltung/templates',
 ]);

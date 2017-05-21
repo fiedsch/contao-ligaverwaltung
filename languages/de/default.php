@@ -55,3 +55,8 @@ $GLOBALS['TL_LANG']['FMD']['mannschaftsseitenreader'] = [
     'Mannschaftsseiten Reader',
     'Reader, der eine Mannschaftsseite darstellt. ID der Mannschaft aus der URL.',
 ];
+
+$GLOBALS['TL_LANG']['FMD']['spielberichtreader'] = [
+    'Spielbericht Reader',
+    'Reader, der einen Spielbericht darstellt. ID der Begegnung aus der URL.',
+];

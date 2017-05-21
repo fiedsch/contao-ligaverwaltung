@@ -17,3 +17,8 @@ $GLOBALS['TL_LANG']['tl_settings']['teampage'] = [
     'Mannschaftsseite',
     'Die Seite, auf der das Mannschaftsseiten Reader Modul eingebunden ist.',
 ];
+
+$GLOBALS['TL_LANG']['tl_settings']['spielberichtpage']  = [
+    'Spielberichtsseite',
+    'Die Seite, auf der das Spielbericht Reader Modul eingebunden ist.',
+];

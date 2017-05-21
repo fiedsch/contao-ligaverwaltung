@@ -147,7 +147,8 @@ class ContentSpielplan extends \ContentElement
                 ): '',
                 'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
                 'im'    => $away ? $spielortlabel : '',
-                'score' => $begegnung->getScore(),
+                //'score' => $begegnung->getScore(),
+                'score' => $begegnung->getLinkedScore()
             ];
             if ($this->mannschaft) {
                 $spiel['heimspiel'] = $home->id == $this->mannschaft;
