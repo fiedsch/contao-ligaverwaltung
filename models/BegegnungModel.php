@@ -65,4 +65,30 @@ class BegegnungModel extends \Model
             break;
         }
     }
+
+    /**
+     * Zur "Mansnchaftsseite" verlinkter Name der Mannschaft
+     *
+     * @return string
+     */
+    public function getLinkedScore()
+    {
+        $spielberichtpageId = \Config::get('spielberichtpage');
+        if ($spielberichtpageId) {
+            $spielberichtpage = \PageModel::findById($spielberichtpageId);
+
+            if (\Config::get('folderUrl')) {
+                $url = \Controller::generateFrontendUrl($spielberichtpage->row(), '/id/'.$this->id);
+            } else {
+                $url = \Controller::generateFrontendUrl($spielberichtpage->row()) . '?id=' . $this->id;
+            }
+            $result = sprintf("<a href='%s'>%s</a>",
+                $url,
+                $this->getScore()
+            );
+        } else {
+            $result = $this->getScore();
+        }
+        return $result;
+    }
 }
