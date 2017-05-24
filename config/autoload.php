@@ -35,6 +35,7 @@ ClassLoader::addClasses([
     'SpielModel'                    => 'system/modules/ligaverwaltung/models/SpielModel.php',
     'VerbandModel'                  => 'system/modules/ligaverwaltung/models/VerbandModel.php',
     'HighlightModel'                => 'system/modules/ligaverwaltung/models/HighlightModel.php',
+    'AufstellerModel'               => 'system/modules/ligaverwaltung/models/AufstellerModel.php',
 
     // Modules
     'ModuleBegegnungserfassung'     => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',

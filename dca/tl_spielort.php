@@ -134,6 +134,7 @@ $GLOBALS['TL_DCA']  ['tl_spielort'] = [
             'inputType'  => 'select',
             'foreignKey' => 'tl_aufsteller.name',
             'eval'       => ['tl_class' => 'w50','includeBlankOption'=>true],
+            'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
         ],
         'spielortpage' => [
