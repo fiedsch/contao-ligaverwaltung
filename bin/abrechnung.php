@@ -1,6 +1,9 @@
 #!/usr/local/bin/php
 <?php
 /**
+ * Kommandozeilenprogramm, das die Daten für die Abrechnung ermittelt.
+ * Könnte bei Bedarf in ein Backendmodul überführt werden.
+ *
  * @package Ligaverwaltung
  * @link https://github.com/fiedsch/contao-ligaverwaltung/
  * @license https://opensource.org/licenses/MIT
@@ -23,14 +26,18 @@ $ligen = \LigaModel::findBy(['saison=?'], [$saison->id]);
 
 // Ergebnisdaten
 
-$data = [];
+$data = [
+    'wirte'      => [],
+    'aufsteller' => [],
+];
 
-print "# Abrechnung\n";
+print "# Daten für die Abrechnung\n";
+
+print "## Ligen und Mannschaften\n";
 
 foreach ($ligen as $liga) {
 
-    $data[$liga->name] = [];
-    printf("## %s (%s)\n", $liga->name, $saison->name);
+    printf("\n\n### %s (%s)\n", $liga->name, $saison->name);
     // Mannschaften in dieser Liga
     $mannschaften = \MannschaftModel::findBy(
         ['liga=?'],
@@ -38,14 +45,26 @@ foreach ($ligen as $liga) {
     );
     if ($mannschaften) {
         foreach ($mannschaften as $mannschaft) {
-            $data[$liga->name][$mannschaft->name] = [
-                'spielort'   => $mannschaft->getRelated('spielort')->name,
-                'aufsteller' => $mannschaft->getRelated('spielort')->getRelated('aufsteller')->name,
-            ];
+            $spielort = $mannschaft->getRelated('spielort')->name ?: 'kein Spielort';
+            $aufsteller = $mannschaft->getRelated('spielort')->getRelated('aufsteller')->name ?: 'kein Aufsteller';
+
+            if (!isset($data['wirte'][$spielort])) {
+                $data['wirte'][$spielort] = [];
+            }
+            if (!isset($data['aufsteller'][$aufsteller])) {
+                $data['aufsteller'][$aufsteller] = [];
+            }
+            $mannschaftsbezeichnung = sprintf("%s, %s, %s",
+                $mannschaft->name,
+                $liga->name,
+                $saison->name
+                );
+            $data['wirte'][$spielort][] = $mannschaftsbezeichnung;
+            $data['aufsteller'][$aufsteller][] = $mannschaftsbezeichnung.", $spielort";
             printf("* %s (%s, %s)\n",
                 $mannschaft->name,
-                $mannschaft->getRelated('spielort')->name,
-                $mannschaft->getRelated('spielort')->getRelated('aufsteller')->name
+                $spielort,
+                $aufsteller
             );
         }
     } else {
@@ -53,6 +72,29 @@ foreach ($ligen as $liga) {
     }
 }
 
+print "\n\\newpage\n";
+print "\n\n## Wirte\n";
+foreach($data['wirte'] as $wirt => $d) {
+    print "\n\n### $wirt\n";
+    foreach($d as $who) {
+        print "* $who\n";
+    }
+}
+
+print "\n\\newpage\n";
+print "\n\n## Aufsteller\n";
+foreach($data['aufsteller'] as $aufsteller => $d) {
+    print "\n\n### $aufsteller\n";
+    foreach($d as $who) {
+        print "* $who\n";
+    }
+}
+
+/*
+print "\n\\newpage\n";
+print "```\n";
 print_r($data);
+print "```\n";
+*/
 
 
