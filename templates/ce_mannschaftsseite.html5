@@ -3,7 +3,9 @@
 <?php $this->block('content'); ?>
 
 <div class="row">
+  <div class="col-xs-12">
   <h1>Mannschaftsseite <?= $this->mannschaft_name ?></h1>
+  </div>
 </div>
 
 <div class="row">
