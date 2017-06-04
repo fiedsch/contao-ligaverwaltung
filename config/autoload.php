@@ -24,6 +24,7 @@ ClassLoader::addClasses([
     'ContentRanking'                => 'system/modules/ligaverwaltung/elements/ContentRanking.php',
     'ContentMannschaftsseite'       => 'system/modules/ligaverwaltung/elements/ContentMannschaftsseite.php',
     'ContentHighlightRanking'       => 'system/modules/ligaverwaltung/elements/ContentHighlightRanking.php',
+    'ContentMannschaftenuebersicht' => 'system/modules/ligaverwaltung/elements/ContentMannschaftenuebersicht.php',
 
     // Models
     'SpielerModel'                  => 'system/modules/ligaverwaltung/models/SpielerModel.php',
@@ -56,4 +57,5 @@ TemplateLoader::addFiles([
     'ce_highlightranking'         => 'system/modules/ligaverwaltung/templates',
     'mod_mannschaftsseitenreader' => 'system/modules/ligaverwaltung/templates',
     'mod_spielberichtreader'      => 'system/modules/ligaverwaltung/templates',
+    'ce_mannschaftenuebersicht'   => 'system/modules/ligaverwaltung/templates',
 ]);

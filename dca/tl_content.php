@@ -132,3 +132,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['rankingfield'] = [
     'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
     'sql'       => "int(10) unsigned NOT NULL default '0'",
 ];
+
+/* Mannschaftenübersicht: Mannschaft und deren Teamcaptains */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['mannschaftenuebersicht'] = '{type_legend},type,headline;{saison_legend},saison;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';

@@ -56,6 +56,7 @@ $GLOBALS['TL_CTE']['texts']['spielortinfo'] = 'ContentSpielortinfo';
 $GLOBALS['TL_CTE']['texts']['ranking'] = 'ContentRanking';
 $GLOBALS['TL_CTE']['texts']['highlightranking'] = 'ContentHighlightRanking';
 $GLOBALS['TL_CTE']['texts']['mannschaftsseite'] = 'ContentMannschaftsseite';
+$GLOBALS['TL_CTE']['texts']['mannschaftenuebersicht'] = 'ContentMannschaftenuebersicht';
 
 /**
  * Module

@@ -1,0 +1,35 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->details): ?>
+  <?php foreach ($this->ligen as $ligaid => $liga): ?>
+    <h2><?= $liga ?></h2>
+        <table class="table table-hover">
+        <thead>
+        <tr>
+        <th>Mannschaft</th><th>Teamcaptain</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->details[$ligaid] as $mannschaftsinfos): ?>
+            <tr>
+            <td><?= $mannschaftsinfos['mannschaft'] ?></td>
+            <td>
+            <ul>
+            <?php foreach ($mannschaftsinfos['tc'] as $tc): ?>
+                <li><?= $tc ?></li>
+            <?php endforeach; ?>
+            </ul>
+            </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+        </table>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>
+
+
+

@@ -75,4 +75,35 @@ class SpielerModel extends \Model
         }
         return $membername . ', ' . $mannschaftsname;
     }
+
+    /**
+     * @return string
+     */
+    public function getTcDetails() {
+        $member = $this->getRelated('member_id');
+
+        $kontaktdaten = [];
+        if ($member->mobile) {
+            $kontaktdaten[] = sprintf("<a href='tel:%s'>%s</a>",
+                $member->mobile,
+                $member->mobile
+            );
+        }
+        if ($member->email) {
+            $kontaktdaten[] = sprintf("<a href='%s'>%s</a>",
+                \StringUtil::encodeEmail('mailto:'.$member->email),
+                \StringUtil::encodeEmail($member->email)
+            );
+        }
+        $kontaktdaten = join(', ', $kontaktdaten);
+
+        return sprintf("%s%s %s%s%s",
+            $this->teamcaptain ? 'TC' : '',
+            $this->co_teamcaptain ? 'Co-TC' : '',
+            self::getFullNameFor($member),
+            $kontaktdaten ? ', ' : '',
+            $kontaktdaten
+            );
+    }
+
 }
