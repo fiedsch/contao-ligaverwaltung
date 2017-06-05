@@ -56,13 +56,13 @@ class ContentMannschaftenuebersicht extends \ContentElement
         $arrDetails = [];
 
         foreach ($ligen as $liga) {
-
-            $arrLigen[$liga->id] = $liga->name;
-            $arrDetails[$liga->id] = [];
             $mannschaften = \MannschaftModel::findByLiga($liga->id, ['order' => 'name ASC']);
             if ($mannschaften === null) {
                 continue;
             }
+            $arrLigen[$liga->id] = $liga->name;
+            $arrDetails[$liga->id] = [];
+
             foreach ($mannschaften as $mannschaft) {
                 $arrTc = [];
                 $spieler = \SpielerModel::findBy(
@@ -73,9 +73,15 @@ class ContentMannschaftenuebersicht extends \ContentElement
                 foreach ($spieler as $sp) {
                     $arrTc[] = $sp->getTcDetails();
                 }
+                $spielort = $mannschaft->getRelated('spielort');
                 $arrDetails[$liga->id][] = [
                     'mannschaft' => $mannschaft->getLinkedName(),
                     'tc'         => $arrTc,
+                    'spielort'   => [
+                        'name'    => $spielort->name,
+                        'phone'   => $spielort->phone,
+                        'website' => $spielort->website,
+                    ],
                 ];
             }
         }
