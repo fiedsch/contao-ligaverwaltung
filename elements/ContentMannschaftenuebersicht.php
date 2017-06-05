@@ -50,7 +50,7 @@ class ContentMannschaftenuebersicht extends \ContentElement
         $ligen = \LigaModel::findBy(
             ['saison IN (' . join(",", deserialize($this->saison)) . ')'],
             [],
-            ['order' => 'tl_liga.name ASC']);
+            ['order' => 'tl_liga.spielstaerke ASC, tl_liga.name ASC']);
 
         $arrLigen = [];
         $arrDetails = [];
