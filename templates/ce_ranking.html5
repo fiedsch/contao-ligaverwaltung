@@ -33,6 +33,8 @@
     <?php endforeach; ?>
     </tbody>
   </table>
+<?php else: ?>
+   <code>Es liegen noch keine Ergebnise vor.</code>
 <?php endif; ?>
 
 <?php endif; ?>
@@ -70,7 +72,7 @@
       </tbody>
   </table>
 <?php else: ?>
-  <code>Für dieses Ranking gibt es noch keine Ergebnise.</code>
+  <code>Es liegen noch keine Ergebnise vor.</code>
 <?php endif; ?>
 
 <?php endif; ?>

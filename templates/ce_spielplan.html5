@@ -77,6 +77,8 @@
       </table>
     <?php endif; ?>
 
+<?php else: ?>
+      <code>Es sind noch keine Spiele hinterlegt.</code>
 <?php endif; ?>
 
 <style>
