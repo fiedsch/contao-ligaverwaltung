@@ -32,9 +32,9 @@ class ContentHighlightRanking extends \ContentElement
         if (TL_MODE == 'BE') {
             /** @var \BackendTemplate $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
+            $liga = \LigaModel::findById($this->liga);
             if ($this->rankingtype == 1) {
                 $suffix = 'Mannschaften';
-                $liga = \LigaModel::findById($this->liga);
                 $subject = sprintf('%s %s %s',
                     $liga->getRelated('pid')->name,
                     $liga->name,
@@ -43,10 +43,15 @@ class ContentHighlightRanking extends \ContentElement
             } else {
                 $suffix = 'Spieler';
                 $mannschaft = \MannschaftModel::findById($this->mannschaft);
-                $subject = 'Mannschaft ' . ($mannschaft->name ?: 'alle');
+                $subject = sprintf('%s %s %s %s',
+                    'Mannschaft ' . ($mannschaft->name ?: 'alle'),
+                    $liga->getRelated('pid')->name,
+                    $liga->name,
+                    $liga->getRelated('saison')->name
+                );
             }
             $objTemplate->title = $this->headline;
-            $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['highlightranking'][0] . " $suffix $subject ###";
+            $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['highlightranking'][0] . ", $suffix, $subject ###";
             // $objTemplate->id = $this->id;
             // $objTemplate->link = 'the text that will be linked with href';
             // $objTemplate->href = 'contao/main.php?do=article&amp;table=tl_content&amp;act=edit&amp;id=' . $this->id;
@@ -131,6 +136,39 @@ class ContentHighlightRanking extends \ContentElement
     }
 
     /**
+     * @param string $tablealias
+     * @return string
+     */
+    protected function getRankingTypeFilter($tablealias)
+    {
+        $result = '';
+        switch ($this->rankingfield) {
+            case \HighlightModel::TYPE_171:
+            case \HighlightModel::TYPE_180:
+                $result = sprintf('%s.type IN (%d,%d)',
+                    $tablealias,
+                    \HighlightModel::TYPE_171, \HighlightModel::TYPE_180
+                );
+                break;
+            case \HighlightModel::TYPE_HIGHFINISH:
+                $result = sprintf('%s.type=%d',
+                    $tablealias,
+                    \HighlightModel::TYPE_HIGHFINISH
+                );
+                break;
+            case \HighlightModel::TYPE_SHORTLEG:
+                $result = sprintf('%s.type=%d',
+                    $tablealias,
+                    \HighlightModel::TYPE_SHORTLEG
+                );
+                break;
+            default:
+                $result = '1=1'; // alle Records, aber zusammen mit AND ... sinnvolles SQL
+        }
+        return $result;
+    }
+
+    /**
      * Highlight-"Ranking" aller Spieler einer Mannschaft (in einer liga)
      *
      * ohne ausgewählte Mannschaft => Ranking aller Spieler der Liga
@@ -209,7 +247,7 @@ class ContentHighlightRanking extends \ContentElement
             switch ($this->rankingfield) {
                 case \HighlightModel::TYPE_171:
                 case \HighlightModel::TYPE_180:
-                    $results[$id]['hl_punkte'] = [ array_sum($results[$id]['hl_punkte']) ];
+                    $results[$id]['hl_punkte'] = [array_sum($results[$id]['hl_punkte'])];
                     break;
                 case \HighlightModel::TYPE_HIGHFINISH:
                     $results[$id]['hl_punkte'] = static::flattenToIntArray($results[$id]['hl_punkte']);
@@ -223,7 +261,9 @@ class ContentHighlightRanking extends \ContentElement
                     // Mapping
                     $results[$id]['hl_punkte'] = array_map(function($val) {
                         // Wert > self::MAX_SHORTLEG_DARTS via 0 Punkte nicht berücksichtigen
-                        if (self::MAX_SHORTLEG_DARTS < $val) { return 0; }
+                        if (self::MAX_SHORTLEG_DARTS < $val) {
+                            return 0;
+                        }
                         // mapping: kürzeres es Leg === besser
                         return self::MAX_SHORTLEG_DARTS - $val + 1;
                     }, $results[$id]['hl_punkte']);
@@ -232,7 +272,7 @@ class ContentHighlightRanking extends \ContentElement
                     rsort($results[$id]['hl_punkte']);
                     break;
                 case \HighlightModel::TYPE_ALL:
-                    $results[$id]['hl_punkte'] = [ ]; // wir sortieren hier nach Namen, brauchen also die Punkte nicht
+                    $results[$id]['hl_punkte'] = []; // wir sortieren hier nach Namen, brauchen also die Punkte nicht
                     $results[$id]['hl_shortleg'] = static::prettyPrintSorted($results[$id]['hl_shortleg'], 'ASC');
                     $results[$id]['hl_highfinish'] = static::prettyPrintSorted($results[$id]['hl_highfinish'], 'DESC');
             }
@@ -292,39 +332,6 @@ class ContentHighlightRanking extends \ContentElement
     }
 
     /**
-     * @param string $tablealias
-     * @return string
-     */
-    protected function getRankingTypeFilter($tablealias)
-    {
-        $result = '';
-        switch ($this->rankingfield) {
-            case \HighlightModel::TYPE_171:
-            case \HighlightModel::TYPE_180:
-                $result = sprintf('%s.type IN (%d,%d)',
-                    $tablealias,
-                    \HighlightModel::TYPE_171, \HighlightModel::TYPE_180
-                );
-                break;
-            case \HighlightModel::TYPE_HIGHFINISH:
-                $result = sprintf('%s.type=%d',
-                    $tablealias,
-                    \HighlightModel::TYPE_HIGHFINISH
-                );
-                break;
-            case \HighlightModel::TYPE_SHORTLEG:
-                $result = sprintf('%s.type=%d',
-                    $tablealias,
-                    \HighlightModel::TYPE_SHORTLEG
-                );
-                break;
-            default:
-                $result = '1=1'; // alle Records, aber zusammen mit AND ... sinnvolles SQL
-        }
-        return $result;
-    }
-
-    /**
      * flatten an array. E.g. [1,2,[3,4],5] becomes [1,2,3,4,5].
      * additionally the array elements will be casted to integers.
      *
@@ -336,7 +343,7 @@ class ContentHighlightRanking extends \ContentElement
         $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($a));
         $result = [];
         foreach ($it as $v) {
-            $result[] = (int) $v;
+            $result[] = (int)$v;
         }
         return $result;
     }

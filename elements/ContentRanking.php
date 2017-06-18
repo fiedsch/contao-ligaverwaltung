@@ -27,9 +27,9 @@ class ContentRanking extends \ContentElement
         if (TL_MODE == 'BE') {
             /** @var \BackendTemplate $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
+            $liga = \LigaModel::findById($this->liga);
             if ($this->rankingtype == 1) {
                 $suffix = 'Mannschaften';
-                $liga = \LigaModel::findById($this->liga);
                 $subject = sprintf('%s %s %s',
                     $liga->getRelated('pid')->name,
                     $liga->name,
@@ -38,7 +38,11 @@ class ContentRanking extends \ContentElement
             } else {
                 $suffix = 'Spieler';
                 $mannschaft = \MannschaftModel::findById($this->mannschaft);
-                $subject = 'Mannschaft ' . ($mannschaft->name ?: 'alle');
+                $subject = sprintf('%s %s %s',
+                    'Mannschaft ' . ($mannschaft->name ?: 'alle'),
+                    $liga->name,
+                    $liga->getRelated('saison')->name
+                );
             }
             $objTemplate->title = $this->headline;
             $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['ranking'][0] . " $suffix $subject ###";

@@ -20,6 +20,26 @@ class ContentMannschaftsliste extends \ContentElement
      */
     protected $strTemplate = 'ce_mannschaftsliste';
 
+    public function generate()
+    {
+        if (TL_MODE == 'BE') {
+            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate->title = $this->headline;
+
+
+            $liga = \LigaModel::findById($this->liga);
+            $suffix = 'Mannschaften';
+            $subject = sprintf('%s %s %s',
+                $liga->getRelated('pid')->name,
+                $liga->name,
+                $liga->getRelated('saison')->name
+            );
+            $objTemplate->wildcard = "### " . $GLOBALS['TL_LANG']['CTE']['mannschaftsliste'][0] . " $subject ###";
+            return $objTemplate->parse();
+        }
+        return parent::generate();
+    }
+
     /**
      * Generate the content element
      */
