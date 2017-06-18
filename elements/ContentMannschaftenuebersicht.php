@@ -48,7 +48,7 @@ class ContentMannschaftenuebersicht extends \ContentElement
         }
 
         $ligen = \LigaModel::findBy(
-            ['saison IN (' . join(",", deserialize($this->saison)) . ')'],
+            ['saison IN (' . join(",", array_map('intval', deserialize($this->saison))) . ')'],
             [],
             ['order' => 'tl_liga.spielstaerke ASC, tl_liga.name ASC']);
 
