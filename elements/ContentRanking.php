@@ -199,16 +199,14 @@ class ContentRanking extends \ContentElement
      */
     protected function compileSpielerranking()
     {
-
-        // TODO: Unterschiedliche Berechnungsweise in den versch. Ligen
-
         $sql = "SELECT 
                           s.score_home AS legs_home,
                           s.score_away AS legs_away,
                           s.home AS player_home,
                           s.away AS player_away,
                           b.home AS team_home,
-                          b.away AS team_away
+                          b.away AS team_away,
+                          b.id AS begegnung_id
                           FROM tl_spiel s
                           LEFT JOIN tl_begegnung b
                           ON (s.pid=b.id)
@@ -221,7 +219,7 @@ class ContentRanking extends \ContentElement
             // eine bestimmte Mannschaft
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
             $this->Template->subject = 'Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
-            $sql .= " AND b.home=? OR b.away=?";
+            $sql .= " AND (b.home=? OR b.away=?)";
             $spiele = \Database::getInstance()
                 ->prepare($sql)->execute($this->liga, $this->mannschaft, $this->mannschaft);
         } else {
@@ -234,7 +232,6 @@ class ContentRanking extends \ContentElement
         $results = [];
 
         while ($spiele->next()) {
-
             $spiel = new Spiel($spiele->row());
 
             $begegnung = sprintf("%s:%s", $spiele->team_home, $spiele->team_away);
@@ -248,25 +245,8 @@ class ContentRanking extends \ContentElement
             $mannschaft_away = \MannschaftModel::findById($spiele->team_away);
 
             $results[$spiele->player_home]['mannschaft_id'] = $spiele->team_home;
-            $results[$spiele->player_home]['mannschaft'] = $mannschaft_home->name;
-
             $results[$spiele->player_away]['mannschaft_id'] = $spiele->team_away;
-            $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->name;
 
-            /*
-            if ($mannschaft_home->teampage) {
-                $results[$spiele->player_home]['mannschaft'] = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl(\PageModel::findById($mannschaft_home->teampage)->row()),
-                    $results[$spiele->player_home]['mannschaft']
-                );
-            }
-            if ($mannschaft_away->teampage) {
-                $results[$spiele->player_away]['mannschaft'] = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl(\PageModel::findById($mannschaft_away->teampage)->row()),
-                    $results[$spiele->player_away]['mannschaft']
-                    );
-            }
-            */
             $results[$spiele->player_home]['mannschaft'] = $mannschaft_home->getLinkedName();
             $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->getLinkedName();
 

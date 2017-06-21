@@ -111,8 +111,6 @@ class ContentHighlightRanking extends \ContentElement
             ->prepare($sql)
             ->execute($this->liga);
 
-        // TODO $this->rankingfield berücksichtigen!
-
         $results = [];
 
         while ($highlights->next()) {
@@ -130,6 +128,7 @@ class ContentHighlightRanking extends \ContentElement
         }
 
         // TODO analog compileSpielerranking() aufbereiten
+        \System::log("Methode noch nicht vollständig implementiert!", __METHOD__, TL_ERROR);
 
         $this->Template->rankingtype = 'mannschaften';
         $this->Template->listitems = $results;
@@ -300,7 +299,6 @@ class ContentHighlightRanking extends \ContentElement
             });
         }
 
-        // TODO: Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
         $rang = 0;
         $rang_skip = 1;

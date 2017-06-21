@@ -146,8 +146,6 @@ class Spiel
 
 
     /**
-     * TODO: in eine eigene Klasse?
-     *
      * Compare results $a and $b for sorting, i.e. return -1, 0 or +1
      *
      * @param array $a

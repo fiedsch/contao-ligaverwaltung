@@ -55,7 +55,7 @@ class ModuleBegegnungserfassung extends \BackendModule
     }
 
     /**
-     * TODO: Situation erkennen (und behandeln) wenn beim erneuten Bearbeite
+     * TODO: Situation erkennen (und behandeln) wenn beim erneuten Bearbeiten
      * durch geänderte Spielerreihenfolge andere (neue!) Spiele erzeugt werden,
      * die alten aber nicht gelöscht werden.
      * Immer erst alle Spiele löschen und dann alles neu anlegen (meist identisch)
@@ -221,6 +221,8 @@ class ModuleBegegnungserfassung extends \BackendModule
         $spiel->score_home = $spielData['home']['score'] ?: 0;
         $spiel->score_away = $spielData['away']['score'] ?: 0;
 
+        $spiel->tstamp = time();
+
         $spiel->save();
     }
 
@@ -250,6 +252,8 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         $spiel->score_home = $spielData['home']['score'] ?: 0;
         $spiel->score_away = $spielData['away']['score'] ?: 0;
+
+        $spiel->tstamp = time();
 
         $spiel->save();
     }
