@@ -75,12 +75,17 @@ class Begegnung
      */
     public function getPunkteHome()
     {
-        $legs_home = $this->getLegsHome();
-        $legs_away = $this->getLegsAway();
-        if ($legs_home == $legs_away) {
+        $punkte_home = 0;
+        $punkte_away = 0;
+        foreach ($this->spiele as $spiel) {
+            $punkte_home += $spiel->getLegsHome() > $spiel->getLegsAway() ? 1 : 0;
+            $punkte_away += $spiel->getLegsHome() > $spiel->getLegsAway() ? 0 : 1;
+        }
+        if ($punkte_home == $punkte_away) {
             return self::PUNKTE_UNENTSCHIEDEN;
         }
-        return $legs_home > $legs_away ? self::PUNKTE_GEWONNEN : self::PUNKTE_VERLOREN;
+        return $punkte_home > $punkte_away ? self::PUNKTE_GEWONNEN : self::PUNKTE_VERLOREN;
+
     }
 
     /**
@@ -90,12 +95,16 @@ class Begegnung
      */
     public function getPunkteAway()
     {
-        $legs_home = $this->getLegsHome();
-        $legs_away = $this->getLegsAway();
-        if ($legs_home == $legs_away) {
+        $punkte_home = 0;
+        $punkte_away = 0;
+        foreach ($this->spiele as $spiel) {
+            $punkte_home += $spiel->getLegsHome() > $spiel->getLegsAway() ? 1 : 0;
+            $punkte_away += $spiel->getLegsHome() > $spiel->getLegsAway() ? 0 : 1;
+        }
+        if ($punkte_home == $punkte_away) {
             return self::PUNKTE_UNENTSCHIEDEN;
         }
-        return $legs_home > $legs_away ? self::PUNKTE_VERLOREN : self::PUNKTE_GEWONNEN;
+        return $punkte_home > $punkte_away ? self::PUNKTE_VERLOREN : self::PUNKTE_GEWONNEN;
     }
 
     /**
