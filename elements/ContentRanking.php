@@ -212,7 +212,10 @@ class ContentRanking extends \ContentElement
                           FROM tl_spiel s
                           LEFT JOIN tl_begegnung b
                           ON (s.pid=b.id)
-                          WHERE s.spieltype=1"; // nur "Einzel"
+                          LEFT JOIN tl_liga l
+                          ON (b.pid=l.id)
+                          WHERE s.spieltype=1
+                          AND l.id=?";
 
         if ($this->mannschaft > 0) {
             // eine bestimmte Mannschaft
@@ -220,12 +223,12 @@ class ContentRanking extends \ContentElement
             $this->Template->subject = 'Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
             $sql .= " AND b.home=? OR b.away=?";
             $spiele = \Database::getInstance()
-                ->prepare($sql)->execute($this->mannschaft, $this->mannschaft);
+                ->prepare($sql)->execute($this->liga, $this->mannschaft, $this->mannschaft);
         } else {
             // alle Mannschaften
             $this->Template->subject = 'Ranking aller Spieler';
             $spiele = \Database::getInstance()
-                ->prepare($sql)->execute();
+                ->prepare($sql)->execute($this->liga);
         }
 
         $results = [];
