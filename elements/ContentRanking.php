@@ -153,7 +153,8 @@ class ContentRanking extends \ContentElement
 
         // Berechnung Rang (Tabellenplatz) und Label
         $lastpunkte = PHP_INT_MAX;
-        $lastlegs = PHP_INT_MAX;
+        $lastlegs_self = PHP_INT_MAX;
+        $lastlegs_other = PHP_INT_MAX;
         $rang = 0;
         $rang_skip = 1;
         foreach ($results as $id => $data) {
@@ -172,7 +173,8 @@ class ContentRanking extends \ContentElement
 
             $results[$id]['name'] = $mannschaftlabel;
             if ($results[$id]['punkte_self'] == $lastpunkte
-                && $results[$id]['legs_self'] == $lastlegs
+                && $results[$id]['legs_self'] == $lastlegs_self
+                && $results[$id]['legs_other'] == $lastlegs_other
             ) {
                 // we have a "tie"
                 $rang_skip++;
@@ -182,7 +184,8 @@ class ContentRanking extends \ContentElement
             }
             $results[$id]['rang'] = $rang;
             $lastpunkte = $results[$id]['punkte_self'];
-            $lastlegs = $results[$id]['legs_self'];
+            $lastlegs_self = $results[$id]['legs_self'];
+            $lastlegs_other = $results[$id]['legs_other'];
         }
 
         $this->Template->rankingtype = 'mannschaften';

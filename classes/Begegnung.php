@@ -164,9 +164,13 @@ class Begegnung
      */
     public static function compareMannschaftResults($a, $b)
     {
+        // Bei Punktegleichstand
         if ($a['punkte_self'] == $b['punkte_self']) {
+
+            // nach eigenen gewonnenen Legs. Sind diese auch gleich, ...
             if ($a['legs_self'] == $b['legs_self']) {
-                return 0;
+                // ... dann nach Legdifferenz
+                return ($b['legs_self']-$b['legs_other'] <=> $a['legs_self']-$a['legs_other']);
             }
             return $a['legs_self'] < $b['legs_self'] ? +1 : -1;
         }
