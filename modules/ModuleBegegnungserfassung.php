@@ -141,6 +141,7 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     /**
      * @param int $id
+     * @return string
      */
     protected function getSpielerName($id)
     {

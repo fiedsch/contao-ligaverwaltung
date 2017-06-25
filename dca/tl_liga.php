@@ -141,7 +141,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'inputType' => 'text',
             'filter'    => true,
             'exclude'   => true,
-            'eval'      => ['tl_class' => 'w50', 'rgxp' => 'digit', 'tl_class' => 'w50 clr'],
+            'eval'      => ['rgxp' => 'digit', 'tl_class' => 'w50 clr'],
             'sql'       => "int(10) NOT NULL default '0'",
         ],
         'spielplan'    => [

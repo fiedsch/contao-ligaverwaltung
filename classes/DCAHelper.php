@@ -101,6 +101,7 @@ class DCAHelper
      * ('options_callback' in tl_mannschaft)
      *
      * @param \DataContainer $dc
+     * @return array
      */
     public
     static function getLigaForSelect(\DataContainer $dc)
@@ -361,6 +362,7 @@ class DCAHelper
      * ('options_callback' in tl_spiel)
      *
      * @param DataContaner|DC_Table $dc
+     * @return array
      */
     public
     static function getHomeSpielerForSelect($dc)
@@ -399,6 +401,7 @@ class DCAHelper
      * ('options_callback' in tl_spiel)
      *
      * @param DataContaner|DC_Table $dc
+     * @return array
      */
     public static function getAwaySpielerForSelect($dc)
     {
@@ -437,6 +440,7 @@ class DCAHelper
      * ('child_record_callback' in tl_spiel)
      *
      * @param array $row
+     * @return string
      */
     public static function listSpielCallback($row)
     {

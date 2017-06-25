@@ -12,7 +12,7 @@ Vue.component('lineupplayerselect', {
         available: Array, // jeweils ID und Name der verfügbaren Spieler
         lineup: Array, // IDs der Aufgestellten Spieler in der Reihenfolge der Aufstellung
         slotNumber: Number,
-        suffix: String,
+        suffix: String
     },
     data: function () {
             return {
@@ -379,7 +379,7 @@ var app = new Vue({
     },
     methods: {
         make_lineuparray: function (n) {
-            var arr = Array.apply(null, Array(n));
+            var arr = Array.apply(null, new Array(n));
             return arr.map(function (x, i) {
                 return 0
             });

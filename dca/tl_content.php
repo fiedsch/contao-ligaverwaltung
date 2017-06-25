@@ -74,7 +74,6 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['spielortinfo'] = '{type_legend},ty
 $GLOBALS['TL_DCA']['tl_content']['fields']['spielort'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_content']['spielort'],
     'exclude'    => true,
-    'foreignKey' => '',
     'inputType'  => 'select',
     'eval'       => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
     'foreignKey' => 'tl_spielort.name',

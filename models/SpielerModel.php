@@ -18,6 +18,7 @@ class SpielerModel extends \Model
      * Get the full name (lastname, firstname) for a member
      *
      * @param \MemberModel $member
+     * @return string
      */
     protected static function getFullNameFor(\MemberModel $member = null)
     {
@@ -34,6 +35,7 @@ class SpielerModel extends \Model
     /**
      * @param int $id
      * @ return string
+     * @return string
      */
     public static function getNameById($id) {
         $spieler = self::findById($id);

@@ -100,6 +100,7 @@ class Spiel
      * Bsp.: "3:1" => es wurde best of 5 gespielt, bei best of 3 kann es kein "3:1" geben!
      *
      * @param string $score
+     * @return int
      */
     public function getPunkte($score)
     {
@@ -150,6 +151,7 @@ class Spiel
      *
      * @param array $a
      * @param array $b
+     * @return int
      */
     public static function compareSpielerResults($a, $b)
     {
