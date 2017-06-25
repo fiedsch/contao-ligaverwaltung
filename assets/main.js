@@ -197,11 +197,7 @@ Vue.component('spielerselect', {
         },
         selected2: {
             get: function () {
-                if (this.position[1]) {
-                    return this.team.played[this.index].ids[1];
-                } else {
-                    return -1;
-                }
+                return this.team.played[this.index].ids[1];
             },
             set: function (value) {
                 this.team.played[this.index].ids[1] = value;
