@@ -17,4 +17,20 @@ class SpielModel extends \Model
      * @var string
      */
     protected static $strTable = "tl_spiel";
+
+    /**
+     * Ausgang des Spiels 0:0, 1:0 oder 0:1
+     *
+     * @return array
+     */
+    public function getScore()
+    {
+        if ($this->score_home == $this->score_away) {
+            return [0, 0];
+        }
+        return [
+            $this->score_home > $this->score_away ? 1 : 0,
+            $this->score_home > $this->score_away ? 0 : 1
+        ];
+    }
 }
