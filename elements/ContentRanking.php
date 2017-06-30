@@ -130,11 +130,17 @@ class ContentRanking extends \ContentElement
             $results[$home]['legs_other'] += $begegnung->getLegsAway();
             $results[$away]['legs_other'] += $begegnung->getLegsHome();
 
+            // Spiele (Ergebnis von Spieler gegen Spieler; entweder 1:0 oder 0:1)
+
+            $results[$home]['spiele_self'] += $begegnung->getSpieleHome();
+            $results[$away]['spiele_self'] += $begegnung->getSpieleAway();
+            $results[$home]['spiele_other'] += $begegnung->getSpieleAway();
+            $results[$away]['spiele_other'] += $begegnung->getSpieleHome();
+
             // Punkte für die Begegnung
 
             $results[$home]['punkte_self'] += $begegnung->getPunkteHome();
             $results[$away]['punkte_self'] += $begegnung->getPunkteAway();
-
             $results[$home]['punkte_other'] += $begegnung->getPunkteAway();
             $results[$away]['punkte_other'] += $begegnung->getPunkteHome();
 

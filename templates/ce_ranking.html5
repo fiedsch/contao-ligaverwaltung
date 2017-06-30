@@ -15,6 +15,7 @@
         <th>u</th>
         <th>v</th>
         <th>Legs</th>
+        <th>Spiele</th>
         <th>Punkte</th>
       </tr>
     </thead>
@@ -28,6 +29,7 @@
           <td><?= $listitem['unentschieden'] ?></td>
           <td><?= $listitem['verloren'] ?></td>
           <td><?= $listitem['legs_self'] ?>:<?= $listitem['legs_other'] ?></td>
+          <td><?= $listitem['spiele_self'] ?>:<?= $listitem['spiele_other'] ?></td>
           <td><?= $listitem['punkte_self'] ?>:<?= $listitem['punkte_other'] ?></td>
       </tr>
     <?php endforeach; ?>
@@ -51,8 +53,8 @@
           <?php if ($this->rankingsubtype === 'alle'): ?>
           <th>Mannschaft</th>
           <?php endif; ?>
-          <th>Spiele</th>
           <th>Legs</th>
+          <th>Spiele</th>
           <th>Punkte</th>
         </tr>
       </thead>
@@ -64,8 +66,8 @@
           <?php if ($this->rankingsubtype === 'alle'): ?>
           <td><?= $listitem['mannschaft'] ?></td>
           <?php endif; ?>
-          <td><?= $listitem['spiele_self'] ?> : <?= $listitem['spiele_other'] ?></td>
           <td><?= $listitem['legs_self'] ?> : <?= $listitem['legs_other'] ?></td>
+          <td><?= $listitem['spiele_self'] ?> : <?= $listitem['spiele_other'] ?></td>
           <td><?= $listitem['punkte_self'] ?></td>
           </tr>
         <?php endforeach; ?>
@@ -76,6 +78,8 @@
 <?php endif; ?>
 
 <?php endif; ?>
+
+<?php // $this->showTemplateVars(); ?>
 
 <?php $this->endblock(); ?>
 

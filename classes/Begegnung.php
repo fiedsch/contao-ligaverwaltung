@@ -69,6 +69,32 @@ class Begegnung
     }
 
     /**
+     * @return int
+     */
+    public function getSpieleHome()
+    {
+        $result = 0;
+        /** @var Spiel $spiel */
+        foreach ($this->spiele as $spiel) {
+            $result += $spiel->getScoreHome();
+        }
+        return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSpieleAway()
+    {
+        $result = 0;
+        /** @var Spiel $spiel */
+        foreach ($this->spiele as $spiel) {
+            $result += $spiel->getScoreAway();
+        }
+        return $result;
+    }
+
+    /**
      * 3 Punkte bei Sieg, 1 bei unentschieden, 0 bei verloren
      *
      * @return int
