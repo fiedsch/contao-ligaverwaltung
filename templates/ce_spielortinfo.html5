@@ -5,7 +5,11 @@
 <h3><?= $this->spielort->name ?></h3>
 
 <div class="address">
-  <a target="_blank" href="https://www.google.de/maps/place/<?= $this->spielort->street; ?>,<?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>">
+  <?php
+  $rawAddress = $this->spielort->street . ',' . $this->spielort->postal . ' ' . $this->spielort->city;
+  $encodedAddress = urlencode($rawAddress);
+  ?>
+  <a target="_blank" href="https://www.google.de/maps/place/<?=$encodedAddress?>">
   <?= $this->spielort->street; ?><br>
   <?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>
   </a>
