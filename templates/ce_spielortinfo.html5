@@ -5,8 +5,10 @@
 <h3><?= $this->spielort->name ?></h3>
 
 <div class="address">
+  <a target="_blank" href="https://www.google.de/maps/place/<?= $this->spielort->street; ?>,<?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>">
   <?= $this->spielort->street; ?><br>
   <?= $this->spielort->postal; ?> <?= $this->spielort->city; ?>
+  </a>
 </div>
 
 <div class="contact">
