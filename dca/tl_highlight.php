@@ -114,6 +114,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['typ'],
             'inputType' => 'select',
             'sorting'   => true,
+            'filter'    => true,
             'options'   => \HighlightModel::getOptionsArray(),
             'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
