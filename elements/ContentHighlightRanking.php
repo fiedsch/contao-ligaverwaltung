@@ -289,17 +289,18 @@ class ContentHighlightRanking extends \ContentElement
             });
         } else {
             uasort($results, function($a, $b) {
-                $i = 0;
-                while (isset($a['hl_punkte'][$i]) && isset($b['hl_punkte'][$i])) {
-                    if ($a['hl_punkte'][$i] != $b['hl_punkte'][$i]) {
-                        return $b['hl_punkte'][$i] <=> $a['hl_punkte'][$i]; // $b <=> $a sort DESC
-                    }
-                    $i++;
+                // Bei Shortleg und Highfinish können wir die sortierten Werte (== ['hl_punkte']-Eintrag)
+                // aneinanderhängen und als String sortieren, weil:
+                // * bei Shortleg oben bereits "gemap" wurde
+                // * bei Highfinish die Nebenbedingung gilt, daß die Werte > 100 und <180 sind! (es kann
+                //   also nicht das "Zahlen als Strings sortiert"-Problem auftauchen
+                //   (falsch: "1", "11", "2" vs. korrekt: 1, 2, 11)
+                if ($this->rankingfield == \HighlightModel::TYPE_SHORTLEG || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH) {
+                    return strcmp(implode('', $b['hl_punkte']), implode('', $a['hl_punkte']));
                 }
-                // Bsp: Shortleg "19" vs. "19,20" (hat in obigem while kein return, ist aber nicht gleich
-                if (isset($a['hl_punkte'][$i+1])) { return -1; }
-                if (isset($b['hl_punkte'][$i+1])) { return +1; }
-                return 0;
+                // Bei allen anderen Rankings hat ['hl_punkte'] nur einene numerischen Eintrag, nach dem
+                // wir sortieren können:
+                return $b['hl_punkte'][0] <=> $a['hl_punkte'][0];
             });
         }
 
