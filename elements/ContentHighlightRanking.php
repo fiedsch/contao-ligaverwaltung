@@ -259,11 +259,12 @@ class ContentHighlightRanking extends \ContentElement
                     $results[$id]['hl_shortleg'] = static::prettyPrintSorted($results[$id]['hl_shortleg'], 'ASC');
                     // Mapping
                     $results[$id]['hl_punkte'] = array_map(function($val) {
+                        $val = (int)$val;
                         // Wert > self::MAX_SHORTLEG_DARTS via 0 Punkte nicht berücksichtigen
                         if (self::MAX_SHORTLEG_DARTS < $val) {
                             return 0;
                         }
-                        // mapping: kürzeres es Leg === besser
+                        // mapping: kürzeres Leg === besser
                         return self::MAX_SHORTLEG_DARTS - $val + 1;
                     }, $results[$id]['hl_punkte']);
 
@@ -295,6 +296,9 @@ class ContentHighlightRanking extends \ContentElement
                     }
                     $i++;
                 }
+                // Bsp: Shortleg "19" vs. "19,20" (hat in obigem while kein return, ist aber nicht gleich
+                if (isset($a['hl_punkte'][$i+1])) { return -1; }
+                if (isset($b['hl_punkte'][$i+1])) { return +1; }
                 return 0;
             });
         }
