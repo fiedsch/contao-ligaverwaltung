@@ -265,7 +265,9 @@ class ContentHighlightRanking extends \ContentElement
                             return 0;
                         }
                         // mapping: kürzeres Leg === besser
-                        return self::MAX_SHORTLEG_DARTS - $val + 1;
+                        $result = self::MAX_SHORTLEG_DARTS - $val + 1;
+                        // "12" (9 Darter) bis "01" (20 Darts) für String-Sortierung
+                        return $result < 10 ? "0$result" : "$result";
                     }, $results[$id]['hl_punkte']);
 
                     // kürzester Shortleg zuerst (nach Mapping => höchster Wert zuerst!)
@@ -290,11 +292,12 @@ class ContentHighlightRanking extends \ContentElement
         } else {
             uasort($results, function($a, $b) {
                 // Bei Shortleg und Highfinish können wir die sortierten Werte (== ['hl_punkte']-Eintrag)
-                // aneinanderhängen und als String sortieren, weil:
-                // * bei Shortleg oben bereits "gemap" wurde
-                // * bei Highfinish die Nebenbedingung gilt, daß die Werte > 100 und <180 sind! (es kann
-                //   also nicht das "Zahlen als Strings sortiert"-Problem auftauchen
-                //   (falsch: "1", "11", "2" vs. korrekt: 1, 2, 11)
+                // aneinander hängen und als String sortieren, weil:
+                // * bei Shortleg oben bereits "gemap" wurde (kurze Legs -> hohe Werte) und
+                //   die (gemapten) Werte zwischen "12" (9 Darter) und "01" (20 Darts) liegen
+                // * bei Highfinish die Nebenbedingung gilt, daß die Werte > 100 und <180 sind!
+                //   Es kann also nicht das "Zahlen als Strings sortiert"-Problem auftauchen --
+                //   falsch: "1", "11", "2" vs. korrekt: 1, 2, 11.
                 if ($this->rankingfield == \HighlightModel::TYPE_SHORTLEG || $this->rankingfield == \HighlightModel::TYPE_HIGHFINISH) {
                     return strcmp(implode('', $b['hl_punkte']), implode('', $a['hl_punkte']));
                 }
