@@ -91,6 +91,21 @@ class ContentSpielplan extends \ContentElement
         $listitems = [];
         foreach ($begegnungen as $begegnung) {
 
+            // Nicht fertig eingegebene Spiele ausfiltern
+            // (z.B. Liga ausgewählt, "submit on change" damit die Mannschaftsdropdowns
+            // gefüllt werden dann Abbruch => eine Begegnung ist gespeichert bei der --
+            // außer liga -- alle Felder leer sind :-/
+
+            if (!$begegnung->home) {
+                $liga = LigaModel::findById($begegnung->pid);
+                $message = sprintf("Begegnung %d, %s ist nicht vollständig. Bitte bearbeiten oder löschen",
+                    $begegnung->id,
+                    $liga->name
+                );
+                \System::log($message, __METHOD__, TL_ERROR);
+                continue;
+            }
+
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
 
