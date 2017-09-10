@@ -70,8 +70,10 @@ class ContentMannschaftenuebersicht extends \ContentElement
                     [$mannschaft->id],
                     ['order' => 'tl_spieler.teamcaptain DESC, tl_spieler.co_teamcaptain DESC']
                 );
-                foreach ($spieler as $sp) {
-                    $arrTc[] = $sp->getTcDetails();
+                if ($spieler) {
+                    foreach ($spieler as $sp) {
+                        $arrTc[] = $sp->getTcDetails();
+                    }
                 }
                 $spielort = $mannschaft->getRelated('spielort');
                 $arrDetails[$liga->id][] = [
