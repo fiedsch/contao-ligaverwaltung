@@ -155,22 +155,8 @@ class Spiel
      */
     public static function compareSpielerResults($a, $b)
     {
-        if ($a['punkte_self'] == $b['punkte_self']) {
-            if ($a['legs_self'] == $b['legs_self']) {
-                return 0;
-            }
-            /*
-             // Leg-Differenz
-            if ($a['legs_self'] - $a['legs_other'] == $b['legs_self'] - $b['legs_other']) {
-                return 0;
-            }
-            */
-            return $a['legs_self'] < $b['legs_self'] ? +1 : -1;
-            /*
-             // Leg-Differenz
-            return $a['legs_self'] - $a['legs_other'] < $b['legs_self'] - $b['legs_other']  ? +1 : -1;
-            */
-        }
-        return $a['punkte_self'] < $b['punkte_self'] ? +1 : -1;
+        // $a und $b haben bei Speielern und Mannschafren die gleichen Felder und
+        // es soll die gleiche Sortierlogik angewandt werden.
+        return Begegnung::compareMannschaftResults($a, $b);
     }
 }
