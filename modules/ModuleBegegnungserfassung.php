@@ -217,7 +217,7 @@ class ModuleBegegnungserfassung extends \BackendModule
         $spiel->home  = $spielData['home']['spieler'][1]['id'];
         $spiel->away  = $spielData['away']['spieler'][1]['id'];
         $spiel->home2 = $spielData['home']['spieler'][2]['id'];
-        $spiel->away3 = $spielData['away']['spieler'][2]['id'];
+        $spiel->away2 = $spielData['away']['spieler'][2]['id'];
 
         $spiel->score_home = $spielData['home']['score'] ?: 0;
         $spiel->score_away = $spielData['away']['score'] ?: 0;
