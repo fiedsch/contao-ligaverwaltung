@@ -20,7 +20,7 @@ Vue.component('lineupplayerselect', {
             };
     },
     template: '<div>\
-          <span class="slot">{{ suffix}}{{ slotNumber}}</span>\
+          <span class="slot">{{ suffix }}{{ slotNumber }}</span>\
           <select v-model="selected">\
             <option \
             :class="{ isNotAvailable: !isAvailable(a.id) }"\
@@ -60,7 +60,7 @@ Vue.component('teamlineup', {
     methods: {
         lineupplayerchanged: function(slotnumber, selected) {
             this.lineup[slotnumber-1] = selected;
-            // make change "visible" (this most likely is not the proper way)
+            // make change "visible" (this is most likely not the proper way)
             this.lineup.push(this.lineup.pop());
         }
     }
