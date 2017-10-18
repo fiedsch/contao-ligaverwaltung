@@ -28,7 +28,8 @@ class ContentSpielerliste extends \ContentElement
             $allespieler = \SpielerModel::findAll([
                 'column' => ['pid=?'],
                 'value'  => [$this->mannschaft],
-                'order'  => 'teamcaptain DESC, co_teamcaptain DESC, lastname ASC, firstname ASC',
+                //'order'  => 'teamcaptain DESC, co_teamcaptain DESC, lastname ASC, firstname ASC',
+                'order'  => 'teamcaptain DESC, co_teamcaptain DESC, firstname ASC, lastname ASC',
             ]);
 
         if ($allespieler === null) {

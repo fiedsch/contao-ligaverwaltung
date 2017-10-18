@@ -153,10 +153,7 @@ class ModuleBegegnungserfassung extends \BackendModule
         if (!$member) {
             return "Mitglied zum Spieler mit der ID $id nicht gefunden";
         }
-        return sprintf("%s, %s",
-            $member->lastname,
-            $member->firstname
-        );
+        return \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
     }
 
     /**
@@ -304,10 +301,11 @@ class ModuleBegegnungserfassung extends \BackendModule
                 );
                 if ($spieler) {
                     foreach ($spieler as $s) {
-                        $player_name = sprintf("%s, %s",
-                            $s->getRelated('member_id')->lastname,
-                            $s->getRelated('member_id')->firstname
-                        );
+                        // addslashes() wegen Namen wie O'Reilly
+                        $player_name = addslashes(\Fiedsch\Liga\DCAHelper::makeSpielerName(
+                            $s->getRelated('member_id')->firstname,
+                            $s->getRelated('member_id')->lastname
+                        ));
                         if ($homeaway === 'home') {
                             $team_home[] = sprintf("{name: '%s', id: %d}", $player_name, $s->id);
                         } else {

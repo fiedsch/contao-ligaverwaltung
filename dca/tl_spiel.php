@@ -152,7 +152,6 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'sorting'          => true,
             'flag'             => 11, // sort ascending
             'inputType'        => 'select',
-            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
             'eval'             => ['tl_class' => 'w50 clr', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
             'relation'         => ['type' => 'hasOne', 'table' => 'tl_spieler', 'load' => 'lazy'],
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getHomeSpielerForSelect'],
@@ -164,7 +163,6 @@ $GLOBALS['TL_DCA']  ['tl_spiel'] = [
             'exclude'          => true,
             'sorting'          => true,
             'flag'             => 11, // sort ascending
-            //'foreignKey'       => 'tl_member.CONCAT(lastname,", ",firstname)',
             'inputType'        => 'select',
             'eval'             => ['tl_class' => 'w50', 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true],
             'relation'         => ['type' => 'hasOne', 'table' => 'tl_spieler', 'load' => 'lazy'],

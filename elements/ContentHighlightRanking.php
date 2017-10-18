@@ -210,7 +210,7 @@ class ContentHighlightRanking extends \ContentElement
         while ($highlights->next()) {
             if (!isset($results[$highlights->spieler_id])) {
                 $results[$highlights->spieler_id] = [
-                    'name'          => sprintf('%s, %s', $highlights->lastname, $highlights->firstname),
+                    'name'          => \Fiedsch\Liga\DCAHelper::makeSpielerName($highlights->firstname, $highlights->lastname),
                     'mannschaft'    => $highlights->mannschaft,
                     'hl_171'        => 0,  // Anzahl
                     'hl_180'        => 0,  // dito

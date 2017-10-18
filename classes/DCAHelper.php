@@ -260,7 +260,7 @@ class DCAHelper
         // weil es bereits in der Datenbank eingetragen und somit "im Einsatz" ist.
         if ($dc->activeRecord->member_id) {
             $member = \MemberModel::findById($dc->activeRecord->member_id);
-            $result[$member->id] = sprintf("%s, %s", $member->lastname, $member->firstname);
+            $result[$member->id] = self::makeSpielerName($member->firstname, $member->lastname);
         }
 
 
@@ -281,7 +281,8 @@ class DCAHelper
                 . ' WHERE l.saison=?'
                 . ')'
                 . ' AND tl_member.disable=\'\''
-                . ' ORDER BY tl_member.lastname';
+                //. ' ORDER BY tl_member.lastname';
+                . ' ORDER BY tl_member.firstname, tl_member.lastname';
             $member = \Database::getInstance()->prepare($query)->execute($saison);
         } else {
             // Modell II harlekin Modell (weniger restriktiv):
@@ -304,7 +305,7 @@ class DCAHelper
 
 
         while ($member->next()) {
-            $result[$member->id] = sprintf("%s, %s (%s)", $member->lastname, $member->firstname, $member->passnummer);
+            $result[$member->id] = sprintf("%s (%s)", self::makeSpielerName($member->firstname, $member->lastname), $member->passnummer);
         }
         return $result;
     }
@@ -323,9 +324,8 @@ class DCAHelper
         $teamcaptain_label = $arrRow['teamcaptain'] ? ('(Teamcaptain: ' . $member->email . ')') : '';
         $co_teamcaptain_label = $arrRow['co_teamcaptain'] ? ('(Co-Teamcaptain: ' . $member->email . ')') : '';
 
-        return sprintf('<div class="tl_content_left">%s, %s %s%s</div>',
-            $member->lastname,
-            $member->firstname,
+        return sprintf('<div class="tl_content_left">%s %s%s</div>',
+            self::makeSpielerName($member->firstname, $member->lastname),
             $teamcaptain_label,
             $co_teamcaptain_label
         );
@@ -382,10 +382,7 @@ class DCAHelper
         if ($spieler) {
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
-                $result[$sp->id] = sprintf("%s, %s",
-                    $member->lastname,
-                    $member->firstname
-                );
+                $result[$sp->id] = self::makeSpielerName($member->firstname, $member->lastname);
             }
         }
         // Nach Namen sortieren
@@ -421,10 +418,7 @@ class DCAHelper
             $member = $spieler->getRelated('member_id');
             foreach ($spieler as $sp) {
                 $member = $sp->getRelated('member_id');
-                $result[$sp->id] = sprintf("%s, %s",
-                    $member->lastname,
-                    $member->firstname
-                );
+                $result[$sp->id] = self::makeSpielerName($member->firstname, $member->lastname);
             }
         }
         // Nach Namen sortieren
@@ -454,12 +448,12 @@ class DCAHelper
                 $memberHome = $spielerHome ? $spielerHome->getRelated('member_id') : null;
                 $memberAway = $spielerAway ? $spielerAway->getRelated('member_id') : null;
                 if ($memberHome) {
-                    $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
+                    $memberHomeDisplayname = self::makeSpielerName($memberHome->firstname, $memberHome->lastname);
                 } else {
                     $memberHomeDisplayname = "Kein Spieler (ID " . $row['home'] . ")";
                 }
                 if ($memberAway) {
-                    $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
+                    $memberAwayDisplayname = self::makeSpielerName($memberAway->firstname, $memberAway->lastname);
                 } else {
                     $memberAwayDisplayname = "Kein Spieler (ID " . $row['away'] . ")";
                 }
@@ -484,22 +478,22 @@ class DCAHelper
                 $memberAway2 = $spielerAway2 ? $spielerAway2->getRelated('member_id') : null;
 
                 if ($memberHome) {
-                    $memberHomeDisplayname = sprintf("%s, %s", $memberHome->lastname, $memberHome->firstname);
+                    $memberHomeDisplayname = self::makeSpielerName($memberHome->firstname, $memberHome->lastname);
                 } else {
                     $memberHomeDisplayname = "Kein Spieler (ID " . $row['home'] . ")";
                 }
                 if ($memberHome2) {
-                    $memberHome2Displayname = sprintf("%s, %s", $memberHome2->lastname, $memberHome2->firstname);
+                    $memberHome2Displayname = self::makeSpielerName($memberHome2->firstname, $memberHome2->lastname);
                 } else {
                     $memberHome2Displayname = "Kein Spieler (ID " . $row['home2'] . ")";
                 }
                 if ($memberAway) {
-                    $memberAwayDisplayname = sprintf("%s, %s", $memberAway->lastname, $memberAway->firstname);
+                    $memberAwayDisplayname = self::makeSpielerName($memberAway->firstname, $memberAway->lastname);
                 } else {
                     $memberAwayDisplayname = "Kein Spieler (ID " . $row['away'] . ")";
                 }
                 if ($memberAway2) {
-                    $memberAway2Displayname = sprintf("%s, %s", $memberAway2->lastname, $memberAway2->firstname);
+                    $memberAway2Displayname = self::makeSpielerName($memberAway2->firstname, $memberAway2->lastname);
                 } else {
                     $memberAway2Displayname = "Kein Spieler (ID " . $row['away2'] . ")";
                 }
@@ -716,4 +710,19 @@ class DCAHelper
         return implode(',', $entries);
     }
 
+
+    /**
+     * Label für einen Spieler
+     * Eine Funktion, die bestimmt, ob wir "Nachname, Vorname" oder "Vorname Nachname"
+     * haben wollen
+     *
+     * @param string $firstname
+     * @param string $lastname
+     * @return string
+     */
+    public static function makeSpielerName($firstname, $lastname)
+    {
+        // return sprintf("%s, %s", $lastname, $firstname);
+        return sprintf("%s %s", $firstname, $lastname);
+    }
 }

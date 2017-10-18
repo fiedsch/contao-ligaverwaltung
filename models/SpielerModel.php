@@ -23,10 +23,7 @@ class SpielerModel extends \Model
     protected static function getFullNameFor(\MemberModel $member = null)
     {
         if ($member) {
-            return sprintf("%s, %s",
-                $member->lastname,
-                $member->firstname
-            );
+            return \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
         } else {
             return "Kein Member";
         }

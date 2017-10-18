@@ -42,7 +42,7 @@
             $teamcaptain_suffix = join(", ", $details);
       }
       ?>
-        <td><?= $listitem['member']->lastname ?>, <?= $listitem['member']->firstname ?></td>
+        <td><?= \Fiedsch\Liga\DCAHelper::makeSpielerName($listitem['member']->firstname, $listitem['member']->lastname) ?></td>
         <td><?= $listitem['member']->passnummer ?></td>
         <td><?= $teamcaptain_suffix ?></td>
       </tr>

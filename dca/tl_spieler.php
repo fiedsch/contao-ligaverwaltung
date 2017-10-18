@@ -101,7 +101,8 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
             'wizard'           => [
                     ['\Fiedsch\Liga\DCAHelper', 'editMemberWizard']
             ],
-            'foreignKey'       => 'tl_member.CONCAT(lastname, ", ", firstname)',
+            //'foreignKey'       => 'tl_member.CONCAT(lastname, ", ", firstname)',
+            'foreignKey'       => 'tl_member.CONCAT(firstname, " ", lastname)',
             'relation'         => ['type' => 'hasOne', 'table' => 'tl_member', 'load' => 'eager'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],

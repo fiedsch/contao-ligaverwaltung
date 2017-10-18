@@ -66,13 +66,13 @@ class ContentSpielbericht extends \ContentElement
             // Einzel (und erster Spieler Doppel)
             if ($home = $spiel->getRelated('home')) {
                 $member = $home->getRelated('member_id');
-                $homeplayer = sprintf("%s, %s", $member->lastname, $member->firstname);
+                $homeplayer = \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
             } else {
                 $homeplayer = '-';
             }
             if ($away = $spiel->getRelated('away')) {
                 $member = $away->getRelated('member_id');
-                $awayplayer = sprintf("%s, %s", $member->lastname, $member->firstname);
+                $awayplayer = \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
             } else {
                 $awayplayer = '-';
             }
@@ -80,13 +80,13 @@ class ContentSpielbericht extends \ContentElement
                 // Doppel (zweiter Spieler)
                 if ($home = $spiel->getRelated('home2')) {
                     $member = $home->getRelated('member_id');
-                    $homeplayer .= '/' . sprintf("%s, %s", $member->lastname, $member->firstname);
+                    $homeplayer .= '/' . \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
                 } else {
                     $homeplayer .= '/-';
                 }
                 if ($away = $spiel->getRelated('away2')) {
                     $member = $away->getRelated('member_id');
-                    $awayplayer .= '/' . sprintf("%s, %s", $member->lastname, $member->firstname);
+                    $awayplayer .= '/' . \Fiedsch\Liga\DCAHelper::makeSpielerName($member->firstname, $member->lastname);
                 } else {
                     $awayplayer .= '/-';
                 }
