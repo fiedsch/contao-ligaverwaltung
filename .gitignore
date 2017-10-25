@@ -6,3 +6,4 @@ install.sh
 install_remote.sh
 TODOs.md
 out.*
+.idea/*
