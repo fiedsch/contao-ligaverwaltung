@@ -74,7 +74,7 @@ class ContentSpielplan extends \ContentElement
         $columns = ['pid=?'];
         $conditions = [$this->liga];
         if ($this->mannschaft) {
-            $columns[] = 'home=? OR away=?';
+            $columns[] = '(home=? OR away=?)';
             $conditions[] = $this->mannschaft;
             $conditions[] = $this->mannschaft;
         }
