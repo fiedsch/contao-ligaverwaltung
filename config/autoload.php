@@ -42,6 +42,10 @@ ClassLoader::addClasses([
     'ModuleBegegnungserfassung'     => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',
     'ModuleMannschaftsseitenReader' => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseitenReader.php',
     'ModuleSpielberichtReader'      => 'system/modules/ligaverwaltung/modules/ModuleSpielberichtReader.php',
+
+    // Controllers
+    'Fiedsch\Liga\IcalController'  => 'system/modules/ligaverwaltung/controllers/IcalController.php'
+
 ]);
 
 TemplateLoader::addFiles([

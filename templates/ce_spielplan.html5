@@ -5,6 +5,21 @@
 <?php if ($this->spiele): ?>
 
 <?php
+  $iCalHref = "ical.php?liga=".$this->liga;
+  $icalName = "www.edart-bayern.de-liga-".$this->liga;
+  if ($this->mannschaft) {
+    $iCalHref .= "&mannschaft=".$this->mannschaft;
+    $icalName .= "-mannschaft-".$this->mannschaft;
+  }
+  $icalName .= '.ics';
+?>
+
+<div class="icaldownload">
+<i class="fa fa-calendar"></i>
+<a href="<?= $iCalHref ?>" download="<?= $icalName ?>">Kalender-Import (Download als iCal)</a>
+</div>
+
+<?php
   preg_match("/h(\d+)/", $this->hl, $matches);
   $sublevel = 1 + $matches[1]; // ein Level "unter" der Überschrift des Content Elements
 ?>
