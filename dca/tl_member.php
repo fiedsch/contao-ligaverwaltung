@@ -45,3 +45,18 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['postal']['eval']['tl_class'] .= ' clr
 $GLOBALS['TL_DCA']['tl_member']['fields']['username']['sql'] = 'varchar(64) COLLATE utf8_bin NULL';
 // redefinition
 $GLOBALS['TL_DCA']['tl_member']['fields']['username']['sql'] = 'varchar(64) COLLATE utf8_general_ci NULL';
+
+// do not use 'filter' for these
+foreach (['country','language','disable','login','city'] as $field) {
+    $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['filter'] = false;
+}
+
+// do not use 'search' for these
+foreach (['company','website','street'] as $field) {
+    $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['search'] = false;
+}
+
+// do not use 'sorting' for these
+foreach (['company','country','state'] as $field) {
+    $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['sorting'] = false;
+}
