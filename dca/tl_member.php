@@ -11,8 +11,7 @@
 $GLOBALS['TL_DCA']['tl_member']['fields']['email']['eval']['mandatory'] = false;
 
 $GLOBALS['TL_DCA']['tl_member']['palettes']['default']
-    = preg_replace("/;{address_legend/", ";{liga_legend},passnummer;{address_legend", $GLOBALS['TL_DCA']['tl_member']['palettes']['default']);
-
+    = preg_replace("/;{address_legend/", ";{liga_legend},passnummer,haspaidcurrentseason;{address_legend", $GLOBALS['TL_DCA']['tl_member']['palettes']['default']);
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['passnummer'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_member']['passnummer'],
@@ -23,6 +22,13 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['passnummer'] = [
     'sql'       => "varchar(32) NOT NULL default ''",
 ];
 
+$GLOBALS['TL_DCA']['tl_member']['fields']['haspaidcurrentseason'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_member']['haspaidcurrentseason'],
+    'inputType' => 'checkbox',
+    'filter'    => true,
+    'eval'      => ['tl_class'=>'w50'],
+    'sql'       => "char(1) NOT NULL default ''",
+];
 
 // remove fields we don't need/want
 
