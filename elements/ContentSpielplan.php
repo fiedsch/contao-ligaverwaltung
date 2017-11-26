@@ -73,15 +73,19 @@ class ContentSpielplan extends \ContentElement
         }
         $columns = ['pid=?'];
         $conditions = [$this->liga];
+
+        $order = 'spiel_tag ASC, spiel_am ASC';
         if ($this->mannschaft) {
             $columns[] = '(home=? OR away=?)';
             $conditions[] = $this->mannschaft;
             $conditions[] = $this->mannschaft;
+            // hier chronologisch, da es Spielverschiebungen geben kann
+            $order = 'spiel_am ASC, spiel_tag ASC';
         }
         $begegnungen = \BegegnungModel::findBy(
             $columns,
             $conditions,
-            ['order' => 'spiel_tag ASC, spiel_am ASC']
+            ['order' => $order]
         );
 
         if ($begegnungen === null) {
@@ -163,7 +167,8 @@ class ContentSpielplan extends \ContentElement
                 'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
                 'im'    => $away ? $spielortlabel : '',
                 //'score' => $begegnung->getScore(),
-                'score' => $begegnung->getLinkedScore()
+                'score' => $begegnung->getLinkedScore(),
+                'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {
                 $spiel['heimspiel'] = $home->id == $this->mannschaft;

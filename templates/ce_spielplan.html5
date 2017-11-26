@@ -41,7 +41,7 @@
             <tr class="spiel">
             <?php if ($this->mannschaft): ?>
             <?php printf("
-            <td class='spiel am'>%s %s</td>
+            <td class='spiel am'>%s %s (%s)</td>
             <td class='spiel where'>%s</td>
             <td class='spiel home'>%s</td>
             <td class='spiel away'>%s</td>
@@ -50,6 +50,7 @@
             <td class='spiel score'>%s</td>",
                             $spiel['am'],
                             $spiel['um']  ? $spiel['um'] : '',
+                            $spiel['spiel_tag'] . ".&nbsp;Spieltag",
                             $spiel['heimspiel']
                                 ? '<i class="fa fa-lg fa-home" aria-hidden="true" title="zuhause"></i><span class="sr-only">zuhause</span>'
                                 :' <i class="fa fa-car" aria-hidden="true" title="auswärts"></i><span class="sr-only">auswärts</span>',
