@@ -84,7 +84,6 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['spielbericht'] = '{type_legend},ty
 $GLOBALS['TL_DCA']['tl_content']['fields']['begegnung'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_content']['begegnung'],
     'exclude'          => true,
-    'foreignKey'       => '',
     'inputType'        => 'select',
     'eval'             => ['mandatory' => true, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true],
     'foreignKey'       => 'tl_begegnung.id',

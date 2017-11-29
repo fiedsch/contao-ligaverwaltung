@@ -149,7 +149,7 @@ $GLOBALS['TL_DCA']  ['tl_liga'] = [
             'inputType' => 'select',
             'exclude'   => true,
             'options'   => [\LigaModel::SPIELPLAN_16E2D => '16E,2D', \LigaModel::SPIELPLAN_16E4D => '16E,4D'],
-            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
     ],
