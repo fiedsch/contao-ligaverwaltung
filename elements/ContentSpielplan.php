@@ -168,6 +168,7 @@ class ContentSpielplan extends \ContentElement
                 'im'    => $away ? $spielortlabel : '',
                 //'score' => $begegnung->getScore(),
                 'score' => $begegnung->getLinkedScore(),
+                'legs'  => $begegnung->getLegs(),
                 'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {

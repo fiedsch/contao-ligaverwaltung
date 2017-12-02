@@ -33,6 +33,24 @@ class BegegnungModel extends \Model
     }
 
     /**
+     * @return string Ergebnis der Begegnung in Legs
+     */
+    public function getLegs()
+    {
+        $spiele = \SpielModel::findByPid($this->id);
+        if (!$spiele) {
+            return "";
+        }
+        $result = [0, 0];
+        foreach ($spiele as $spiel) {
+            list($home, $away) = $spiel->getLegs();
+            $result[0] += $home;
+            $result[1] += $away;
+        }
+        return sprintf("%d:%d", $result[0], $result[1]);
+    }
+
+    /**
      * @param string $mode Art (Ausführlichkeit) des Labels ['full'|'medium'|'short']
      * @return string
      */

@@ -33,4 +33,17 @@ class SpielModel extends \Model
             $this->score_home > $this->score_away ? 0 : 1
         ];
     }
+
+    /**
+     * Ausgang des Spiels in Legs
+     *
+     * @return array
+     */
+    public function getLegs()
+    {
+        return [
+            $this->score_home,
+            $this->score_away
+        ];
+    }
 }

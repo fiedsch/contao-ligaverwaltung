@@ -47,7 +47,8 @@
             <td class='spiel away'>%s</td>
             <!-- <td class='spiel against'>%s</td> -->
             <td class='spiel ort'>%s</td>
-            <td class='spiel score'>%s</td>",
+            <td class='spiel score'>%s</td>
+            <td class='spiel legs%s'>%s</td>",
                             $spiel['am'],
                             $spiel['um']  ? $spiel['um'] : '',
                             $spiel['spiel_tag'] . ".&nbsp;Spieltag",
@@ -58,7 +59,9 @@
                             $spiel['away'],
                             $spiel['heimspiel'] ? $spiel['away'] : $spiel['home'],
                             $spiel['im'],
-                            $spiel['score'] // einbauen: <a href="link zum spielplan"><i class="fa fa-search" aria-hidden="true"></i></a>
+                            $spiel['score'],
+                            empty($spiel["legs"]) ? " empty": "",
+                            $spiel['legs']
                             );
                           ?>
 
@@ -68,13 +71,16 @@
               <td class='spiel home'>%s</td>
               <td class='spiel away'>%s</td>
               <td class='spiel ort'>%s</td>
-              <td class='spiel score'>%s</td>",
+              <td class='spiel score'>%s</td>
+              <td class='spiel legs%s'>%s</td>",
                     $spiel['am'],
                     $spiel['um']  ? $spiel['um'] : '',
                     $spiel['home'],
                     $spiel['away'],
                     $spiel['im'],
-                    $spiel['score']
+                    $spiel['score'],
+                    empty($spiel["legs"]) ? "empty": "",
+                    $spiel['legs']
                 );
               ?>
             <?php endif; ?>
@@ -110,6 +116,19 @@ td.spiel.where   { width: 10em; }
     border-bottom: 1px solid #ddd;
 }
 */
+.spiel.legs {
+ color: #999;
+}
+.spiel.legs::before {
+    content: '(';
+}
+.spiel.legs::after {
+    content: ' Legs)';
+}
+.spiel.legs.empty::before,
+.spiel.legs.empty::after  {
+  content: '';
+}
 </style>
 
 <?php $this->endblock(); ?>
