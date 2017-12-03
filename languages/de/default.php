@@ -51,6 +51,10 @@ $GLOBALS['TL_LANG']['CTE']['mannschaftsseite'] = [
     'Mannschaftsseite bündelt mehrere Contentelemente (Spielortinfo, Spielerliste, ...)',
 ];
 
+$GLOBALS['TL_LANG']['CTE']['spielortseite'] = [
+    'Spielortseite',
+    'Spielortseite bündelt alle Informationen zu einem Spielort (für ausgewählte Saisons)',
+];
 $GLOBALS['TL_LANG']['CTE']['mannschaftenuebersicht'] = [
     'Mannschaftenübersicht',
     'Übersicht der Mannschaften einer Saison und je Mannschart die Teamcaptains'
@@ -61,6 +65,10 @@ $GLOBALS['TL_LANG']['FMD']['mannschaftsseitenreader'] = [
     'Reader, der eine Mannschaftsseite darstellt. ID der Mannschaft aus der URL.',
 ];
 
+$GLOBALS['TL_LANG']['FMD']['spielortseitenreader'] = [
+    'Spielortseiten Reader',
+    'Reader, der eine Spielortseite darstellt. ID des Spielorts aus der URL.',
+];
 $GLOBALS['TL_LANG']['FMD']['spielberichtreader'] = [
     'Spielbericht Reader',
     'Reader, der einen Spielbericht darstellt. ID der Begegnung aus der URL.',

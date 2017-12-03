@@ -63,3 +63,8 @@ $GLOBALS['TL_LANG']['tl_content']['rankingfield'] = [
     'Highlight anzeigen',
     'Typ des Highlights für das das Ranking erstellt werden soll'
 ];
+
+$GLOBALS['TL_LANG']['tl_content']['liga'] = [
+    'Ligen',
+    'Ligen, die in diesem CE berücksichtigt werden sollen'
+];

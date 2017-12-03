@@ -133,3 +133,19 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['rankingfield'] = [
 
 /* Mannschaftenübersicht: Mannschaft und deren Teamcaptains */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['mannschaftenuebersicht'] = '{type_legend},type,headline;{saison_legend},saison;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['liga'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_content']['liga'],
+    'inputType'        => 'checkboxWizard',
+    'filter'           => false,
+    'sorting'          => false,
+    // 'flag'        => 1, // Sort by initial letter ascending
+    'relation'         => ['type' => 'belongsTo', 'load' => 'lazy'],
+    'foreignKey'       => 'tl_liga.name',
+    'eval'             => ['multiple'=>true,'tl_class' => 'w50 clr'],
+    'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getLigaForSelect'],
+    'sql'              => "blob NULL",
+];
+/* Spielortseite */
+$GLOBALS['TL_DCA']  ['tl_content']['palettes']['spielortseite'] = '{config_legend},type'/*.',headline'*/ . ',spielort,liga';
+// mannschaft bereits bei Mannschaftsliste bzw. Spielerliste definiert

@@ -23,6 +23,7 @@ ClassLoader::addClasses([
     'ContentSpielortinfo'           => 'system/modules/ligaverwaltung/elements/ContentSpielortinfo.php',
     'ContentRanking'                => 'system/modules/ligaverwaltung/elements/ContentRanking.php',
     'ContentMannschaftsseite'       => 'system/modules/ligaverwaltung/elements/ContentMannschaftsseite.php',
+    'ContentSpielortseite'          => 'system/modules/ligaverwaltung/elements/ContentSpielortseite.php',
     'ContentHighlightRanking'       => 'system/modules/ligaverwaltung/elements/ContentHighlightRanking.php',
     'ContentMannschaftenuebersicht' => 'system/modules/ligaverwaltung/elements/ContentMannschaftenuebersicht.php',
 
@@ -41,6 +42,7 @@ ClassLoader::addClasses([
     // Modules
     'ModuleBegegnungserfassung'     => 'system/modules/ligaverwaltung/modules/ModuleBegegnungserfassung.php',
     'ModuleMannschaftsseitenReader' => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseitenReader.php',
+    'ModuleSpielortseitenReader'    => 'system/modules/ligaverwaltung/modules/ModuleSpielortseitenReader.php',
     'ModuleSpielberichtReader'      => 'system/modules/ligaverwaltung/modules/ModuleSpielberichtReader.php',
 
     // Controllers
@@ -57,9 +59,11 @@ TemplateLoader::addFiles([
     'ce_spielortinfo'             => 'system/modules/ligaverwaltung/templates',
     'ce_ranking'                  => 'system/modules/ligaverwaltung/templates',
     'ce_mannschaftsseite'         => 'system/modules/ligaverwaltung/templates',
+    'ce_spielortseite'            => 'system/modules/ligaverwaltung/templates',
     'be_begegnungserfassung'      => 'system/modules/ligaverwaltung/templates',
     'ce_highlightranking'         => 'system/modules/ligaverwaltung/templates',
     'mod_mannschaftsseitenreader' => 'system/modules/ligaverwaltung/templates',
+    'mod_spielortseitenreader'    => 'system/modules/ligaverwaltung/templates',
     'mod_spielberichtreader'      => 'system/modules/ligaverwaltung/templates',
     'ce_mannschaftenuebersicht'   => 'system/modules/ligaverwaltung/templates',
 ]);
