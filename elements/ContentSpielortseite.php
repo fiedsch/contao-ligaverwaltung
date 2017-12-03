@@ -97,15 +97,17 @@ class ContentSpielortseite extends \ContentElement
         $mannschaften_in_ligen_liste = [];
         $gefundene_ligen = [];
 
-        foreach($mannschaften as $mannschaft) {
-            if (in_array($mannschaft->liga, deserialize($this->liga))) {
-                $mannschaften_liste[] = $mannschaft->name;
-                // $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->name;
-                $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->getLinkedName();
-                $gefundene_ligen[$mannschaft->liga]++;
+        if ($mannschaften) {
+            foreach ($mannschaften as $mannschaft) {
+                if (in_array($mannschaft->liga, deserialize($this->liga))) {
+                    $mannschaften_liste[] = $mannschaft->name;
+                    // $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->name;
+                    $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->getLinkedName();
+                    $gefundene_ligen[$mannschaft->liga]++;
+                }
             }
-        }
-        $gefundene_ligen = array_keys($gefundene_ligen);
+            $gefundene_ligen = array_keys($gefundene_ligen);
+        } 
 
         // nach in der Konfiguration ausgewählten Saisons filtern
 
