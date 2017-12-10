@@ -17,9 +17,9 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     /**
      * Anzahl der Spieler pro Mannschaft (inkl. Austauschspieler) wie sie von der
-     * Vue.js App erwartet wird (vgl. :slots="6").
+     * Vue.js App erwartet wird (vgl. :slots="8").
      */
-    const NUM_PLAYERS = 6;
+    const NUM_PLAYERS = 8;
 
     /**
      * Template
