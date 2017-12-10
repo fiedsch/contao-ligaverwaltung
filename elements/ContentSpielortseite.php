@@ -107,7 +107,7 @@ class ContentSpielortseite extends \ContentElement
                 }
             }
             $gefundene_ligen = array_keys($gefundene_ligen);
-        } 
+        }
 
         // nach in der Konfiguration ausgewählten Saisons filtern
 
