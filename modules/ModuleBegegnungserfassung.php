@@ -30,13 +30,22 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     public function compile()
     {
+        // Begegnung wurde bereits erfasst? Dann redirect zur Bearbeitung der einzelnen tl_spiel-Records
+        /*
+        $spiele = \SpielModel::findByPid(\Input::get('id'));
+        if ($spiele) {
+            // TODO: this breaks the "back" link
+            // Funzt nicht (enthält id wg. redirect(): http://edart-bayern.de.localhost/contao/main.php?do=liga.begegnungserfassung&id=760
+            // Funzt (Contao Standard): http://edart-bayern.de.localhost/contao/main.php?do=liga.begegnung
+            //
+            // \Controller::redirect(sprintf('contao/main.php?do=liga.begegnung&table=tl_spiel&id=%d', \Input::get('id')));
+            // daher (quick and dirty) Behandlung in $this->generatePatchSpielplanCode()
+        }
+        */
+
         // Aufruf über den Menüpunkte
         if (\Input::get('id') <= 0) {
-            $this->Template->message = sprintf('Aufruf bitte über den Menüpunkt <a href="%s">%s</a>!',
-                'contao/main.php?do=liga.begegnung',
-                'Begegnungen'
-            );
-            return;
+            \Controller::redirect('contao/main.php?do=liga.begegnung');
         }
 
         if ('begegnungserfassung' === \Input::post('FORM_SUBMIT')) {
@@ -358,13 +367,15 @@ class ModuleBegegnungserfassung extends \BackendModule
         if (!\Input::get('id')) {
             $jsCodeLines[] = '// ID der Begegnung nicht angegeben';
         } else {
-            $message  = '\nFalls Du bereits Daten erfasst haben solltest:';
-            $message .= '\ndie Funktion \”eine bereits erfasste Begegnung nochmal bearbeiten\" fehlt noch.';
-            $message .= '\nSorry!';
-            $message .= '\nFalls etwas geändert werden muss, am einfachsten unter Begegnungen das zugehörige';
-            $message .= '\neinzelne Spiel bearbeiten';
-            $jsCodeLines[] = "alert(\"$message\")";
-
+            $spiele = \SpielModel::findByPid(\Input::get('id'));
+            if ($spiele) {
+                $message  = '\nFür diese Begegnung sind bereits Spiele erfasst worden!';
+                $message .= '\nFalls noch etwas geändert werden muss, bitte das zugehörige einzelne Spiel bearbeiten.';
+                $jsCodeLines[] = "alert(\"$message\")";
+                $jsCodeLines[] = 'window.location = "contao/main.php?do=liga.begegnung";';
+            } else {
+                // kein Grund für eine Nachricht
+            }
             // $spiele = \SpielModel::findBy(
             //     ['pid=?'],
             //     [\Input::get('id')],
