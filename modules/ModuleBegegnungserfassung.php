@@ -30,19 +30,6 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     public function compile()
     {
-        // Begegnung wurde bereits erfasst? Dann redirect zur Bearbeitung der einzelnen tl_spiel-Records
-        /*
-        $spiele = \SpielModel::findByPid(\Input::get('id'));
-        if ($spiele) {
-            // TODO: this breaks the "back" link
-            // Funzt nicht (enthält id wg. redirect(): http://edart-bayern.de.localhost/contao/main.php?do=liga.begegnungserfassung&id=760
-            // Funzt (Contao Standard): http://edart-bayern.de.localhost/contao/main.php?do=liga.begegnung
-            //
-            // \Controller::redirect(sprintf('contao/main.php?do=liga.begegnung&table=tl_spiel&id=%d', \Input::get('id')));
-            // daher (quick and dirty) Behandlung in $this->generatePatchSpielplanCode()
-        }
-        */
-
         // Aufruf über den Menüpunkte
         if (\Input::get('id') <= 0) {
             \Controller::redirect('contao/main.php?do=liga.begegnung');
@@ -60,7 +47,6 @@ class ModuleBegegnungserfassung extends \BackendModule
         // contao/main.php?do=liga.verband&table=tl_spiel&id=67
         //                                                   ^^Begegnung
         // weiterleiten
-
     }
 
     /**
