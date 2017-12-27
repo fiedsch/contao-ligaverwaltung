@@ -60,7 +60,7 @@ var data = {
     },
     away: {
         key: "away",
-        name: "<?= $this->team_away_name ?>",
+        name: "<?= $this->team_away_name ?: 'Spielfrei!' ?>",
         available: [ <?= $this->team_away_players ?> ],
         lineup: [ <?= $this->team_away_lineup ?> ],
         played: [ ]

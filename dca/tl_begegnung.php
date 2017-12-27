@@ -101,10 +101,20 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
                                               $blnCircularReference,
                                               $strPrevious,
                                               $strNext) {
+
+                    $spiele = \SpielModel::findByPid($arrRow['id']);
+                    if ($spiele) {
+                        return sprintf('<a href="contao/main.php?%s&rt=%s&id=%d">%s</a>',
+                            'do=liga.begegnung&table=tl_spiel',
+                            REQUEST_TOKEN,
+                            $arrRow['id'],
+                            '<span style="width:6em;display:inline-block">bearbeiten</span>' //json_encode(func_get_args())
+                            );
+                    }
                     return sprintf('<a href="contao/main.php?%s&id=%d">%s</a>',
                         $href,
                         $arrRow['id'],
-                        'erfassen' // TODO Icon ; Debug: json_encode(func_get_args())
+                        '<span style="width:6em;display:inline-block">erfassen</span>' // TODO Icon ; Debug: json_encode(func_get_args())
                     );
                 }
             ],
