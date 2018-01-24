@@ -93,7 +93,8 @@ class ContentRanking extends \ContentElement
                           s.score_home AS legs_home,
                           s.score_away AS legs_away,
                           b.home AS team_home,
-                          b.away AS team_away
+                          b.away AS team_away,
+                          b.spiel_tag AS spieltag
                           FROM tl_spiel s
                           LEFT JOIN tl_begegnung b
                           ON (s.pid=b.id)
@@ -105,7 +106,7 @@ class ContentRanking extends \ContentElement
         $begegnungen = [];
 
         while ($spiele->next()) {
-            $key = sprintf("%d:%d", $spiele->team_home, $spiele->team_away);
+            $key = sprintf("%d:%d:%d", $spiele->spieltag, $spiele->team_home, $spiele->team_away);
             if (!isset($begegnungen[$key])) {
                 $begegnungen[$key] = new Begegnung();
             }
@@ -116,7 +117,7 @@ class ContentRanking extends \ContentElement
 
         /** @var \Fiedsch\Liga\Begegnung $begegnung */
         foreach ($begegnungen as $key => $begegnung) {
-            list($home, $away) = explode(':', $key);
+            list($spieltag, $home, $away) = explode(':', $key);
 
             // Begegnungen: Mannschaft gegen Mannschaft
 
