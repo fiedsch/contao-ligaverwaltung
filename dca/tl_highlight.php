@@ -95,9 +95,6 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'foreignKey'       => 'tl_begegnung.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getBegegnungenForHighlight'],
             'eval'             => ['submitOnChange' => true, 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
-            // TODO: eval mit submitOnChange, damit bei der spieler_id im callback
-            // bereits eingegrenzt werden kann und nur noch die Spieler der
-            // beiden Mannschaften angeboten werden.
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'spieler_id'   => [
@@ -107,7 +104,6 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
             'foreignKey'       => 'tl_spieler.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForHighlight'],
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
-            //'relation'         => ['type' => 'belongsTo', 'table' => 'tl_spieler', 'field' => 'id'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
         'type'         => [

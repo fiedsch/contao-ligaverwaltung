@@ -123,18 +123,7 @@ $GLOBALS['TL_DCA']['tl_mannschaft'] = [
             'foreignKey' => 'tl_spielort.name',
             'relation'   => ['type' => 'hasOne', 'load' => 'eager'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
-        ]/*,
-        'teampage' => [
-            'label'      => &$GLOBALS['TL_LANG']['tl_mannschaft']['teampage'],
-            'inputType'  => 'pageTree',
-            'exclude'    => true,
-            'search'     => false,
-            'filter'     => false,
-            'sorting'    => false,
-            'eval'       => ['mandatory' => false, 'multiple'=>false, 'fieldType'=>'radio'],
-            'sql'        => "blob NULL",
         ]
-        */
     ],
 ];
 

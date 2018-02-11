@@ -7,3 +7,6 @@ install_remote.sh
 TODOs.md
 out.*
 .idea/*
+
+mitglieder_auszaehlung.php
+vendor/
