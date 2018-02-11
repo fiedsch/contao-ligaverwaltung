@@ -44,6 +44,7 @@ ClassLoader::addClasses([
     'ModuleMannschaftsseitenReader' => 'system/modules/ligaverwaltung/modules/ModuleMannschaftsseitenReader.php',
     'ModuleSpielortseitenReader'    => 'system/modules/ligaverwaltung/modules/ModuleSpielortseitenReader.php',
     'ModuleSpielberichtReader'      => 'system/modules/ligaverwaltung/modules/ModuleSpielberichtReader.php',
+    'ModuleSpielerHistory'          => 'system/modules/ligaverwaltung/modules/ModuleSpielerHistory.php',
 
     // Controllers
     'Fiedsch\Liga\IcalController'  => 'system/modules/ligaverwaltung/controllers/IcalController.php'
@@ -66,4 +67,5 @@ TemplateLoader::addFiles([
     'mod_spielortseitenreader'    => 'system/modules/ligaverwaltung/templates',
     'mod_spielberichtreader'      => 'system/modules/ligaverwaltung/templates',
     'ce_mannschaftenuebersicht'   => 'system/modules/ligaverwaltung/templates',
+    'be_spielerhistory'           => 'system/modules/ligaverwaltung/templates',
 ]);

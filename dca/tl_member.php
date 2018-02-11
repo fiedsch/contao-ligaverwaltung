@@ -6,6 +6,37 @@
  * @license https://opensource.org/licenses/MIT
  */
 
+$GLOBALS['TL_DCA']['tl_member']['list']['operations']['history'] = [
+        'label' => &$GLOBALS['TL_LANG']['tl_member']['history'],
+        //'href'  => 'do=liga.begegnungserfassung',
+        //'icon'  => 'editheader.gif',
+        'button_callback' => function($arrRow,
+                                      $href,
+                                      $label,
+                                      $title,
+                                      $icon,
+                                      $attributes,
+                                      $strTable,
+                                      $arrRootIds,
+                                      $arrChildRecordIds,
+                                      $blnCircularReference,
+                                      $strPrevious,
+                                      $strNext) {
+            return sprintf(
+                '<a href="contao/main.php?do=liga.spieler_history&amp;id=%d&amp;popup=1&amp;rt=%s"'
+                .' title="" style="padding-left:3px"'
+                .' onclick="Backend.openModalIframe({\'width\':768,\'title\':\'Spielerhistorie des Mitglieds ID %d anzeigen\',\'url\':this.href});return false"'
+                .'>'
+                .'%s</a>'
+                ,
+                $arrRow['id'],
+                REQUEST_TOKEN,
+                $arrRow['id'],
+                '<img src="system/themes/default/images/diff.gif" title="Spielerhistorie anzeigen">'
+            );
+        }
+];
+
 // Nicht jeder Spieler hat eine E-Mail-Adresse: den Contao-Standard "ist Pflichtfeld" ändern
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['email']['eval']['mandatory'] = false;

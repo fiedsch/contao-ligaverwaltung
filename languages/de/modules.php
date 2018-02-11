@@ -52,6 +52,11 @@ $GLOBALS['TL_LANG']['MOD']['liga.highlight'] = [
     'Eingabe Highlights.',
 ];
 
+$GLOBALS['TL_LANG']['MOD']['liga.spieler_history'] = [
+        'Spielerhistorie',
+        'Wo hat ein Mitglied wann gespielt?'
+    ];
+
 $GLOBALS['TL_LANG']['FMD']['ligaverwaltung'] = [
     'Ligaverwaltung',
     'Ligaverwaltung',

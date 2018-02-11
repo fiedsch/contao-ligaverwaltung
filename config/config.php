@@ -42,6 +42,10 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'tables' => ['tl_highlight'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/highlights.gif'
         ],
+        'liga.spieler_history'  => [
+            'callback' => 'ModuleSpielerHistory',
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
+        ],
     ],
 ]);
 
@@ -71,3 +75,8 @@ $GLOBALS['FE_MOD']['ligaverwaltung']['spielberichtreader'] = 'ModuleSpielbericht
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('\Fiedsch\Liga\DCAHelper', 'addCustomRegexp');
+
+/* Add to Backend CSS */
+if (TL_MODE === 'BE') {
+    $GLOBALS['TL_CSS'][] = 'system/modules/ligaverwaltung/assets/ligaverwaltung_be.css';
+}
