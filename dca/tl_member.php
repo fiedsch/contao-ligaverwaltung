@@ -32,7 +32,9 @@ $GLOBALS['TL_DCA']['tl_member']['list']['operations']['history'] = [
                 $arrRow['id'],
                 REQUEST_TOKEN,
                 $arrRow['id'],
-                '<img src="system/themes/default/images/diff.gif" title="Spielerhistorie anzeigen">'
+                // getHtml(a, foo, c) setzt mit foo das alt-Attribut, wir benötigen aber das title-Attribut
+                // das wir im dritten Parameter "manuell" setzen.
+                Image::getHtml('diff.gif', $GLOBALS['TL_LANG']['tl_member']['spielerhistorie'][0], 'style="vertical-align:top" title="'.$GLOBALS['TL_LANG']['tl_member']['spielerhistorie'][0].'"')
             );
         }
 ];
