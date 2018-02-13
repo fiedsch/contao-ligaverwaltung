@@ -40,8 +40,8 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'fields'                => ['pid', 'home', 'away'],
             'panelLayout'           => 'sort,filter;search,limit',
             'headerFields'          => ['name', 'saison'],
-            'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listBegegnungCallback'],
-            'child_record_class'    => 'no_padding',
+            //'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'listBegegnungCallback'],
+            //'child_record_class'    => 'no_padding',
             'disableGrouping'       => true,
             /**/
         ],

@@ -133,6 +133,7 @@ class DCAHelper
      * @param $arrRow
      * @return string
      */
+    /*
     public static function listBegegnungCallback($arrRow)
     {
         $home = \MannschaftModel::findById($arrRow['home']);
@@ -149,6 +150,7 @@ class DCAHelper
             $away ? $away->name : 'Spielfrei'
         );
     }
+    */
 
     /**
      * Label für eine Begegnung (Spiel zweier Mansnchaften gegeneinander)
@@ -172,13 +174,20 @@ class DCAHelper
         $spiele = \SpielModel::findByPid($row['id']);
         $spieleHinterlegt = count($spiele) > 0 ? sprintf('(%d Spiele)', count($spiele)) : '';
         $score_home = $score_away = 0;
+        $eingesetzte_spieler = ['home'=>[], 'away'=>[]];
         if ($spiele) {
             foreach ($spiele as $spiel) {
                 $punkte_home += $spiel->score_home > $spiel->score_away ? 1 : 0;
                 $punkte_away += $spiel->score_home < $spiel->score_away ? 1 : 0;
+                $eingesetzte_spieler['home'][$spiel->home]++;
+                $eingesetzte_spieler['away'][$spiel->away]++;
             }
         }
+        // nicht angetreten?
+        $is_noshow = count(array_keys($eingesetzte_spieler['away'])) === 1 && array_keys($eingesetzte_spieler['away'])[0] === 0;
+
         $final_score = $punkte_home + $punkte_away > 0 ? sprintf('%d:%d', $punkte_home, $punkte_away) : '';
+
         return sprintf("<span class='tl_gray'>%s %s %s %d. Spieltag:</span> 
                         <span class='tl_blue'>%s %s %s</span> 
                         <span class='tl_green'>%s</span> 
@@ -191,7 +200,7 @@ class DCAHelper
             $away ? 'vs' : 'hat',
             $away ? $away->name : 'Spielfrei',
             $final_score,
-            $spieleHinterlegt
+            $is_noshow ? ' nicht angetreten!' : $spieleHinterlegt
         );
     }
 
