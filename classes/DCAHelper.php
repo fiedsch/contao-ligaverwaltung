@@ -184,7 +184,8 @@ class DCAHelper
             }
         }
         // nicht angetreten?
-        $is_noshow = count(array_keys($eingesetzte_spieler['away'])) === 1 && array_keys($eingesetzte_spieler['away'])[0] === 0;
+        $is_noshow_home = count(array_keys($eingesetzte_spieler['home'])) === 1 && array_keys($eingesetzte_spieler['home'])[0] === 0;
+        $is_noshow_away = count(array_keys($eingesetzte_spieler['away'])) === 1 && array_keys($eingesetzte_spieler['away'])[0] === 0;
 
         $final_score = $punkte_home + $punkte_away > 0 ? sprintf('%d:%d', $punkte_home, $punkte_away) : '';
 
@@ -200,7 +201,7 @@ class DCAHelper
             $away ? 'vs' : 'hat',
             $away ? $away->name : 'Spielfrei',
             $final_score,
-            $is_noshow ? ' nicht angetreten!' : $spieleHinterlegt
+            $is_noshow_home || $is_noshow_away ? ' nicht angetreten!' : $spieleHinterlegt
         );
     }
 
