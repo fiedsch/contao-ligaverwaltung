@@ -60,7 +60,7 @@
                             $spiel['heimspiel'] ? $spiel['away'] : $spiel['home'],
                             $spiel['im'],
                             $spiel['score'],
-                            empty($spiel["legs"]) ? " empty": "",
+                            empty($spiel["legs"]) ? " empty": (preg_match("/nicht angetreten/", $spiel["legs"]) ? " noshow" : ""),
                             $spiel['legs']
                             );
                           ?>
@@ -79,7 +79,7 @@
                     $spiel['away'],
                     $spiel['im'],
                     $spiel['score'],
-                    empty($spiel["legs"]) ? "empty": "",
+                    empty($spiel["legs"]) ? " empty": (preg_match("/nicht angetreten/", $spiel["legs"]) ? " noshow" : ""),
                     $spiel['legs']
                 );
               ?>
@@ -126,7 +126,9 @@ td.spiel.where   { width: 10em; }
     content: ' Legs)';
 }
 .spiel.legs.empty::before,
-.spiel.legs.empty::after  {
+.spiel.legs.empty::after,
+.spiel.legs.noshow::before,
+.spiel.legs.noshow::after  {
   content: '';
 }
 </style>

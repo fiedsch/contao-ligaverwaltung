@@ -23,12 +23,21 @@ class BegegnungModel extends \Model
         if (!$spiele) {
             return "";
         }
+        //$eingesetzte_spieler = ['home'=>[], 'away'=>[]];
         $result = [0, 0];
         foreach ($spiele as $spiel) {
             list($home, $away) = $spiel->getScore();
             $result[0] += $home;
             $result[1] += $away;
+            //$eingesetzte_spieler['home'][$spiel->home]++;
+            //$eingesetzte_spieler['away'][$spiel->away]++;
         }
+
+        // nicht angetreten?
+        //$is_noshow_home = count(array_keys($eingesetzte_spieler['home'])) === 1 && array_keys($eingesetzte_spieler['home'])[0] === 0;
+        //$is_noshow_away = count(array_keys($eingesetzte_spieler['away'])) === 1 && array_keys($eingesetzte_spieler['away'])[0] === 0;
+        //if ($is_noshow_home) { return "Heim nicht angetreten"; } // siehe auch ce_spielplan.html5!
+        //if ($is_noshow_away) { return "Gast nicht angetreten"; } //
         return sprintf("%d:%d", $result[0], $result[1]);
     }
 
@@ -42,11 +51,19 @@ class BegegnungModel extends \Model
             return "";
         }
         $result = [0, 0];
+        $eingesetzte_spieler = ['home'=>[], 'away'=>[]];
         foreach ($spiele as $spiel) {
             list($home, $away) = $spiel->getLegs();
             $result[0] += $home;
             $result[1] += $away;
+            $eingesetzte_spieler['home'][$spiel->home]++;
+            $eingesetzte_spieler['away'][$spiel->away]++;
         }
+        // nicht angetreten?
+        $is_noshow_home = count(array_keys($eingesetzte_spieler['home'])) === 1 && array_keys($eingesetzte_spieler['home'])[0] === 0;
+        $is_noshow_away = count(array_keys($eingesetzte_spieler['away'])) === 1 && array_keys($eingesetzte_spieler['away'])[0] === 0;
+        if ($is_noshow_home) { return "Heim nicht angetreten"; } // siehe auch ce_spielplan.html5!
+        if ($is_noshow_away) { return "Gast nicht angetreten"; } //
         return sprintf("%d:%d", $result[0], $result[1]);
     }
 
