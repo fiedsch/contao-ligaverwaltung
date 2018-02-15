@@ -115,32 +115,8 @@ class ContentSpielplan extends \ContentElement
 
             $spielort = $home->getRelated('spielort');
 
-            /*
-            $homelabel = $home->name;
-            if ($home->teampage) {
-                $teampage = \PageModel::findById($home->teampage);
-                $homelabel = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl($teampage->row()),
-                    $home->name
-                );
-            }
-            */
             $homelabel = $home->getLinkedName();
-            /*
-            if ($away) {
-                $awaylabel = $away->name;
-                if ($away->teampage) {
-                    $teampage = \PageModel::findById($away->teampage);
-                    $awaylabel = sprintf("<a href='%s'>%s</a>",
-                        \Controller::generateFrontendUrl($teampage->row()),
-                        $away->name
-                    );
-                }
-            } else {
-                // $away == null => $home hat "Spielfrei"
-                $awaylabel = "Spielfrei";
             }
-            */
             if ($away) {
                 $awaylabel = $away->getLinkedName();
             } else {
