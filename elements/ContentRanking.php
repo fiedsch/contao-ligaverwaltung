@@ -166,16 +166,7 @@ class ContentRanking extends \ContentElement
         $rang_skip = 1;
         foreach ($results as $id => $data) {
             $mannschaft = \MannschaftModel::findById($id);
-            /*
-            $mannschaftlabel = $mannschaft->name;
-            if ($mannschaft->teampage) {
-                $teampage = \PageModel::findById($mannschaft->teampage);
-                $mannschaftlabel = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl($teampage->row()),
-                    $mannschaft->name
-                );
             }
-            */
             $mannschaftlabel = $mannschaft->getLinkedName();
 
             $results[$id]['name'] = $mannschaftlabel;
