@@ -72,7 +72,10 @@ class DCAHelper
     public static function mannschaftLabelCallback($arrRow)
     {
         $liga = \LigaModel::findById($arrRow['liga']);
-        if (!$liga) {
+        if ($liga === '0') {
+            return sprintf("%s <span class='tl_red'>Keiner Liga zugeordnet</span>", $arrRow['name']);
+        }
+        if ($liga === null) {
             return sprintf("%s <span class='tl_red'>Liga '%d' existiert nicht mehr!</span>",
                 $arrRow['name'],
                 $arrRow['liga']);
