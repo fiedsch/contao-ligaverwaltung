@@ -82,17 +82,22 @@ class DCAHelper
             ->prepare("SELECT COUNT(*) AS n FROM tl_spieler WHERE pid=?")
             ->execute($arrRow['id']);
         $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
+        $inaktiv = '';
         if ($spieler->n > 0) {
             $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
         }
+        if ($arrRow['active'] === '') {
+            $inaktiv = ', <span class=\'tl_red\'>Mannschaft nicht aktiv</span>';
+        }
 
-        return sprintf('<div class="tl_content_left">%s, %s %s %s (%s, %s)</div>',
+        return sprintf('<div class="tl_content_left">%s, %s %s %s (%s, %s%s)</div>',
             $arrRow['name'],
             $liga->getRelated('pid')->name,
             $liga->name,
             $liga->getRelated('saison')->name,
             $spielort->name,
-            $anzahlSpieler
+            $anzahlSpieler,
+            $inaktiv
         );
     }
 
