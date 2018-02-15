@@ -103,7 +103,10 @@ class ContentHighlightRanking extends \ContentElement
                           ON (s.member_id=me.id)
                           LEFT JOIN tl_mannschaft ma
                           ON (s.pid=ma.id)
-                          WHERE b.pid=?";
+                          WHERE b.pid=?
+                          AND ma.id IS NOT NULL
+                          AND s.id IS NOT NULL
+                          AND me.id IS NOT NULL"; // keine gelöschten Spieler
 
         $sql .= " AND " . $this->getRankingTypeFilter('h');
 
@@ -185,7 +188,10 @@ class ContentHighlightRanking extends \ContentElement
                           ON (s.member_id=me.id)
                           LEFT JOIN tl_mannschaft ma
                           ON (s.pid=ma.id)
-                          WHERE b.pid=?";
+                          WHERE b.pid=?
+                          AND ma.id IS NOT NULL
+                          AND s.id IS NOT NULL
+                          AND me.id IS NOT NULL"; // keine gelöschten Spieler
 
         if ($this->mannschaft > 0) {
             // eine bestimmte Mannschaft
