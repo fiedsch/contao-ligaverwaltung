@@ -118,6 +118,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
         ],
         'active' => [
             'label'      => &$GLOBALS['TL_LANG']['tl_spieler']['active'],
+            'save_callback' => [['\Fiedsch\Liga\DCAHelper', 'spielerSaveCallback']],
             'inputType'  => 'checkbox',
             'exclude'    => true,
             'search'     => false,

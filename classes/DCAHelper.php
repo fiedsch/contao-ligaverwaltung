@@ -376,6 +376,73 @@ class DCAHelper
             . '</a>';
     }
 
+    /**
+     * Sicherstellen, daß ein Spieler nur in einer Mannschaft gleichzeitig aktiv ist.
+     *
+     * @param string $value
+     * @param \DataContainer $dc
+     * @return string
+     */
+    public function spielerSaveCallback($value, $dc)
+    {
+        if ($value === '1') {
+            // (1) Mannschaft inaktiv?
+            $mannschaft = \MannschaftModel::findById($dc->activeRecord->pid);
+            if ($mannschaft && !$mannschaft->active) {
+                \Message::addError("Spieler kann in einer inaktiven Mannschaft nicht auf aktiv gesetzt werden");
+                return '';
+            }
+            //  (2) Spieler ist bereits in einer anderen Mannschaft aktiv (unterBerücksichtigung
+            // der \Config::get('ligaverwaltung_exclusive_model')-Regeln!
+            if ($mannschaft) {
+                // $member = \MemberModel::findById($dc->activeRecord->member_id);
+                // $liga_id = $mannschaft->liga;
+                if (\Config::get('ligaverwaltung_exclusive_model') == 1) {
+
+                    // Modell I (edart-bayern.de-Modell);
+                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in einer
+                    // Liga spielen, die "in der gleichen Saison ist" (unabhängig von der Liga)
+                    // wie die aktuell betrachtete.
+                    // Annahme: ein Spieler darf in einer Saison nur in einer Mannschaft spielen!
+
+                    $query = ' SELECT COUNT(*) n FROM tl_spieler s'
+                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                        . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
+                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
+                        . ' WHERE l.saison=?'
+                        . ' AND m.active=\'1\''
+                        . ' AND s.active=\'1\''
+                        . ' AND me.id=?'
+                        ;
+                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->saison, $dc->activeRecord->member_id);
+                } else {
+                    // Modell II harlekin Modell (weniger restriktiv):
+                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in der gleichen
+                    // Liga spielen.
+                    // Annahme: ein Spieler darf in einer Liga nur in einer Mannschaft spielen!
+                    $query =
+                        'SELECT COUNT(*) FROM tl_member WHERE id NOT IN ('
+                        . ' SELECT s.member_id FROM tl_spieler s'
+                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
+                        . ' WHERE m.liga=?'
+                        . ' AND m.active=\'1\''
+                        . ' AND s.active=\'1\''
+                        . ' AND me.id=?'
+                        . ')'
+                        . ' AND tl_member.disable=\'\''
+                        . ' ORDER BY tl_member.lastname';
+                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->id, $dc->activeRecord->member_id);
+                }
+
+                if ($queryResult->n > 1) {
+                    \Message::addError("Spieler ist bereits in einer anderen Mannschaft aktiv.");
+                    return '';
+                }
+            }
+        }
+        return $value;
+    }
 
     /* Helper für tl_spiel */
 
