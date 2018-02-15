@@ -108,8 +108,7 @@ class DCAHelper
      * @param \DataContainer $dc
      * @return array
      */
-    public
-    static function getLigaForSelect(\DataContainer $dc)
+    public static function getLigaForSelect(\DataContainer $dc)
     {
         $result = [];
         $ligen = \LigaModel::findAll();
@@ -353,8 +352,7 @@ class DCAHelper
      * @param \DataContainer $dc
      * @return string
      */
-    public
-    static function editMemberWizard(\DataContainer $dc)
+    public static function editMemberWizard(\DataContainer $dc)
     {
         if ($dc->value < 1) {
             return '';
