@@ -48,7 +48,7 @@ class SpielerModel extends \Model
      */
     public function getName() {
         $member = $this->getRelated('member_id');
-        self::getFullNameFor($member);
+        return self::getFullNameFor($member);
     }
 
     /**
