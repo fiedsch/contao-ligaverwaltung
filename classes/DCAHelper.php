@@ -296,6 +296,8 @@ class DCAHelper
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
                 . ' WHERE l.saison=?'
+                . ' AND s.active=\'1\''
+                . ' AND m.active=\'1\''
                 . ')'
                 . ' AND tl_member.disable=\'\''
                 //. ' ORDER BY tl_member.lastname';
@@ -314,6 +316,8 @@ class DCAHelper
                 . ' SELECT s.member_id FROM tl_spieler s'
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' WHERE m.liga=?'
+                . ' AND s.active=\'1\''
+                . ' AND m.active=\'1\''
                 . ')'
                 . ' AND tl_member.disable=\'\''
                 . ' ORDER BY tl_member.lastname';
@@ -340,11 +344,13 @@ class DCAHelper
 
         $teamcaptain_label = $arrRow['teamcaptain'] ? ('(Teamcaptain: ' . $member->email . ')') : '';
         $co_teamcaptain_label = $arrRow['co_teamcaptain'] ? ('(Co-Teamcaptain: ' . $member->email . ')') : '';
+        $active_label = $arrRow['active'] ==='1' ? '' : '<span class="tl_red">nicht aktiv</span>';
 
-        return sprintf('<div class="tl_content_left">%s %s%s</div>',
+        return sprintf('<div class="tl_content_left">%s %s%s %s</div>',
             self::makeSpielerName($member->firstname, $member->lastname),
             $teamcaptain_label,
-            $co_teamcaptain_label
+            $co_teamcaptain_label,
+            $active_label
         );
     }
 
