@@ -386,8 +386,7 @@ class DCAHelper
      * @param DataContaner|DC_Table $dc
      * @return array
      */
-    public
-    static function getHomeSpielerForSelect($dc)
+    public static function getHomeSpielerForSelect($dc)
     {
         $initial = [0 => "Kein Spieler (ID 0)"];
 
@@ -747,4 +746,5 @@ class DCAHelper
         // return sprintf("%s, %s", $lastname, $firstname);
         return sprintf("%s %s", $firstname, $lastname);
     }
+
 }
