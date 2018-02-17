@@ -67,12 +67,12 @@
 
             <?php else: ?>
               <?php printf("
-              <td class='spiel am'>%s %s</td>
-              <td class='spiel home'>%s</td>
-              <td class='spiel away'>%s</td>
-              <td class='spiel ort'>%s</td>
-              <td class='spiel score'>%s</td>
-              <td class='spiel legs%s'>%s</td>",
+              <td class='col-md-1 spiel am'>%s %s</td>
+              <td class='col-md-2 spiel home'>%s</td>
+              <td class='col-md-2 spiel away'>%s</td>
+              <td class='col-md-2 spiel ort'>%s</td>
+              <td class='col-md-1 spiel score'>%s</td>
+              <td class='col-md-1 spiel legs%s'>%s</td>",
                     $spiel['am'],
                     $spiel['um']  ? $spiel['um'] : '',
                     $spiel['home'],
