@@ -163,7 +163,7 @@ class ContentSpielplan extends \ContentElement
                 'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
                 'im'    => $away && !$inactive ? $spielortlabel : '',
                 'score' => $inactive && $already_played ? 'nicht gewertet' : $linked_score,
-                'legs'  => $inactive && $already_played ? 'nicht gewertet' : (!$already_played ? '' : $begegnung->getLegs()),
+                'legs'  => $inactive  ? '' : ($already_played ? $begegnung->getLegs() : ''),
                 'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {
