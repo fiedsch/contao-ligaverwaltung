@@ -110,38 +110,36 @@ class ContentSpielplan extends \ContentElement
                 continue;
             }
 
-            $home = $begegnung->getRelated('home');
-            $away = $begegnung->getRelated('away');
-
-            $spielort = $home->getRelated('spielort');
-
-            $inactive = false; // Ist die Herim- oder die Gastmannschaft nicht mehr aktiv?
-
+            // Ergsbnis ud daraus abgeleitet: hat die Begegnung bereits statt gefunden
             $linked_score = $begegnung->getLinkedScore();
             $already_played =  $linked_score !== '';
 
-            $homelabel = $home->getLinkedName();
-            if (!$home->active) {
-                  $inactive = true;
-                  if ($already_played) {
-                      $homelabel = $home->name ." (nicht mehr aktiv)";
-                  } else {
-                      $homelabel = "Spielfrei";
-                  }
+            $home = $begegnung->getRelated('home');
+            $away = $begegnung->getRelated('away');
+
+            // "(geplant) Spielfrei" oder "Gegner nicht mehr aktiv":
+            //
+            // Reguläres Spielfrei oder Gegner nicht mehr aktiv und
+            // Spiel noch nicht gespielt gewesen
+            $spielfrei_home = !$away || (!$away->active && !$already_played);
+            $spielfrei_away = !$home || (!$home->active && !$already_played);
+            $spielfrei = $spielfrei_home || $spielfrei_away;
+
+            // Nicht mehr aktive Heimmanschaft, die an diesem Spieltag
+            // Spielfrei gehabt hätte (wäre dann Spielfrei gegen Spielfrei)
+            if (!$home->active && !$away) {
+                continue;
             }
-            if ($away) {
-                $awaylabel = $away->getLinkedName();
-                if ($away->active !== '1') {
-                    $inactive = true;
-                    if ($already_played) {
-                        $awaylabel = $away->name . " (nicht mehr aktiv)";
-                    } else {
-                        $awaylabel = "Spielfrei";
-                    }
-                }
-            } else {
-                $awaylabel = "Spielfrei";
-            }
+
+            $spielort = $home->getRelated('spielort');
+
+            // Ist die Heim- oder die Gastmannschaft nicht mehr aktiv?
+            $inactive = !$home->active || !$away->active;
+
+            $homelabel =            !$home->active && !$already_played
+                ? 'Spielfrei' : $home->getLinkedName();
+            $awaylabel = !$away || (!$away->active && !$already_played)
+                ? 'Spielfrei' : $away->getLinkedName();
 
             $spielortlabel = $spielort->name;
             if ($spielort->spielortpage) {
@@ -156,12 +154,12 @@ class ContentSpielplan extends \ContentElement
                 'home'  => $homelabel,
                 'away'  => $awaylabel,
                 // es interessiert nicht, wann und wo "Spielfei" stattfindet:
-                'am'    => $away ? sprintf("%s. %s",
+                'am'    => $spielfrei ? '' : sprintf("%s. %s",
                     \Date::parse('D', $begegnung->spiel_am),
                     \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
-                ): '',
-                'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
-                'im'    => $away && !$inactive ? $spielortlabel : '',
+                ),
+                'um'    => $spielfrei ? '' : \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
+                'im'    => $spielfrei ? '' : $spielortlabel,
                 'score' => $inactive && $already_played ? 'nicht gewertet' : $linked_score,
                 'legs'  => $inactive  ? '' : ($already_played ? $begegnung->getLegs() : ''),
                 'spiel_tag' => $begegnung->spiel_tag
