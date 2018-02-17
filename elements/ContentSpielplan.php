@@ -124,7 +124,7 @@ class ContentSpielplan extends \ContentElement
             if (!$home->active) {
                   $inactive = true;
                   if ($already_played) {
-                      $homelabel .= " (nicht mehr aktiv)";
+                      $homelabel = $home->name ." (nicht mehr aktiv)";
                   } else {
                       $homelabel = "Spielfrei";
                   }
@@ -134,7 +134,7 @@ class ContentSpielplan extends \ContentElement
                 if ($away->active !== '1') {
                     $inactive = true;
                     if ($already_played) {
-                        $awaylabel .= " (nicht mehr aktiv)";
+                        $awaylabel = $away->name . " (nicht mehr aktiv)";
                     } else {
                         $awaylabel = "Spielfrei";
                     }
