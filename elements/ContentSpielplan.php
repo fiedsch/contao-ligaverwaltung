@@ -117,16 +117,27 @@ class ContentSpielplan extends \ContentElement
 
             $inactive = false; // Ist die Herim- oder die Gastmannschaft nicht mehr aktiv?
 
+            $linked_score = $begegnung->getLinkedScore();
+            $already_played =  $linked_score !== '';
+
             $homelabel = $home->getLinkedName();
             if (!$home->active) {
                   $inactive = true;
-                  $homelabel .= " (nicht mehr aktiv)";
+                  if ($already_played) {
+                      $homelabel .= " (nicht mehr aktiv)";
+                  } else {
+                      $homelabel = "Spielfrei";
+                  }
             }
             if ($away) {
                 $awaylabel = $away->getLinkedName();
                 if ($away->active !== '1') {
                     $inactive = true;
-                    $awaylabel .= " (nicht mehr aktiv)";
+                    if ($already_played) {
+                        $awaylabel .= " (nicht mehr aktiv)";
+                    } else {
+                        $awaylabel = "Spielfrei";
+                    }
                 }
             } else {
                 $awaylabel = "Spielfrei";
@@ -150,10 +161,10 @@ class ContentSpielplan extends \ContentElement
                     \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
                 ): '',
                 'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
-                'im'    => $away ? $spielortlabel : '',
+                'im'    => $away && !$inactive ? $spielortlabel : '',
                 //'score' => $begegnung->getScore(),
-                'score' => $inactive ? 'nicht gewertet' : $begegnung->getLinkedScore(),
-                'legs'  => $inactive ? 'nicht gewertet' : $begegnung->getLegs(),
+                'score' => $inactive && $already_played ? 'nicht gewertet' : $linked_score,
+                'legs'  => $inactive && $already_played ? 'nicht gewertet' : $already_played ? $begegnung->getLegs() : '',
                 'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {
