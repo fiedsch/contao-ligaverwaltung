@@ -108,22 +108,23 @@ class BegegnungModel extends \Model
      */
     public function getLinkedScore()
     {
+        $score = $this->getScore();
+        if ('' === $score) {
+            return '';
+        }
         $spielberichtpageId = \Config::get('spielberichtpage');
         if ($spielberichtpageId) {
             $spielberichtpage = \PageModel::findById($spielberichtpageId);
-
             if (\Config::get('folderUrl')) {
                 $url = \Controller::generateFrontendUrl($spielberichtpage->row(), '/id/'.$this->id);
             } else {
                 $url = \Controller::generateFrontendUrl($spielberichtpage->row()) . '?id=' . $this->id;
             }
-            $result = sprintf("<a href='%s'>%s</a>",
+            return sprintf("<a href='%s'>%s</a>",
                 $url,
-                $this->getScore()
+                $score
             );
-        } else {
-            $result = $this->getScore();
         }
-        return $result;
+        return $score;
     }
 }
