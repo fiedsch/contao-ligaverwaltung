@@ -115,10 +115,19 @@ class ContentSpielplan extends \ContentElement
 
             $spielort = $home->getRelated('spielort');
 
+            $inactive = false; // Ist die Herim- oder die Gastmannschaft nicht mehr aktiv?
+
             $homelabel = $home->getLinkedName();
+            if (!$home->active) {
+                  $inactive = true;
+                  $homelabel .= " (nicht mehr aktiv)";
             }
             if ($away) {
                 $awaylabel = $away->getLinkedName();
+                if ($away->active !== '1') {
+                    $inactive = true;
+                    $awaylabel .= " (nicht mehr aktiv)";
+                }
             } else {
                 $awaylabel = "Spielfrei";
             }
@@ -143,8 +152,8 @@ class ContentSpielplan extends \ContentElement
                 'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
                 'im'    => $away ? $spielortlabel : '',
                 //'score' => $begegnung->getScore(),
-                'score' => $begegnung->getLinkedScore(),
-                'legs'  => $begegnung->getLegs(),
+                'score' => $inactive ? 'nicht gewertet' : $begegnung->getLinkedScore(),
+                'legs'  => $inactive ? 'nicht gewertet' : $begegnung->getLegs(),
                 'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {
