@@ -53,7 +53,7 @@ class MannschaftModel extends \Model
     public function getLinkedName()
     {
         $teampageId = \Config::get('teampage');
-        if ($teampageId) {
+        if ($teampageId && $this->active) {
             $teampage = \PageModel::findById($teampageId);
 
             if (\Config::get('folderUrl')) {
@@ -66,7 +66,7 @@ class MannschaftModel extends \Model
                 $this->name
             );
         } else {
-            $result = $this->name;
+            $result = $this->name . ($this->active ? '' : ' (nicht mehr aktiv)');
         }
         return $result;
     }
