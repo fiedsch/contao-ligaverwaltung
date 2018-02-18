@@ -178,7 +178,7 @@ class ContentHighlightRanking extends \ContentElement
     protected function compileSpielerranking()
     {
         $sql = "SELECT 
-                          h.*, s.id as spieler_id, s.pid, me.firstname, me.lastname, b.spiel_am, ma.name as mannschaft 
+                          h.*, s.id as spieler_id, s.pid, me.firstname, me.lastname, me.id as member_id, b.spiel_am, ma.name as mannschaft 
                           FROM tl_highlight h
                           LEFT JOIN tl_begegnung b
                           ON (h.begegnung_id = b.id)
@@ -189,8 +189,8 @@ class ContentHighlightRanking extends \ContentElement
                           LEFT JOIN tl_mannschaft ma
                           ON (s.pid=ma.id)
                           WHERE b.pid=?
-                          AND ma.active='1'
-                          AND s.active='1'
+                          -- AND s.active='1'   -- keine Filter, damit 'meine' Leistungen nicht verloren gehen 
+                          -- AND ma.active='1'  -- auch, wenn 'ich' sie in einer anderen Mannschaft erbracht habe
                           AND me.id IS NOT NULL"; // keine gelöschten Spieler
 
         if ($this->mannschaft > 0) {
@@ -199,6 +199,7 @@ class ContentHighlightRanking extends \ContentElement
             $this->Template->subject = 'Highlight-Ranking aller Spieler der Mannschaft ' . $mannschaft->name;
             $sql .= " AND s.pid=?";
             $sql .= " AND " . $this->getRankingTypeFilter('h');
+            $sql .= " AND s.active='1'"; // nur aktive Spieler dieser Mannschaft
             $sql .= " ORDER BY spiel_am DESC";
             $highlights = \Database::getInstance()
                 ->prepare($sql)->execute($this->liga, $this->mannschaft);
@@ -214,34 +215,50 @@ class ContentHighlightRanking extends \ContentElement
         $results = [];
 
         while ($highlights->next()) {
-            if (!isset($results[$highlights->spieler_id])) {
-                $results[$highlights->spieler_id] = [
+            // Bei Ranking "nur für eine Mannschaft" auf der Mannschaftsseite
+            // also falls $this->mannschaft > 0 unter der $highlights->spieler_id
+            // ablegen (dem "Mannschaftsspieler") , ansonsten unter der
+            // $highlights->memberid (der dahinter stehenden Person, dem "Member")
+            if ($this->mannschaft > 0) {
+                $credit_to = $highlights->spieler_id;
+            } else {
+                $credit_to = $highlights->member_id;
+            }
+            // Initialisieren
+            if (!isset($results[$credit_to])) {
+                $results[$credit_to] = [
                     'name'          => \Fiedsch\Liga\DCAHelper::makeSpielerName($highlights->firstname, $highlights->lastname),
-                    'mannschaft'    => $highlights->mannschaft,
+                    'mannschaft'    => [$highlights->mannschaft=>0], // bei Wechsel der Mannschaft eines Spielers innerhalb der Saison können es mehrere Mannschaften sein!
                     'hl_171'        => 0,  // Anzahl
                     'hl_180'        => 0,  // dito
                     'hl_highfinish' => [], // Liste der Highfinishes
                     'hl_shortleg'   => [], // dito
                     'hl_punkte'     => [], // List der einzelnen Punkte
                     'hl_rang'       => 0,
+                    'member_id'     => $highlights->member_id,
+                    'spieler_id'    => $highlights->spieler_id
                 ];
             }
+            // Spieler hat in versch. Mannschaften gespielt?
+            $results[$credit_to]['mannschaft'][$highlights->mannschaft]++;
+
+            // Aggregieren
             switch ($highlights->type) {
                 case \HighlightModel::TYPE_171:
-                    $results[$highlights->spieler_id]['hl_171'] += $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'][] = $highlights->value;
+                    $results[$credit_to]['hl_171'] += $highlights->value;
+                    $results[$credit_to]['hl_punkte'][] = $highlights->value;
                     break;
                 case \HighlightModel::TYPE_180:
-                    $results[$highlights->spieler_id]['hl_180'] += $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'][] = $highlights->value;
+                    $results[$credit_to]['hl_180'] += $highlights->value;
+                    $results[$credit_to]['hl_punkte'][] = $highlights->value;
                     break;
                 case \HighlightModel::TYPE_HIGHFINISH:
-                    $results[$highlights->spieler_id]['hl_highfinish'][] = $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'][] = explode(',', $highlights->value);
+                    $results[$credit_to]['hl_highfinish'][] = $highlights->value;
+                    $results[$credit_to]['hl_punkte'][] = explode(',', $highlights->value);
                     break;
                 case \HighlightModel::TYPE_SHORTLEG:
-                    $results[$highlights->spieler_id]['hl_shortleg'][] = $highlights->value;
-                    $results[$highlights->spieler_id]['hl_punkte'][] = explode(',', $highlights->value);
+                    $results[$credit_to]['hl_shortleg'][] = $highlights->value;
+                    $results[$credit_to]['hl_punkte'][] = explode(',', $highlights->value);
                     break;
             }
         }
@@ -284,6 +301,10 @@ class ContentHighlightRanking extends \ContentElement
                     $results[$id]['hl_shortleg'] = static::prettyPrintSorted($results[$id]['hl_shortleg'], 'ASC');
                     $results[$id]['hl_highfinish'] = static::prettyPrintSorted($results[$id]['hl_highfinish'], 'DESC');
             }
+            // Spieler hat in versch. Mannschaften gespielt? Auflösen:
+            $mannschaftenlabel = implode(', ', array_keys($results[$id]['mannschaft']));
+            // $results[$id]['test'] = $mannschaftenlabel;
+            $results[$id]['mannschaft'] = $mannschaftenlabel;
         }
 
         // Sortieren
@@ -361,6 +382,8 @@ class ContentHighlightRanking extends \ContentElement
     }
 
     /**
+     * TODO (?): "13,13,13,14,14" als "13 (3x), 14 (2x)" ausgeben
+     *
      * @param string|array $value
      * @param string $order
      * @return string
