@@ -720,7 +720,7 @@ class DCAHelper
         }
         if ($spieler) {
             foreach ($spieler as $s) {
-                $result[$s->id] = $s->getFullName();
+                $result[$s->id] = $s->getNameAndMannschaft();
             }
         }
         asort($result);
