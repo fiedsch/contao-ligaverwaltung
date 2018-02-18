@@ -78,6 +78,18 @@ class SpielerModel extends \Model
     /**
      * @return string
      */
+    public function getNameAndMannschaft()
+    {
+        $result = self::getName();
+        $mannschaft = $this->getRelated('pid');
+        if ($mannschaft) {
+            $result .= ', ' . $mannschaft->name;
+        }
+        return $result;
+    }
+    /**
+     * @return string
+     */
     public function getTcDetails() {
         $member = $this->getRelated('member_id');
 
