@@ -714,7 +714,7 @@ class DCAHelper
         if ($dc && $dc->activeRecord) {
             $begegnung = \BegegnungModel::findById($dc->activeRecord->begegnung_id);
             $spieler = \SpielerModel::findBy(
-                ['tl_spieler.pid=? OR tl_spieler.pid=?'],
+                ['(tl_spieler.pid=? OR tl_spieler.pid=?) AND (tl_spieler.active=\'1\')'],
                 [$begegnung->home, $begegnung->away]
             );
         }
