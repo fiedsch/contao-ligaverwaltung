@@ -19,8 +19,8 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
 
     'list' => [
         'sorting'           => [
-            'mode'         => 2, // Records are sorted by a switchable field
-            'flag'         => 11, // sort ascending
+            'mode'         => 0, // Sorting mode: not sorted
+            'flag'         => 11, // Sorting flag: ascending
             'fields'       => ['spieler_id', 'type'],
             'panelLayout'  => 'sort,filter;search,limit',
             'headerFields' => ['name'],
@@ -100,7 +100,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         'spieler_id'   => [
             'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['spieler_id'],
             'inputType'        => 'select',
-            'sorting'          => true,
+            'sorting'          => false,
             'foreignKey'       => 'tl_spieler.id',
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getSpielerForHighlight'],
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
@@ -109,7 +109,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         'type'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_highlight']['typ'],
             'inputType' => 'select',
-            'sorting'   => true,
+            'sorting'   => false,
             'filter'    => true,
             'options'   => \HighlightModel::getOptionsArray(),
             'eval'      => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 clr'],
