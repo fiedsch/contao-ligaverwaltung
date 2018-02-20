@@ -32,15 +32,15 @@ array_insert($GLOBALS['BE_MOD'], 2, [
             'tables' => ['tl_begegnung', 'tl_spiel'],
             //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
         ],
+        'liga.highlight'  => [
+            'tables' => ['tl_highlight'],
+            //'icon' => 'system/modules/ligaverwaltung/assets/img/highlights.gif'
+        ],
         // In ModuleBegegnungserfassung als ::redirect() auf 'liga.begegnung' falls
         // keine id angegeben ist.
         'liga.begegnungserfassung'  => [
             'callback' => 'ModuleBegegnungserfassung',
             //'icon' => 'system/modules/ligaverwaltung/assets/img/begegnung.gif'
-        ],
-        'liga.highlight'  => [
-            'tables' => ['tl_highlight'],
-            //'icon' => 'system/modules/ligaverwaltung/assets/img/highlights.gif'
         ],
         'liga.spieler_history'  => [
             'callback' => 'ModuleSpielerHistory',
