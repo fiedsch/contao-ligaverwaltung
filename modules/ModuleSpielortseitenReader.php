@@ -74,7 +74,7 @@ class ModuleSpielortseitenReader extends Module
         $contentModel = new \ContentModel();
         $contentModel->type = 'spielortseite';
         $contentModel->spielort = $spielort->id;
-        $contentModel->liga = $this->liga;
+        $contentModel->ligen = $this->ligen;
         $contentElement = new \ContentSpielortseite($contentModel);
         $this->Template->spielortseite = $contentElement->generate();
 

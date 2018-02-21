@@ -65,6 +65,11 @@ $GLOBALS['TL_LANG']['tl_content']['rankingfield'] = [
 ];
 
 $GLOBALS['TL_LANG']['tl_content']['liga'] = [
+    'Liga',
+    'Liga, die in diesem CE berücksichtigt werden soll'
+];
+
+$GLOBALS['TL_LANG']['tl_content']['ligen'] = [
     'Ligen',
     'Ligen, die in diesem CE berücksichtigt werden sollen'
 ];

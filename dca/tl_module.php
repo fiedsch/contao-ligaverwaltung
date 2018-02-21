@@ -1,9 +1,9 @@
 <?php
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['spielortseitenreader'] = '{title_legend},name,headline,type;{config_legend},liga';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['spielortseitenreader'] = '{title_legend},name,headline,type;{config_legend},ligen';
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['liga'] = [
-        'label'            => &$GLOBALS['TL_LANG']['tl_module']['liga'],
+$GLOBALS['TL_DCA']['tl_module']['fields']['ligen'] = [
+        'label'            => &$GLOBALS['TL_LANG']['tl_module']['ligen'],
         'inputType'        => 'checkboxWizard',
         'filter'           => false,
         'sorting'          => false,
