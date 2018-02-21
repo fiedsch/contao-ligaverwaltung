@@ -110,7 +110,7 @@ class DCAHelper
         $ligen = \LigaModel::findAll();
 
         if (null === $ligen) {
-            return ['0' => 'keine Ligen gefunden. Btte erst anlegen!'];
+            return ['0' => 'keine Ligen gefunden. Bitte erst anlegen!'];
         }
         foreach ($ligen as $liga) {
             $result[$liga->id] = sprintf("%s %s %s",
@@ -244,7 +244,7 @@ class DCAHelper
         }
 
         if (null === $mannschaften) {
-            return ['0' => 'keine Mannschaften gefunden. Bitte erst anlegen un dieser Liga zuordnen!'];
+            return ['0' => 'keine Mannschaften gefunden. Bitte erst anlegen und dieser Liga zuordnen!'];
         }
         foreach ($mannschaften as $mannschaft) {
             $result[$mannschaft->id] = $mannschaft->name;
