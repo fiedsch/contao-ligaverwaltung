@@ -45,7 +45,7 @@ class ContentSpielplan extends \ContentElement
         $filter = '';
         if ($this->mannschaft) {
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
-            $filter = ' (nur Begegnungen von "' . $mannschaft->name . '"")';
+            $filter = ' (nur Begegnungen von "' . $mannschaft->name . '")';
         }
         $saison = \SaisonModel::findById($liga->saison);
         $ligalabel = sprintf("%s %s %s",
