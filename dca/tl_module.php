@@ -1,7 +1,8 @@
 <?php
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['spielortseitenreader'] = '{title_legend},name,headline,type;{config_legend},liga';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['spielortseitenreader'] = '{title_legend},name,headline,type'; // {config_legend},liga';
 
+/*
 $GLOBALS['TL_DCA']['tl_module']['fields']['liga'] = [
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['liga'],
         'inputType'        => 'checkboxWizard',
@@ -14,3 +15,4 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['liga'] = [
         'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getLigaForSelect'],
         'sql'              => "blob NULL",
 ];
+*/
