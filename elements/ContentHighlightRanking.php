@@ -178,7 +178,11 @@ class ContentHighlightRanking extends \ContentElement
     protected function compileSpielerranking()
     {
         $sql = "SELECT 
-                          h.*, s.id as spieler_id, s.pid, me.firstname, me.lastname, me.id as member_id, b.spiel_am, ma.name as mannschaft 
+                          h.*, 
+                          s.id as spieler_id, s.pid, s.active as sactive, 
+                          me.firstname, me.lastname, me.id as member_id, 
+                          b.spiel_am, 
+                          ma.name as mannschaft, ma.active as mactive 
                           FROM tl_highlight h
                           LEFT JOIN tl_begegnung b
                           ON (h.begegnung_id = b.id)
@@ -236,11 +240,14 @@ class ContentHighlightRanking extends \ContentElement
                     'hl_punkte'     => [], // List der einzelnen Punkte
                     'hl_rang'       => 0,
                     'member_id'     => $highlights->member_id,
-                    'spieler_id'    => $highlights->spieler_id
+                    'spieler_id'    => $highlights->spieler_id,
+                    'active'        => false,
                 ];
             }
             // Spieler hat in versch. Mannschaften gespielt?
             $results[$credit_to]['mannschaft'][$highlights->mannschaft]++;
+            // Spieler ist (noch) aktiv?
+            $results[$credit_to]['active'] |= $highlights->sactive && $highlights->mactive; // aktiver Spieler in einer aktiven Mannschaft
 
             // Aggregieren
             switch ($highlights->type) {
@@ -266,6 +273,11 @@ class ContentHighlightRanking extends \ContentElement
         // Daten "normieren" und Punkte berechnen
 
         foreach ($results as $id => $data) {
+            // Spieler nicht mehr aktiv?
+            if (!$results[$id]['active']) {
+                unset($results[$id]);
+                continue;
+            }
             switch ($this->rankingfield) {
                 case \HighlightModel::TYPE_171:
                 case \HighlightModel::TYPE_180:
