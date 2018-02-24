@@ -66,9 +66,10 @@ class ContentMannschaftsliste extends \ContentElement
                 $listitem = $mannschaft->name;
             }
             */
-            $listitem = $mannschaft->getLinkedName();
-
-            $listitems[] = $listitem;
+            if ($mannschaft->active==='1') {
+                $listitem = $mannschaft->getLinkedName();
+                $listitems[] = $listitem;
+            }
         }
 
         $this->Template->listitems = $listitems;

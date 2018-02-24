@@ -45,7 +45,7 @@ class ContentSpielplan extends \ContentElement
         $filter = '';
         if ($this->mannschaft) {
             $mannschaft = \MannschaftModel::findById($this->mannschaft);
-            $filter = ' (nur Begegnungen von "' . $mannschaft->name . '"")';
+            $filter = ' (nur Begegnungen von "' . $mannschaft->name . '")';
         }
         $saison = \SaisonModel::findById($liga->saison);
         $ligalabel = sprintf("%s %s %s",
@@ -110,42 +110,36 @@ class ContentSpielplan extends \ContentElement
                 continue;
             }
 
+            // Ergsbnis ud daraus abgeleitet: hat die Begegnung bereits statt gefunden
+            $linked_score = $begegnung->getLinkedScore();
+            $already_played =  $linked_score !== '';
+
             $home = $begegnung->getRelated('home');
             $away = $begegnung->getRelated('away');
 
+            // "(geplant) Spielfrei" oder "Gegner nicht mehr aktiv":
+            //
+            // Reguläres Spielfrei oder Gegner nicht mehr aktiv und
+            // Spiel noch nicht gespielt gewesen
+            $spielfrei_home = !$away || (!$away->active && !$already_played);
+            $spielfrei_away = !$home || (!$home->active && !$already_played);
+            $spielfrei = $spielfrei_home || $spielfrei_away;
+
+            // Nicht mehr aktive Heimmanschaft, die an diesem Spieltag
+            // Spielfrei gehabt hätte (wäre dann Spielfrei gegen Spielfrei)
+            if (!$home->active && !$away) {
+                continue;
+            }
+
             $spielort = $home->getRelated('spielort');
 
-            /*
-            $homelabel = $home->name;
-            if ($home->teampage) {
-                $teampage = \PageModel::findById($home->teampage);
-                $homelabel = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl($teampage->row()),
-                    $home->name
-                );
-            }
-            */
-            $homelabel = $home->getLinkedName();
-            /*
-            if ($away) {
-                $awaylabel = $away->name;
-                if ($away->teampage) {
-                    $teampage = \PageModel::findById($away->teampage);
-                    $awaylabel = sprintf("<a href='%s'>%s</a>",
-                        \Controller::generateFrontendUrl($teampage->row()),
-                        $away->name
-                    );
-                }
-            } else {
-                // $away == null => $home hat "Spielfrei"
-                $awaylabel = "Spielfrei";
-            }
-            */
-            if ($away) {
-                $awaylabel = $away->getLinkedName();
-            } else {
-                $awaylabel = "Spielfrei";
-            }
+            // Ist die Heim- oder die Gastmannschaft nicht mehr aktiv?
+            $inactive = !$home->active || !$away->active;
+
+            $homelabel =            !$home->active && !$already_played
+                ? 'Spielfrei' : $home->getLinkedName();
+            $awaylabel = !$away || (!$away->active && !$already_played)
+                ? 'Spielfrei' : $away->getLinkedName();
 
             $spielortlabel = $spielort->name;
             if ($spielort->spielortpage) {
@@ -160,15 +154,14 @@ class ContentSpielplan extends \ContentElement
                 'home'  => $homelabel,
                 'away'  => $awaylabel,
                 // es interessiert nicht, wann und wo "Spielfei" stattfindet:
-                'am'    => $away ? sprintf("%s. %s",
+                'am'    => $spielfrei ? '' : sprintf("%s. %s",
                     \Date::parse('D', $begegnung->spiel_am),
                     \Date::parse(\Config::get('dateFormat'), $begegnung->spiel_am)
-                ): '',
-                'um'    => $away ? \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am) : '',
-                'im'    => $away ? $spielortlabel : '',
-                //'score' => $begegnung->getScore(),
-                'score' => $begegnung->getLinkedScore(),
-                'legs'  => $begegnung->getLegs(),
+                ),
+                'um'    => $spielfrei ? '' : \Date::parse(\Config::get('timeFormat'), $begegnung->spiel_am),
+                'im'    => $spielfrei ? '' : $spielortlabel,
+                'score' => $inactive && $already_played ? 'nicht gewertet' : $linked_score,
+                'legs'  => $inactive  ? '' : ($already_played ? $begegnung->getLegs() : ''),
                 'spiel_tag' => $begegnung->spiel_tag
             ];
             if ($this->mannschaft) {

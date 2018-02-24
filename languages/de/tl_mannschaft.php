@@ -63,3 +63,8 @@ $GLOBALS['TL_LANG']['tl_mannschaft']['teampage'] = [
     'Mannschaftsseite',
     'Eine optionale Seite mit Details zur Mannschaft',
 ];
+
+$GLOBALS['TL_LANG']['tl_mannschaft']['active'] = [
+  'Aktiv',
+  'Diese Mannschaft nimmt aktiv am Spielbetrieb der zugeordneten Liga teil'
+];

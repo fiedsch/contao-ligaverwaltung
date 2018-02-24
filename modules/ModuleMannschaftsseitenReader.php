@@ -64,7 +64,7 @@ class ModuleMannschaftsseitenReader extends Module
             return;
         }
         $mannschaft = \MannschaftModel::findById(\Input::get('id'));
-        if (!$mannschaft) {
+        if (!$mannschaft || !$mannschaft->active) {
             $this->Template->mannschaft = null;
             return;
         }

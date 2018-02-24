@@ -100,7 +100,14 @@ class ContentRanking extends \ContentElement
                           ON (s.pid=b.id)
                           LEFT JOIN tl_liga l
                           ON (b.pid=l.id)
-                          WHERE l.id=?")
+                          LEFT JOIN tl_mannschaft m1
+                          ON (b.home=m1.id)
+                          LEFT JOIN tl_mannschaft m2
+                          ON (b.away=m2.id)
+                          WHERE l.id=?
+                          AND m1.active='1'
+                          AND m2.active='1'
+                          ")
             ->execute($this->liga);
 
         $begegnungen = [];
@@ -166,16 +173,12 @@ class ContentRanking extends \ContentElement
         $rang_skip = 1;
         foreach ($results as $id => $data) {
             $mannschaft = \MannschaftModel::findById($id);
-            /*
-            $mannschaftlabel = $mannschaft->name;
-            if ($mannschaft->teampage) {
-                $teampage = \PageModel::findById($mannschaft->teampage);
-                $mannschaftlabel = sprintf("<a href='%s'>%s</a>",
-                    \Controller::generateFrontendUrl($teampage->row()),
-                    $mannschaft->name
-                );
+
+            if (!$mannschaft || $mannschaft->active !=='1') {
+                unset($results[$id]);
+                continue;
             }
-            */
+
             $mannschaftlabel = $mannschaft->getLinkedName();
 
             $results[$id]['name'] = $mannschaftlabel;
@@ -222,8 +225,16 @@ class ContentRanking extends \ContentElement
                           ON (s.pid=b.id)
                           LEFT JOIN tl_liga l
                           ON (b.pid=l.id)
+                          LEFT JOIN tl_mannschaft m1
+                          ON (b.home=m1.id)
+                          LEFT JOIN tl_mannschaft m2
+                          ON (b.away=m2.id)                          
                           WHERE s.spieltype=1
-                          AND l.id=?";
+                          AND l.id=?
+                          AND m1.active='1'
+                          AND m2.active='1'                          
+                          ";
+
 
         if ($this->mannschaft > 0) {
             // eine bestimmte Mannschaft
@@ -244,23 +255,13 @@ class ContentRanking extends \ContentElement
         while ($spiele->next()) {
             $spiel = new Spiel($spiele->row());
 
-            $begegnung = sprintf("%s:%s", $spiele->team_home, $spiele->team_away);
-
-            $results[$spiele->player_home]['name']
-                = \SpielerModel::getNameById($spiele->player_home);
-            $results[$spiele->player_away]['name']
-                = \SpielerModel::getNameById($spiele->player_away);
-
-            $mannschaft_home = \MannschaftModel::findById($spiele->team_home);
-            $mannschaft_away = \MannschaftModel::findById($spiele->team_away);
+            // TODO wird nicht benötigt (auch weiter unten auskommentiert)
+            // $begegnung = sprintf("%d:%d:%s", $spiele->spieltag, $spiele->team_home, $spiele->team_away);
 
             $results[$spiele->player_home]['mannschaft_id'] = $spiele->team_home;
             $results[$spiele->player_away]['mannschaft_id'] = $spiele->team_away;
 
-            $results[$spiele->player_home]['mannschaft'] = $mannschaft_home->getLinkedName();
-            $results[$spiele->player_away]['mannschaft'] = $mannschaft_away->getLinkedName();
-
-            $results[$spiele->player_home]['begegnungen'][$begegnung]++;
+            // $results[$spiele->player_home]['begegnungen'][$begegnung]++;
             $results[$spiele->player_home]['spiele'] += 1;
             $results[$spiele->player_home]['spiele_self'] += $spiel->getScoreHome();
             $results[$spiele->player_home]['spiele_other'] += $spiel->getScoreAway();
@@ -269,7 +270,7 @@ class ContentRanking extends \ContentElement
             $results[$spiele->player_home]['punkte_self'] += $spiel->getPunkteHome();
             $results[$spiele->player_home]['punkte_other'] += $spiel->getPunkteAway();
 
-            $results[$spiele->player_away]['begegnungen'][$begegnung]++;
+            // $results[$spiele->player_away]['begegnungen'][$begegnung]++;
             $results[$spiele->player_away]['spiele'] += 1;
             $results[$spiele->player_away]['spiele_self'] += $spiel->getScoreAway();
             $results[$spiele->player_away]['spiele_other'] += $spiel->getScoreHome();
@@ -288,7 +289,7 @@ class ContentRanking extends \ContentElement
         if ($this->mannschaft > 0) {
             foreach ($results as $id => $data) {
                 if ($data['mannschaft_id'] != $this->mannschaft)
-                unset($results[$id]);
+                    unset($results[$id]);
             }
         }
 
@@ -304,8 +305,20 @@ class ContentRanking extends \ContentElement
         $rang_skip = 1;
 
         foreach ($results as $id => $data) {
-            $results[$id]['anzahl_spiele'] = array_sum($results[$id]['begegnungen']);
-            $results[$id]['anzahl_begegnungen'] = count($results[$id]['begegnungen']);
+            // $results[$id]['anzahl_spiele'] = array_sum($results[$id]['begegnungen']);
+            // $results[$id]['anzahl_begegnungen'] = count($results[$id]['begegnungen']);
+
+            $spieler = \SpielerModel::findById($id);
+            $mannschaft = \MannschaftModel::findById($results[$id]['mannschaft_id']);
+
+            if (!$spieler || $spieler->active !== '1' || !$mannschaft || $mannschaft->active !== '1') {
+                unset($results[$id]);
+                continue;
+            }
+            //$results[$id]['name'] = \SpielerModel::getNameById($id);
+            $results[$id]['name'] = $spieler->getName();
+
+            $results[$id]['mannschaft'] = $mannschaft->getLinkedName();
 
             if ($results[$id]['punkte_self'] == $lastpunkte
                 && $results[$id]['legs_self'] == $lastlegs_self

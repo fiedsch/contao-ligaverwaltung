@@ -72,7 +72,10 @@ class DCAHelper
     public static function mannschaftLabelCallback($arrRow)
     {
         $liga = \LigaModel::findById($arrRow['liga']);
-        if (!$liga) {
+        if ($liga === '0') {
+            return sprintf("%s <span class='tl_red'>Keiner Liga zugeordnet</span>", $arrRow['name']);
+        }
+        if ($liga === null) {
             return sprintf("%s <span class='tl_red'>Liga '%d' existiert nicht mehr!</span>",
                 $arrRow['name'],
                 $arrRow['liga']);
@@ -82,17 +85,22 @@ class DCAHelper
             ->prepare("SELECT COUNT(*) AS n FROM tl_spieler WHERE pid=?")
             ->execute($arrRow['id']);
         $anzahlSpieler = '<span class="tl_red">keine Spieler eingetragen</span>';
+        $inaktiv = '';
         if ($spieler->n > 0) {
             $anzahlSpieler = sprintf("%d Spieler", $spieler->n);
         }
+        if ($arrRow['active'] === '') {
+            $inaktiv = ', <span class=\'tl_red\'>Mannschaft nicht aktiv</span>';
+        }
 
-        return sprintf('<div class="tl_content_left">%s, %s %s %s (%s, %s)</div>',
+        return sprintf('<div class="tl_content_left">%s, %s %s %s (%s, %s%s)</div>',
             $arrRow['name'],
             $liga->getRelated('pid')->name,
             $liga->name,
             $liga->getRelated('saison')->name,
             $spielort->name,
-            $anzahlSpieler
+            $anzahlSpieler,
+            $inaktiv
         );
     }
 
@@ -103,8 +111,7 @@ class DCAHelper
      * @param \DataContainer $dc
      * @return array
      */
-    public
-    static function getLigaForSelect(\DataContainer $dc)
+    public static function getLigaForSelect(\DataContainer $dc)
     {
         $result = [];
         $ligen = \LigaModel::findAll();
@@ -289,6 +296,8 @@ class DCAHelper
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
                 . ' WHERE l.saison=?'
+                . ' AND s.active=\'1\''
+                . ' AND m.active=\'1\''
                 . ')'
                 . ' AND tl_member.disable=\'\''
                 //. ' ORDER BY tl_member.lastname';
@@ -307,6 +316,8 @@ class DCAHelper
                 . ' SELECT s.member_id FROM tl_spieler s'
                 . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
                 . ' WHERE m.liga=?'
+                . ' AND s.active=\'1\''
+                . ' AND m.active=\'1\''
                 . ')'
                 . ' AND tl_member.disable=\'\''
                 . ' ORDER BY tl_member.lastname';
@@ -333,11 +344,13 @@ class DCAHelper
 
         $teamcaptain_label = $arrRow['teamcaptain'] ? ('(Teamcaptain: ' . $member->email . ')') : '';
         $co_teamcaptain_label = $arrRow['co_teamcaptain'] ? ('(Co-Teamcaptain: ' . $member->email . ')') : '';
+        $active_label = $arrRow['active'] ==='1' ? '' : '<span class="tl_red">nicht aktiv</span>';
 
-        return sprintf('<div class="tl_content_left">%s %s%s</div>',
+        return sprintf('<div class="tl_content_left">%s %s%s %s</div>',
             self::makeSpielerName($member->firstname, $member->lastname),
             $teamcaptain_label,
-            $co_teamcaptain_label
+            $co_teamcaptain_label,
+            $active_label
         );
     }
 
@@ -348,8 +361,7 @@ class DCAHelper
      * @param \DataContainer $dc
      * @return string
      */
-    public
-    static function editMemberWizard(\DataContainer $dc)
+    public static function editMemberWizard(\DataContainer $dc)
     {
         if ($dc->value < 1) {
             return '';
@@ -364,6 +376,73 @@ class DCAHelper
             . '</a>';
     }
 
+    /**
+     * Sicherstellen, daß ein Spieler nur in einer Mannschaft gleichzeitig aktiv ist.
+     *
+     * @param string $value
+     * @param \DataContainer $dc
+     * @return string
+     */
+    public function spielerSaveCallback($value, $dc)
+    {
+        if ($value === '1') {
+            // (1) Mannschaft inaktiv?
+            $mannschaft = \MannschaftModel::findById($dc->activeRecord->pid);
+            if ($mannschaft && !$mannschaft->active) {
+                \Message::addError("Spieler kann in einer inaktiven Mannschaft nicht auf aktiv gesetzt werden");
+                return '';
+            }
+            //  (2) Spieler ist bereits in einer anderen Mannschaft aktiv (unterBerücksichtigung
+            // der \Config::get('ligaverwaltung_exclusive_model')-Regeln!
+            if ($mannschaft) {
+                // $member = \MemberModel::findById($dc->activeRecord->member_id);
+                // $liga_id = $mannschaft->liga;
+                if (\Config::get('ligaverwaltung_exclusive_model') == 1) {
+
+                    // Modell I (edart-bayern.de-Modell);
+                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in einer
+                    // Liga spielen, die "in der gleichen Saison ist" (unabhängig von der Liga)
+                    // wie die aktuell betrachtete.
+                    // Annahme: ein Spieler darf in einer Saison nur in einer Mannschaft spielen!
+
+                    $query = ' SELECT COUNT(*) n FROM tl_spieler s'
+                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                        . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
+                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
+                        . ' WHERE l.saison=?'
+                        . ' AND m.active=\'1\''
+                        . ' AND s.active=\'1\''
+                        . ' AND me.id=?'
+                        ;
+                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->saison, $dc->activeRecord->member_id);
+                } else {
+                    // Modell II harlekin Modell (weniger restriktiv):
+                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in der gleichen
+                    // Liga spielen.
+                    // Annahme: ein Spieler darf in einer Liga nur in einer Mannschaft spielen!
+                    $query =
+                        'SELECT COUNT(*) FROM tl_member WHERE id NOT IN ('
+                        . ' SELECT s.member_id FROM tl_spieler s'
+                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
+                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
+                        . ' WHERE m.liga=?'
+                        . ' AND m.active=\'1\''
+                        . ' AND s.active=\'1\''
+                        . ' AND me.id=?'
+                        . ')'
+                        . ' AND tl_member.disable=\'\''
+                        . ' ORDER BY tl_member.lastname';
+                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->id, $dc->activeRecord->member_id);
+                }
+
+                if ($queryResult->n > 1) {
+                    \Message::addError("Spieler ist bereits in einer anderen Mannschaft aktiv.");
+                    return '';
+                }
+            }
+        }
+        return $value;
+    }
 
     /* Helper für tl_spiel */
 
@@ -374,8 +453,7 @@ class DCAHelper
      * @param DataContaner|DC_Table $dc
      * @return array
      */
-    public
-    static function getHomeSpielerForSelect($dc)
+    public static function getHomeSpielerForSelect($dc)
     {
         $initial = [0 => "Kein Spieler (ID 0)"];
 
@@ -603,7 +681,8 @@ class DCAHelper
         }
         // nicht bei der Spielerliste, da wir dort zusätzlich eine Auswahl der
         // Liga bräuchten, damit "alle Mannschaften" Sinn ergibt
-        if ($dc->activeRecord->type !== 'spielerliste') {
+        // Dito für die Mannschaftsseite.
+        if (!in_array($dc->activeRecord->type, ['spielerliste', 'mannschaftsseite'])) {
             $result[0] = "alle Mannschaften";// z.B. für "Spielerranking" einer gesamten Liga
         }
         return $result;
@@ -636,13 +715,13 @@ class DCAHelper
         if ($dc && $dc->activeRecord) {
             $begegnung = \BegegnungModel::findById($dc->activeRecord->begegnung_id);
             $spieler = \SpielerModel::findBy(
-                ['tl_spieler.pid=? OR tl_spieler.pid=?'],
+                ['(tl_spieler.pid=? OR tl_spieler.pid=?) AND (tl_spieler.active=\'1\')'],
                 [$begegnung->home, $begegnung->away]
             );
         }
         if ($spieler) {
             foreach ($spieler as $s) {
-                $result[$s->id] = $s->getFullName();
+                $result[$s->id] = $s->getNameAndMannschaft();
             }
         }
         asort($result);
@@ -735,4 +814,5 @@ class DCAHelper
         // return sprintf("%s, %s", $lastname, $firstname);
         return sprintf("%s %s", $firstname, $lastname);
     }
+
 }

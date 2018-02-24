@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
     ],
 
     'palettes' => [
-        'default' => '{member_legend},member_id;{details_legend},teamcaptain,co_teamcaptain',
+        'default' => '{member_legend},member_id;{details_legend},teamcaptain,co_teamcaptain,active',
     ],
 
     'fields' => [
@@ -116,6 +116,17 @@ $GLOBALS['TL_DCA']['tl_spieler'] = [
             'inputType' => 'checkbox',
             'sql'       => "char(1) NOT NULL default ''",
         ],
+        'active' => [
+            'label'      => &$GLOBALS['TL_LANG']['tl_spieler']['active'],
+            'save_callback' => [['\Fiedsch\Liga\DCAHelper', 'spielerSaveCallback']],
+            'inputType'  => 'checkbox',
+            'exclude'    => true,
+            'search'     => false,
+            'filter'     => true,
+            'sorting'    => false,
+            //'eval'       => ['tl_style'=>'w50'],
+            'sql'        => "char(1) NOT NULL default '1'",
+        ]
     ],
 ];
 
