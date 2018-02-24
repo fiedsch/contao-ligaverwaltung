@@ -681,7 +681,8 @@ class DCAHelper
         }
         // nicht bei der Spielerliste, da wir dort zusätzlich eine Auswahl der
         // Liga bräuchten, damit "alle Mannschaften" Sinn ergibt
-        if ($dc->activeRecord->type !== 'spielerliste') {
+        // Dito für die Mannschaftsseite.
+        if (!in_array($dc->activeRecord->type, ['spielerliste', 'mannschaftsseite'])) {
             $result[0] = "alle Mannschaften";// z.B. für "Spielerranking" einer gesamten Liga
         }
         return $result;
