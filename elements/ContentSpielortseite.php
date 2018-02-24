@@ -99,7 +99,7 @@ class ContentSpielortseite extends \ContentElement
 
         if ($mannschaften) {
             foreach ($mannschaften as $mannschaft) {
-                if (in_array($mannschaft->liga, deserialize($this->liga))) {
+                if (in_array($mannschaft->liga, deserialize($this->ligen))) {
                     $mannschaften_liste[] = $mannschaft->name;
                     // $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->name;
                     $mannschaften_in_ligen_liste[$mannschaft->liga][] = $mannschaft->getLinkedName();
@@ -111,7 +111,7 @@ class ContentSpielortseite extends \ContentElement
 
         // nach in der Konfiguration ausgewählten Saisons filtern
 
-        $show_ligen = array_filter(deserialize($this->liga, true), function($el) use ($gefundene_ligen) {
+        $show_ligen = array_filter(deserialize($this->ligen, true), function($el) use ($gefundene_ligen) {
            return in_array($el, $gefundene_ligen);
         });
 
@@ -121,7 +121,7 @@ class ContentSpielortseite extends \ContentElement
 
         // $this->Template->mannschaften_liste = $mannschaften_liste; // nur debug
         // $this->Template->gefundene_ligen = $gefundene_ligen;  // nur debug
-        // $this->Template->ligen_config = deserialize($this->liga, true);  // nur debug
+        // $this->Template->ligen_config = deserialize($this->ligen, true);  // nur debug
         $this->Template->show_ligen = $show_ligen;
         $this->Template->ligen_lookup = $ligen_lookup;
         $this->Template->mannschaften_in_ligen_liste = $mannschaften_in_ligen_liste;
