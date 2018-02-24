@@ -7,7 +7,7 @@
 
 ## Erstellen von Ligen
 
-1. Saisonanlegen
+1. Saison anlegen
 2. Liga anlegen
 
 
