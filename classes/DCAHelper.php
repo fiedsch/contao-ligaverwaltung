@@ -140,6 +140,7 @@ class DCAHelper
      * @param $arrRow
      * @return string
      */
+    /*
     public static function listBegegnungCallback($arrRow)
     {
         $home = \MannschaftModel::findById($arrRow['home']);
@@ -156,6 +157,7 @@ class DCAHelper
             $away ? $away->name : 'Spielfrei'
         );
     }
+    */
 
     /**
      * Label für eine Begegnung (Spiel zweier Mansnchaften gegeneinander)
@@ -165,7 +167,7 @@ class DCAHelper
      * @param string $label
      * @return string
      */
-    public static function labelBegegnungCallback($row, $label)
+    public static function labelBegegnungCallback($row, $label='')
     {
         $liga = \LigaModel::findById($row['pid']);
         $verband = \VerbandModel::findById($liga->pid);
