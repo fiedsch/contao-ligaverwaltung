@@ -38,15 +38,10 @@ class ModuleBegegnungserfassung extends \BackendModule
         if ('begegnungserfassung' === \Input::post('FORM_SUBMIT')) {
             // Daten verarbeiten:
             $this->saveFormData();
-            return;
         } else {
             // Daten erfassen
             $this->generateForm();
         }
-        // Nach erfolgreicher Erfassung zu
-        // contao/main.php?do=liga.verband&table=tl_spiel&id=67
-        //                                                   ^^Begegnung
-        // weiterleiten
     }
 
     /**
@@ -58,20 +53,11 @@ class ModuleBegegnungserfassung extends \BackendModule
      */
     protected function saveFormData()
     {
-        $this->Template->form = $_POST;
-        $message = sprintf('Daten wurden erfasst! (<a href="%s">%s</a>)',
-            'contao/main.php?do=liga.begegnung',
-            'Zu den Begegnungen'
-        );
-
         $data = $this->scanPostData();
-
-        $message .= "<pre>" . print_r($data, true) . "</pre>";
 
         $this->saveSpiele($data);
 
-        $this->Template->message = $message;
-
+        \Controller::redirect('contao/main.php?do=liga.begegnung&table=tl_spiel&id='.\Input::post('id'));
     }
 
     /**
