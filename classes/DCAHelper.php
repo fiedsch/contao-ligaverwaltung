@@ -140,7 +140,6 @@ class DCAHelper
      * @param $arrRow
      * @return string
      */
-    /*
     public static function listBegegnungCallback($arrRow)
     {
         $home = \MannschaftModel::findById($arrRow['home']);
@@ -157,7 +156,6 @@ class DCAHelper
             $away ? $away->name : 'Spielfrei'
         );
     }
-    */
 
     /**
      * Label für eine Begegnung (Spiel zweier Mansnchaften gegeneinander)
