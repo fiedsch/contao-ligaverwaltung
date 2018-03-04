@@ -32,7 +32,7 @@ class ModuleBegegnungserfassung extends \BackendModule
     {
         // Aufruf über den Menüpunkte
         if (\Input::get('id') <= 0) {
-            \Controller::redirect('contao/main.php?do=liga.begegnung');
+            \Controller::redirect(sprintf('contao/main.php?do=liga.begegnung&rt=%s', REQUEST_TOKEN));
         }
 
         if ('begegnungserfassung' === \Input::post('FORM_SUBMIT')) {
@@ -57,7 +57,10 @@ class ModuleBegegnungserfassung extends \BackendModule
 
         $this->saveSpiele($data);
 
-        \Controller::redirect('contao/main.php?do=liga.begegnung&table=tl_spiel&id='.\Input::post('id'));
+        \Controller::redirect(sprintf('contao/main.php?do=liga.begegnung&table=tl_spiel&id=%s&rt=%s',
+            \Input::post('id'),
+            REQUEST_TOKEN
+        ));
     }
 
     /**
@@ -276,8 +279,8 @@ class ModuleBegegnungserfassung extends \BackendModule
             $team_away = [];
             foreach (['home', 'away'] as $homeaway) {
                 $spieler = \SpielerModel::findBy(
-                    ['pid=?'],
-                    [$begegnung->$homeaway],
+                    ['pid=?', 'tl_spieler.active=?'],
+                    [$begegnung->$homeaway,'1'],
                     ['order' => 'id ASC']
                 );
                 if ($spieler) {
@@ -321,19 +324,17 @@ class ModuleBegegnungserfassung extends \BackendModule
 
     }
 
-    /* TODO: neu implementieren, da sich das zugrundelegende Datenmodell geändert hat
+    /**
+     * TODO: neu implementieren, da sich das zugrundelegende Datenmodell geändert hat
      * Siehe linup mit den tl_spieler IDs und played mit den Index-Positionen aus lineup
      *
      * Frage: wie können wir das lineup aus den Ergebnissen aus played rekonstruieren?
      * Oder: müssen wir den zugehörigen spielplan auch speichern? Dieser ist keine
      * Konstante (z.B. in der Bezirksliga anders). Dies ist aber ohnehin ein weiteres
      * TODO, da im Javascript Code die "konstante" spielplan.16E2D.js eingebunden wird.
-     *
      */
-
     protected function generatePatchSpielplanCode()
     {
-
         $jsCodeLines = [];
 
         if (!\Input::get('id')) {
@@ -341,47 +342,18 @@ class ModuleBegegnungserfassung extends \BackendModule
         } else {
             $spiele = \SpielModel::findByPid(\Input::get('id'));
             if ($spiele) {
-                $message  = '\nFür diese Begegnung sind bereits Spiele erfasst worden!';
-                $message .= '\nFalls noch etwas geändert werden muss, bitte das zugehörige einzelne Spiel bearbeiten.';
-                $jsCodeLines[] = "alert(\"$message\")";
+                //$message  = '\nFür diese Begegnung sind bereits Spiele erfasst worden!';
+                //$message .= '\nFalls noch etwas geändert werden muss, bitte das zugehörige einzelne Spiel bearbeiten.';
+                //$jsCodeLines[] = "alert(\"$message\")";
+                // FIXME: je nach Route, die der User gewählt hat könnte "back"
+                // entweder
+                // * contao/main.php?do=liga.begegnung  (Dirkte über Menüpunkt "Begegnungen)
+                // oder
+                // * hcontao/main.php?do=liga.verband&table=tl_begegnung (über Menüpunkt "Verbände/Ligen" -> liga -> Begegnung)
+                // sein!
                 $jsCodeLines[] = 'window.location = "contao/main.php?do=liga.begegnung";';
-            } else {
-                // kein Grund für eine Nachricht
             }
-            // $spiele = \SpielModel::findBy(
-            //     ['pid=?'],
-            //     [\Input::get('id')],
-            //     ['order' => 'slot ASC']
-            // );
-            // if (!$spiele) {
-            //     $jsCodeLines[] = '// Keine Daten für Begegnung ' . \Input::get('id') . ' gefunden ';
-            // } else {
-            //     foreach ($spiele as $spiel) {
-            //         if ($spiel->spieltype==1) {
-            //             // Einzel
-            //             $jsCodeLines[] = sprintf('data.home.players.push({ids:[%d],slot:%d});', $spiel->home, $spiel->slot);
-            //             $jsCodeLines[] = sprintf('data.away.players.push({ids:[%d],slot:%d});', $spiel->away, $spiel->slot);
-            //
-            //         } else {
-            //             // Doppel
-            //             //$jsCodeLines[] = sprintf('/* %s */', print_r($spiel, true));
-            //             $jsCodeLines[] = sprintf('data.home.players.push({ids:[%d,%d],slot:%d});', $spiel->home, $spiel->home2, $spiel->slot);
-            //             $jsCodeLines[] = sprintf('data.away.players.push({ids:[%d,%d],slot:%d});', $spiel->away, $spiel->away2, $spiel->slot);
-            //         }
-            //         $jsCodeLines[] = sprintf('data.spielplan[%d].scores={home:%d,away:%d};',
-            //             $spiel->slot - 1,
-            //             $spiel->score_home,
-            //             $spiel->score_away
-            //         );
-            //         //$jsCodeLines[] = 'data.spielplan[0].result = "0:1";'; // können wir uns sparen, das macht die app selbst
-            //     }
-            // }
-
         }
-
-        // TODO: fix problem when \SpielModel entries have been created manually in the backend
-        // (only some, but not all that would be created by the form) befor using the form.
-        // Issue: the form will not be usable then, as data.{home,away}.players is incomplete.
 
         $this->Template->patchSpielplanCode = join("\n", $jsCodeLines) . "\n";
     }
