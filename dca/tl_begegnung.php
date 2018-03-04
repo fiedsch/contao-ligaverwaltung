@@ -41,6 +41,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             'panelLayout'           => 'sort,filter;search,limit',
             'headerFields'          => ['name', 'saison'],
             'child_record_callback' => ['\Fiedsch\Liga\DCAHelper', 'labelBegegnungCallback'],
+            'disableGrouping'       => true,
             /* */
         ],
         'label'             => [
@@ -57,11 +58,48 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
             ],
         ],
         'operations'        => [
+            /*
             'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['edit'],
                 'href'  => 'table=tl_spiel',
                 'icon'  => 'edit.gif',
             ],
+            */
+            'edit'       => [
+            'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['edit'],
+            'href'  => 'do=liga.begegnungserfassung',
+            'icon'  => 'editheader.gif',
+            'button_callback' => function($arrRow,
+                                          $href,
+                                          $label,
+                                          $title,
+                                          $icon,
+                                          $attributes,
+                                          $strTable,
+                                          $arrRootIds,
+                                          $arrChildRecordIds,
+                                          $blnCircularReference,
+                                          $strPrevious,
+                                          $strNext) {
+
+                $spiele = \SpielModel::findByPid($arrRow['id']);
+                if ($spiele) {
+                    return sprintf('<a href="contao/main.php?%s&rt=%s&id=%d" title="" class="edit">%s</a>',
+                        'do=liga.begegnung&table=tl_spiel',
+                        REQUEST_TOKEN,
+                        $arrRow['id'],
+                        //'<span style="width:6em;display:inline-block">bearbeiten</span>' //json_encode(func_get_args())
+                        '<img src="system/themes/flexible/images/edit.gif" width="12" height="16" alt="Begegnung bearbeiten">&nbsp;'
+                    );
+                }
+                return sprintf('<a href="contao/main.php?%s&id=%d" title="" class="edit">%s</a>',
+                    $href,
+                    $arrRow['id'],
+                    //'<span style="width:6em;display:inline-block">erfassen</span>' // TODO Icon ; Debug: json_encode(func_get_args())
+                    '<img src="system/themes/flexible/images/edit.gif" width="12" height="16" alt="Begegnung erfassen">&nbsp;'
+                );
+            }
+           ],
             'editheader' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['editheader'],
                 'href'  => 'act=edit',
@@ -83,6 +121,8 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
+            /*
+             // wird (oben) 'edit'!
             'erfassen'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_begegnung']['erfassen'],
                 'href'  => 'do=liga.begegnungserfassung',
@@ -116,6 +156,7 @@ $GLOBALS['TL_DCA']  ['tl_begegnung'] = [
                     );
                 }
             ],
+            */
         ],
     ],
 
@@ -195,5 +236,6 @@ if (\Input::get('do') == 'liga.begegnung') {
         'flag'        => 11, // sort ascending
         'fields'      => ['pid', 'home', 'away'],
         'panelLayout' => 'sort,filter;search,limit',
+        'disableGrouping' => false,
     ];
 }

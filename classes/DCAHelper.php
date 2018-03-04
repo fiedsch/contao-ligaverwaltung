@@ -392,12 +392,11 @@ class DCAHelper
                 \Message::addError("Spieler kann in einer inaktiven Mannschaft nicht auf aktiv gesetzt werden");
                 return '';
             }
-            //  (2) Spieler ist bereits in einer anderen Mannschaft aktiv (unterBerücksichtigung
+            //  (2) Spieler ist bereits in einer anderen Mannschaft aktiv (unter Berücksichtigung
             // der \Config::get('ligaverwaltung_exclusive_model')-Regeln!
             if ($mannschaft) {
-                // $member = \MemberModel::findById($dc->activeRecord->member_id);
-                // $liga_id = $mannschaft->liga;
                 if (\Config::get('ligaverwaltung_exclusive_model') == 1) {
+                    // [ 1 => '(in einer Mannschaft) je Saison', 2 => '(in einer Mannschaft) je Liga' ],
 
                     // Modell I (edart-bayern.de-Modell);
                     // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in einer
@@ -405,38 +404,52 @@ class DCAHelper
                     // wie die aktuell betrachtete.
                     // Annahme: ein Spieler darf in einer Saison nur in einer Mannschaft spielen!
 
-                    $query = ' SELECT COUNT(*) n FROM tl_spieler s'
-                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
-                        . ' LEFT JOIN tl_liga l ON (m.liga=l.id)'
-                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
-                        . ' WHERE l.saison=?'
-                        . ' AND m.active=\'1\''
-                        . ' AND s.active=\'1\''
-                        . ' AND me.id=?'
-                        ;
-                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->saison, $dc->activeRecord->member_id);
-                } else {
-                    // Modell II harlekin Modell (weniger restriktiv):
-                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft in der gleichen
-                    // Liga spielen.
+                    $filterlist = ['-1']; // damit wir bei leeren Ergabnislisten unten etwas zum implode()n haben
+                    $ligen = \LigaModel::findBy(['saison=?'], [$mannschaft->getRelated('liga')->saison]);
+                    foreach ($ligen as $liga) {
+                        $mannschaften = \MannschaftModel::findBy(['active=?', 'liga=?'], ['1', $liga->id]);
+                        if ($mannschaften) {
+                            foreach ($mannschaften as $m) {
+                                if ($m->id !== $mannschaft->id) {
+                                    $filterlist[] = $m->id;
+                                }
+                            }
+                        }
+                    }
+                    $filterlist = implode(',', $filterlist);
+                } else { // "(in einer Mannschaft) je Liga"
+
+                    // Modell II: Harlekin Modell (weniger restriktiv):
+                    // Alle Spieler, die nicht bereits in einer (anderen) Mannschaft
+                    // in der gleichen Liga (nicht Saison!) spielen.
                     // Annahme: ein Spieler darf in einer Liga nur in einer Mannschaft spielen!
-                    $query =
-                        'SELECT COUNT(*) FROM tl_member WHERE id NOT IN ('
-                        . ' SELECT s.member_id FROM tl_spieler s'
-                        . ' LEFT JOIN tl_mannschaft m ON (s.pid=m.id)'
-                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
-                        . ' WHERE m.liga=?'
-                        . ' AND m.active=\'1\''
-                        . ' AND s.active=\'1\''
-                        . ' AND me.id=?'
-                        . ')'
-                        . ' AND tl_member.disable=\'\''
-                        . ' ORDER BY tl_member.lastname';
-                    $queryResult = \Database::getInstance()->prepare($query)->execute($mannschaft->getRelated('liga')->id, $dc->activeRecord->member_id);
+
+                    $mannschaften = \MannschaftModel::findBy(['active=?', 'liga=?'], ['1', $mannschaft->getRelated('liga')->id]);
+                    $filterlist = ['-1'];
+                    if ($mannschaften) {
+                        foreach ($mannschaften as $m) {
+                            if ($m->id !== $mannschaft->id) {
+                                $filterlist[] = $m->id;
+                            }
+                        }
+                    }
+                    $filterlist = implode(',', $filterlist);
                 }
 
-                if ($queryResult->n > 1) {
-                    \Message::addError("Spieler ist bereits in einer anderen Mannschaft aktiv.");
+                $query = ' SELECT s.pid FROM tl_spieler s'
+                        . ' LEFT JOIN tl_member me ON (s.member_id=me.id)'
+                        . " WHERE s.pid IN ($filterlist)"
+                        . " AND s.active='1'"
+                        . ' AND me.id=?'
+                        ;
+                $queryResult = \Database::getInstance()->prepare($query)->execute($dc->activeRecord->member_id);
+
+                if ($queryResult->count() > 0) {
+                    $mannschaftsnamen = [];
+                    while($queryResult->next()) {
+                        $mannschaftsnamen[] = \MannschaftModel::findById($queryResult->pid)->getFullName();
+                    }
+                    \Message::addError("Spieler ist bereits in einer anderen Mannschaft aktiv: ".implode(', ',$mannschaftsnamen));
                     return '';
                 }
             }
