@@ -4,6 +4,7 @@
 * so lange hauptsächlich als Backup
 * Fragen und Anregungen sind aber dennoch gerne gesehen
 * Lizenz: MIT
+* [Als Bundle Für Contao 4](https://github.com/fiedsch/contao-ligaverwaltung-bundle)
 
 ## Konfiguration
 
