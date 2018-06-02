@@ -34,6 +34,8 @@ array_insert($GLOBALS['BE_MOD'], 2, [
         ],
         'liga.highlight'  => [
             'tables' => ['tl_highlight'],
+            'javascript' => 'system/modules/ligaverwaltung/assets/tl_highlight.js',
+            'stylesheet' => 'system/modules/ligaverwaltung/assets/tl_highlight.css',
             //'icon' => 'system/modules/ligaverwaltung/assets/img/highlights.gif'
         ],
         // In ModuleBegegnungserfassung als ::redirect() auf 'liga.begegnung' falls

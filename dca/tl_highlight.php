@@ -92,7 +92,7 @@ $GLOBALS['TL_DCA']  ['tl_highlight'] = [
         'begegnung_id' => [
             'label'            => &$GLOBALS['TL_LANG']['tl_highlight']['begegnung_id'],
             'inputType'        => 'select',
-            'foreignKey'       => 'tl_begegnung.id',
+            'filter'           => true,
             'options_callback' => ['\Fiedsch\Liga\DCAHelper', 'getBegegnungenForHighlight'],
             'eval'             => ['submitOnChange' => true, 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => false, 'tl_class' => 'w50'],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
