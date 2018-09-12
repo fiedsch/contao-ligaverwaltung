@@ -38,11 +38,13 @@ print "## Ligen und Mannschaften\n";
 foreach ($ligen as $liga) {
 
     printf("\n\n### %s (%s)\n", $liga->name, $saison->name);
+
     // Mannschaften in dieser Liga
     $mannschaften = \MannschaftModel::findBy(
         ['liga=?'],
         [$liga->id]
     );
+
     if ($mannschaften) {
         foreach ($mannschaften as $mannschaft) {
             $spielort = $mannschaft->getRelated('spielort')->name ?: 'kein Spielort';
@@ -59,23 +61,25 @@ foreach ($ligen as $liga) {
                 $liga->name,
                 $saison->name
                 );
+
             $data['wirte'][$spielort][] = $mannschaftsbezeichnung;
             $data['aufsteller'][$aufsteller][] = $mannschaftsbezeichnung.", $spielort";
-            printf("* %s (%s, %s)\n",
+
+            printf("* %s (%s, %s)",
                 $mannschaft->name,
                 $spielort,
                 $aufsteller
             );
         }
     } else {
-        print "keine Mannschaften in der Liga '" . $liga->name . "''\n";
+        print "keine Mannschaften in der Liga '" . $liga->name . "'";
     }
 }
 
-print "\n\\newpage\n";
-print "\n\n## Wirte\n";
+
+print "\n## Wirte";
 foreach($data['wirte'] as $wirt => $d) {
-    print "\n\n### $wirt\n";
+    print "### $wirt";
     foreach($d as $who) {
         print "* $who\n";
     }
@@ -84,7 +88,7 @@ foreach($data['wirte'] as $wirt => $d) {
 print "\n\\newpage\n";
 print "\n\n## Aufsteller\n";
 foreach($data['aufsteller'] as $aufsteller => $d) {
-    print "\n\n### $aufsteller\n";
+    print "\n### $aufsteller";
     foreach($d as $who) {
         print "* $who\n";
     }
@@ -96,5 +100,3 @@ print "```\n";
 print_r($data);
 print "```\n";
 */
-
-
